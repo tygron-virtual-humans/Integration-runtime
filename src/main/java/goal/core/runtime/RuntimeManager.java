@@ -19,6 +19,7 @@
 package goal.core.runtime;
 
 import eis.exceptions.EnvironmentInterfaceException;
+import goal.core.gam.Gamygdala;
 import goal.core.agent.Agent;
 import goal.core.agent.GOALInterpreter;
 import goal.core.runtime.RuntimeEvent.EventType;
@@ -130,6 +131,10 @@ import nl.tudelft.goal.messaging.messagebox.MessageBoxId.Type;
 public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 		implements
 		Observable<RuntimeEventObserver, RuntimeManager<?, ?>, RuntimeEvent> {
+	
+	// Gamygdala engine
+	private Gamygdala gamEngine;
+	
 	// wrapper pattern for implementing Observable.
 	private final DefaultObservable<RuntimeEventObserver, RuntimeManager<?, ?>, RuntimeEvent> myObservable = new DefaultObservable<>();
 
@@ -644,7 +649,7 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 				port.start();
 			}
 		}
-
+		gamEngine = Gamygdala.getInstance();
 		this.agentService.start();
 
 		new InfoLog("running.");
