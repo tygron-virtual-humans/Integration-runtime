@@ -20,6 +20,7 @@ package goal.core.runtime;
 
 import eis.exceptions.EnvironmentInterfaceException;
 import goal.core.gam.Gamygdala;
+import goal.core.gam.AgentFactory;
 import goal.core.agent.Agent;
 import goal.core.agent.GOALInterpreter;
 import goal.core.runtime.RuntimeEvent.EventType;
@@ -60,6 +61,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import languageTools.program.agent.AgentId;
 import nl.tudelft.goal.messaging.Messaging;
@@ -651,8 +653,20 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 		}
 		gamEngine = Gamygdala.getInstance();
 		this.agentService.start();
+		Iterator<Agent<C>> goalAgentIterator = agentService.getAgents().iterator();
+		createGamAgents(goalAgentIterator);
 
 		new InfoLog("running.");
+	}
+
+	/**
+	 * Adds goal agents to the GAM engine
+	 * @param iter iterator of goal agents
+	 */
+	private void createGamAgents(Iterator<Agent<C>> iter) {
+		while(iter.hasNext()){
+	    gamEngine.registerAgent(AgentFactory.createAgent("" +iter.next().getId()));
+		}
 	}
 
 	/**
