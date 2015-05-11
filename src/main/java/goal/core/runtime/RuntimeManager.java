@@ -134,9 +134,6 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 		implements
 		Observable<RuntimeEventObserver, RuntimeManager<?, ?>, RuntimeEvent> {
 	
-	// Gamygdala engine
-	private Gamygdala gamEngine;
-	
 	// wrapper pattern for implementing Observable.
 	private final DefaultObservable<RuntimeEventObserver, RuntimeManager<?, ?>, RuntimeEvent> myObservable = new DefaultObservable<>();
 
@@ -371,6 +368,8 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 
 	private final RemoteRuntimeService<D, C> remoteRuntimeService;
 
+	private final Gamygdala gamEngine;
+
 	/**
 	 * Creates a new runtime service manager to manage a multi-agent system.
 	 *
@@ -440,6 +439,8 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 			throw new GOALLaunchFailureException(
 					"EIS failed to start environment", e);
 		}
+		
+		gamEngine = Gamygdala.getInstance();
 
 		// inform other Runtimes about this launch
 		remoteRuntimeService.broadcastRuntimeLaunched();
@@ -651,7 +652,7 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 				port.start();
 			}
 		}
-		gamEngine = Gamygdala.getInstance();
+		
 		this.agentService.start();
 		Iterator<Agent<C>> goalAgentIterator = agentService.getAgents().iterator();
 		createGamAgents(goalAgentIterator);
@@ -665,7 +666,7 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 	 */
 	private void createGamAgents(Iterator<Agent<C>> iter) {
 		while(iter.hasNext()){
-	    gamEngine.registerAgent(AgentFactory.createAgent("" +iter.next().getId()));
+			gamEngine.registerAgent(AgentFactory.createAgent("" +iter.next().getId()));
 		}
 	}
 
