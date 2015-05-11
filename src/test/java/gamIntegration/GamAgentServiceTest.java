@@ -1,4 +1,6 @@
-package goal.core.runtime.runtimeServices;
+package gamIntegration;
+
+import static org.junit.Assert.assertEquals;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -19,6 +21,7 @@ public class GamAgentServiceTest extends AbstractUnitTestTest {
 		Gamygdala gamEngine = Gamygdala.getInstance();
 		Iterator<Entry<String, Agent>> iter = gamEngine.gamydgalaMap.getAgentMap().getIterator();
 
-		assert(iter.next().getKey()=="agentUnderTest" && iter.next().getKey()=="secondAgentUnderTest");
+		assertEquals(iter.next().getKey(), "agentUnderTest");
+		assertEquals(iter.next().getKey(),"secondAgentUnderTest");
 	}
 }
