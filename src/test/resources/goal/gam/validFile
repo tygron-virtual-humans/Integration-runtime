@@ -1,0 +1,6 @@
+BEL, 0.2,agent1,goal1, 0.1,False
+REL,agent1,agent2, -1
+GOAL,agentUnderTest,goal2, 0.8
+BEL, 0.3,agent2,goal2, 0.5,True
+REL,agent3,agent4, 0.9
+GOAL,secondAgentUnderTest,goal1, 3

@@ -47,6 +47,9 @@ public class Gamygdala {
      */
     private long millisPassed;
 
+	private boolean start = false;
+	private boolean useFile = false;
+
     /**
      * Constructor for Gamygdala Emotion Engine.
      */
@@ -63,6 +66,9 @@ public class Gamygdala {
 
         // Record current time
         this.lastMillis = System.currentTimeMillis();
+        
+        this.start = false;
+        this.useFile = false;
     }
     
     public static Gamygdala getInstance(){
@@ -579,5 +585,45 @@ public class Gamygdala {
             System.out.println(what);
         }
     }
+
+    /**
+     * Returns the agent if there is one with the given name
+     * @param agent name of agent
+     * @return agent
+     */
+	public Agent getAgentByName(String agent) {
+		return this.gamydgalaMap.getAgentMap().getAgentByName(agent);
+	}
+
+	/**
+	 * Get the goals from the gamygdalaMap
+	 * @return Goalmap with goals
+	 */
+	public GoalMap getGoals() {
+		return this.gamydgalaMap.getGoalMap();
+	}
+	
+	/**
+	 * Reset gamInstance
+	 */
+	public void reset() {
+		gamInstance = new Gamygdala();		
+	}
+    
+	public boolean getStart() {
+		return start ;
+	}
+
+	public boolean getUsefile() {
+		return useFile;
+	}
+
+	public void setStart(boolean b) {
+		start = b;
+	}
+
+	public void useFile(boolean b) {
+		useFile = b;
+	}
 
 }

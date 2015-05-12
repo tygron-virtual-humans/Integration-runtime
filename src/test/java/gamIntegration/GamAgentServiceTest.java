@@ -16,12 +16,18 @@ public class GamAgentServiceTest extends AbstractUnitTestTest {
 
 	@Test
 	public void testCorrectMinimal() throws Exception {
+		Gamygdala gamEngine = Gamygdala.getInstance();
+		gamEngine.setStart(true);
+		gamEngine.useFile(true);
+		
 		runTest("src/test/resources/goal/parser/unittest/correctMinimal.test2g");
 
-		Gamygdala gamEngine = Gamygdala.getInstance();
 		Iterator<Entry<String, Agent>> iter = gamEngine.gamydgalaMap.getAgentMap().getIterator();
-
+		
+		
 		assertEquals(iter.next().getKey(), "agentUnderTest");
 		assertEquals(iter.next().getKey(),"secondAgentUnderTest");
+		
+		gamEngine.reset();
 	}
 }

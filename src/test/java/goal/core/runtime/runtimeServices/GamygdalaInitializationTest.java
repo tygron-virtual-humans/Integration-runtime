@@ -1,7 +1,6 @@
 package goal.core.runtime.runtimeServices;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import eis.exceptions.EnvironmentInterfaceException;
 import goal.core.agent.AbstractAgentFactory;
 import goal.core.agent.AgentFactory;
@@ -20,7 +19,9 @@ import goal.tools.errorhandling.exceptions.GOALLaunchFailureException;
 import goal.tools.logging.Loggers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.program.mas.MASProgram;
 import localmessaging.LocalMessaging;
 import nl.tudelft.goal.messaging.exceptions.MessagingException;
@@ -88,13 +89,15 @@ public class GamygdalaInitializationTest {
 
 	@After
 	public void tearDown() throws Exception {
+		Gamygdala.getInstance().reset();
 		runtimeManager.awaitTermination(AbstractRun.TIMEOUT_FIRST_AGENT_SECONDS);
 		messagingService.shutDown();
 	}
 
 	@Test
 	public void testStart() throws MessagingException, EnvironmentInterfaceException,
-			InterruptedException, GOALLaunchFailureException {
+			InterruptedException, GOALLaunchFailureException, FileNotFoundException, InvalidEmotionConfigFile {
+		Gamygdala.getInstance().setStart(true);
 		runtimeManager.start(true);
 		
 		// fibonaci.mas2g has four agents
