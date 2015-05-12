@@ -1,6 +1,6 @@
 masTest {
 
-	mas = "postConditionTest.mas2g".
+	mas = "src/test/resources/goal/tools/unittest/postConditionTest.mas2g".
 	timeout = 10. %seconds
 
 	postConditionAgent {
