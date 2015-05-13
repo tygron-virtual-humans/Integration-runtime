@@ -65,6 +65,7 @@ public class Agent {
      * @return True if goal was added successfully, false if not.
      */
     public boolean addGoal(Goal goal) {
+    	Gamygdala.getInstance().registerGoal(goal);
         return this.goals.addGoal(goal);
     }
 

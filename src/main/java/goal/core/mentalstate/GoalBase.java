@@ -18,6 +18,8 @@
 
 package goal.core.mentalstate;
 
+import goal.core.gam.Gamygdala;
+import goal.core.gam.Goal;
 import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.debugger.SteppingDebugger;
@@ -303,6 +305,20 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	private void addGoalPrivate(SingleGoal goal) {
 		this.goals.add(goal);
 		goal.markOccurrence();
+		
+		this.addGamygdalaGoal(goal);
+	}
+	
+	/**
+	 * Add goal to the gamygdala engine.
+	 */
+	private void addGamygdalaGoal(SingleGoal goal) {
+		if (Gamygdala.getInstance().getStart()) {
+			goal.core.gam.Agent gamAgent = 
+					Gamygdala.getInstance().getAgentByName(this.agentName.getName());
+			goal.core.gam.Goal gamGoal = new Goal(goal.getGoal().getSignature(), 1, false); //TODO default 1?
+			gamAgent.addGoal(gamGoal);
+		}
 	}
 
 	// *********** deletion methods ****************/
