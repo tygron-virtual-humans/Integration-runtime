@@ -693,7 +693,7 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 	 */
 	private void createGamAgents(Iterator<Agent<C>> iter) {
 		while(iter.hasNext()){
-			gamEngine.registerAgent(AgentFactory.createAgent("" +iter.next().getId()));
+			gamEngine.registerAgent(AgentFactory.createAgent("" +iter.next().getId().getName()));
 		}
 	}
 
