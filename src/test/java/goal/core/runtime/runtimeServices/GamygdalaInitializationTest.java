@@ -97,7 +97,7 @@ public class GamygdalaInitializationTest {
 	@Test
 	public void testStart() throws MessagingException, EnvironmentInterfaceException,
 			InterruptedException, GOALLaunchFailureException, FileNotFoundException, InvalidEmotionConfigFile {
-		Gamygdala.getInstance().setStart(true);
+		Gamygdala.getInstance().reset();
 		runtimeManager.start(true);
 		
 		// fibonaci.mas2g has four agents

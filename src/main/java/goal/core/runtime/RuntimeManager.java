@@ -662,15 +662,14 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 		}
 		
 		this.agentService.start();
+		/*
 		Iterator<Agent<C>> goalAgentIterator = agentService.getAgents().iterator();
-		if(gamEngine.getStart()){
-			createGamAgents(goalAgentIterator);
+		createGamAgents(goalAgentIterator);
 			if(gamEngine.getUsefile()){
 				EmotionConfig emoConfig = RelationParser.parse("src/test/resources/goal/gam/validFile");
 				addGamGoals(emoConfig.getGoals());
-			}
 		}
-		
+		*/
 		new InfoLog("running.");
 	}
 
@@ -678,6 +677,7 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 	 * Adds goals to gamygdala
 	 * @param goals
 	 */
+	/*
 	private void addGamGoals(ArrayList<GamGoal> goals) {
 		for(int i=0; i< goals.size(); i++){
 			GamGoal goal = goals.get(i);
@@ -686,17 +686,18 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 			gamEngine.registerGoal(gamgoal);
 		}
 	}
-
+*/
 	/**
 	 * Adds goal agents to the GAM engine
 	 * @param iter iterator of goal agents
 	 */
+	/*
 	private void createGamAgents(Iterator<Agent<C>> iter) {
 		while(iter.hasNext()){
 			gamEngine.registerAgent(AgentFactory.createAgent("" +iter.next().getId().getName()));
 		}
 	}
-
+*/
 	/**
 	 * Stops agent with the given <code>id</code>.
 	 *
