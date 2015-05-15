@@ -313,10 +313,14 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	 * Add goal to the gamygdala engine.
 	 */
 	private void addGamygdalaGoal(SingleGoal goal) {
+		if(!Gamygdala.getInstance().getStart()) { //TODO: FIND BETTER PLACE TO START
+			Gamygdala.getInstance().setStart(true);
+		}
 		if (Gamygdala.getInstance().getStart()) {
 			goal.core.gam.Agent gamAgent = 
 					Gamygdala.getInstance().getAgentByName(this.agentName.getName());
 			goal.core.gam.Goal gamGoal = new Goal(goal.getGoal().getSignature(), 1, false); //TODO default 1?
+			Gamygdala.getInstance().registerGoal(gamGoal);
 			gamAgent.addGoal(gamGoal);
 		}
 	}

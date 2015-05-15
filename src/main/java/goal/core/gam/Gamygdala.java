@@ -137,9 +137,10 @@ public class Gamygdala {
 
         // Loop all goals.
         Iterator<Entry<Goal, Double>> goalCongruenceIterator = belief.getGoalCongruenceMap().entrySet().iterator();
+        int size = belief.getGoalCongruenceMap().entrySet().size();
 
-        for (Map.Entry<Goal, Double> goalPair = goalCongruenceIterator.next(); goalCongruenceIterator.hasNext(); ) {
-
+        for (int i = 0; i<size; i++) {
+        	Map.Entry<Goal, Double> goalPair = goalCongruenceIterator.next();
             currentGoal = goalPair.getKey();
             currentCongruence = goalPair.getValue();
 
@@ -176,7 +177,7 @@ public class Gamygdala {
      * @param deltaLikelihood The delta likelihood of the goal.
      * @param desirability The desirability of the goal (utility * delta).
      */
-    private void appraiseByAllAgents(Goal currentGoal, Belief belief, double utility, double deltaLikelihood, double desirability) {
+    public void appraiseByAllAgents(Goal currentGoal, Belief belief, double utility, double deltaLikelihood, double desirability) {
 
         // Debug
         Gamygdala.debug("Evaluated goal: " + currentGoal.getName() + "(" + utility + ", " + deltaLikelihood + ")");
@@ -624,6 +625,10 @@ public class Gamygdala {
 
 	public void useFile(boolean b) {
 		useFile = b;
+	}
+
+	public Goal getGoalByName(String signature) {
+		return this.getGoals().getGoalByName(signature);
 	}
 
 }
