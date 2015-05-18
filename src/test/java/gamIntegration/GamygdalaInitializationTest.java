@@ -21,7 +21,6 @@ import goal.tools.logging.Loggers;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.program.mas.MASProgram;
 import localmessaging.LocalMessaging;
 import nl.tudelft.goal.messaging.exceptions.MessagingException;
@@ -96,7 +95,7 @@ public class GamygdalaInitializationTest {
 
 	@Test
 	public void testStart() throws MessagingException, EnvironmentInterfaceException,
-			InterruptedException, GOALLaunchFailureException, FileNotFoundException, InvalidEmotionConfigFile {
+			InterruptedException, GOALLaunchFailureException, FileNotFoundException {
 		Gamygdala.getInstance().reset();
 		runtimeManager.start(true);
 		

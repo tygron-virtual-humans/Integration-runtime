@@ -65,10 +65,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
-import languageTools.parser.relationParser.EmotionConfig;
-import languageTools.parser.relationParser.GamGoal;
-import languageTools.parser.relationParser.RelationParser;
 import languageTools.program.agent.AgentId;
 import nl.tudelft.goal.messaging.Messaging;
 import nl.tudelft.goal.messaging.client.MessagingClient;
@@ -652,7 +648,7 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 	 * @throws FileNotFoundException 
 	 */
 	public void start(boolean startEnvironments) throws MessagingException,
-			EnvironmentInterfaceException, GOALLaunchFailureException, FileNotFoundException, InvalidEmotionConfigFile {
+			EnvironmentInterfaceException, GOALLaunchFailureException, FileNotFoundException {
 		Collection<EnvironmentPort> ports = this.environmentService
 				.getEnvironmentPorts();
 		if (startEnvironments) {

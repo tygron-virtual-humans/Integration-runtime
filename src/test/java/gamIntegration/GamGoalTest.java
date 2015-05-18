@@ -2,14 +2,9 @@ package gamIntegration;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
-
 import org.junit.Test;
 
-import goal.core.gam.Agent;
 import goal.core.gam.Gamygdala;
-import goal.core.gam.Goal;
 import goal.parser.unittest.AbstractUnitTestTest;
 
 @SuppressWarnings("javadoc")
