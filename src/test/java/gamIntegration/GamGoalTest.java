@@ -22,18 +22,9 @@ public class GamGoalTest extends AbstractUnitTestTest {
 		gamEngine.useFile(true);
 		
 		runTest("src/test/resources/goal/parser/unittest/testGamGoals.test2g");
-
-		Iterator<Entry<String, Agent>> iter = gamEngine.gamydgalaMap.getAgentMap().getIterator();
 		
-		Iterator<Goal> testIterator = gamEngine.gamydgalaMap.getGoalMap().values().iterator();
-		while(testIterator.hasNext()){
-			System.out.println("GO: ");
-			System.out.println(testIterator.next().getName());
-
-		}
-		
-		assertEquals(iter.next().getKey(), "agentUnderTest");
-		assertEquals(iter.next().getKey(),"secondAgentUnderTest");
+		assertEquals(gamEngine.gamydgalaMap.getAgentMap().getAgentByName("agentUnderTest").getGoalByName("aap/1").getName(), "aap/1");
+		assertEquals(gamEngine.gamydgalaMap.getAgentMap().getAgentByName("secondAgentUnderTest").getGoalByName("aap/1").getName(), "aap/1");
 		
 		gamEngine.reset();
 	}
