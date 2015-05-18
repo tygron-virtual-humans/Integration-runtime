@@ -19,6 +19,9 @@
 package goal.core.runtime;
 
 import eis.exceptions.EnvironmentInterfaceException;
+import goal.core.gam.Gamygdala;
+import goal.core.gam.AgentFactory;
+import goal.core.gam.Goal;
 import goal.core.agent.Agent;
 import goal.core.agent.GOALInterpreter;
 import goal.core.runtime.RuntimeEvent.EventType;
@@ -53,13 +56,19 @@ import goal.tools.logging.InfoLog;
 import goal.util.DefaultObservable;
 import goal.util.Observable;
 
+import java.io.FileNotFoundException;
 import java.lang.management.ManagementFactory;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-
+import java.util.Iterator;
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
+import languageTools.parser.relationParser.EmotionConfig;
+import languageTools.parser.relationParser.GamGoal;
+import languageTools.parser.relationParser.RelationParser;
 import languageTools.program.agent.AgentId;
 import nl.tudelft.goal.messaging.Messaging;
 import nl.tudelft.goal.messaging.client.MessagingClient;
@@ -130,6 +139,7 @@ import nl.tudelft.goal.messaging.messagebox.MessageBoxId.Type;
 public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 		implements
 		Observable<RuntimeEventObserver, RuntimeManager<?, ?>, RuntimeEvent> {
+	
 	// wrapper pattern for implementing Observable.
 	private final DefaultObservable<RuntimeEventObserver, RuntimeManager<?, ?>, RuntimeEvent> myObservable = new DefaultObservable<>();
 
@@ -364,6 +374,8 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 
 	private final RemoteRuntimeService<D, C> remoteRuntimeService;
 
+	private final Gamygdala gamEngine;
+
 	/**
 	 * Creates a new runtime service manager to manage a multi-agent system.
 	 *
@@ -433,6 +445,8 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 			throw new GOALLaunchFailureException(
 					"EIS failed to start environment", e);
 		}
+		
+		gamEngine = Gamygdala.getInstance();
 
 		// inform other Runtimes about this launch
 		remoteRuntimeService.broadcastRuntimeLaunched();
@@ -634,9 +648,11 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 	 * @throws EnvironmentInterfaceException
 	 *             when the environment could not be started.
 	 * @throws GOALLaunchFailureException
+	 * @throws InvalidEmotionConfigFile 
+	 * @throws FileNotFoundException 
 	 */
 	public void start(boolean startEnvironments) throws MessagingException,
-			EnvironmentInterfaceException, GOALLaunchFailureException {
+			EnvironmentInterfaceException, GOALLaunchFailureException, FileNotFoundException, InvalidEmotionConfigFile {
 		Collection<EnvironmentPort> ports = this.environmentService
 				.getEnvironmentPorts();
 		if (startEnvironments) {
@@ -644,12 +660,44 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 				port.start();
 			}
 		}
-
+		
 		this.agentService.start();
-
+		/*
+		Iterator<Agent<C>> goalAgentIterator = agentService.getAgents().iterator();
+		createGamAgents(goalAgentIterator);
+			if(gamEngine.getUsefile()){
+				EmotionConfig emoConfig = RelationParser.parse("src/test/resources/goal/gam/validFile");
+				addGamGoals(emoConfig.getGoals());
+		}
+		*/
 		new InfoLog("running.");
 	}
 
+	/**
+	 * Adds goals to gamygdala
+	 * @param goals
+	 */
+	/*
+	private void addGamGoals(ArrayList<GamGoal> goals) {
+		for(int i=0; i< goals.size(); i++){
+			GamGoal goal = goals.get(i);
+			Goal gamgoal = new Goal(goal.getGoal(), goal.getValue(), false);
+			gamEngine.getAgentByName(goal.getAgent()).addGoal(gamgoal);
+			gamEngine.registerGoal(gamgoal);
+		}
+	}
+*/
+	/**
+	 * Adds goal agents to the GAM engine
+	 * @param iter iterator of goal agents
+	 */
+	/*
+	private void createGamAgents(Iterator<Agent<C>> iter) {
+		while(iter.hasNext()){
+			gamEngine.registerAgent(AgentFactory.createAgent("" +iter.next().getId().getName()));
+		}
+	}
+*/
 	/**
 	 * Stops agent with the given <code>id</code>.
 	 *

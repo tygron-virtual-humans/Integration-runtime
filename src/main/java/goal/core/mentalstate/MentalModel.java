@@ -18,6 +18,10 @@
 
 package goal.core.mentalstate;
 
+import goal.core.gam.Agent;
+import goal.core.gam.Belief;
+import goal.core.gam.Gamygdala;
+import goal.core.gam.Goal;
 import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.errorhandling.Resources;
@@ -26,6 +30,7 @@ import goal.tools.errorhandling.exceptions.GOALBug;
 import goal.tools.errorhandling.exceptions.GOALDatabaseException;
 import goal.tools.errorhandling.exceptions.GOALRuntimeErrorException;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -497,6 +502,66 @@ public class MentalModel {
 		}
 
 		for (SingleGoal goal : goalsToBeRemoved) {
+			try {
+				getAttentionSet(true).remove(goal, debugger);
+			} catch (KRInitFailedException e) {
+				throw new IllegalStateException(String.format(Resources
+						.get(WarningStrings.FAILED_REMOVING_GOAL_FROM_GB), goal
+						.toString()), e);
+			}
+		}
+	}
+	
+	/**
+	 * Implements the blind commitment strategy of a GOAL agent. It removes
+	 * goals when they are believed to be achieved completely. For efficiency
+	 * reasons, this method should be called only twice: (i) after updating a
+	 * mental state with percepts, and (ii) after performing an action.<br>
+	 * If no goals are present in the goal base after removing achieved goals,
+	 * it is attempted to de-focus the agent from the module currently focused
+	 * on, up to a module where goals are present again (or the top-level
+	 * module).
+	 *
+	 * @param debugger
+	 *            The debugger controlling the call
+	 * @throws IllegalStateException
+	 *             if update fails. If we fail to update this probably is a bug
+	 *             in GOAL.
+	 */
+	public void updateGoalStateAndGamygdala(Debugger debugger, AgentId self) {
+		if (this.goalBases.isEmpty()) {
+			// nothing to do here (model is not used).
+			return;
+		}
+
+		Set<SingleGoal> goals = getAttentionSet(true).getGoals();
+		List<SingleGoal> goalsToBeRemoved = new LinkedList<>();
+		for (SingleGoal goal : goals) {
+			try {
+				if (!this.beliefBases.get(BASETYPE.BELIEFBASE)
+						.query(goal.getGoal().toQuery(), debugger).isEmpty()) {
+					goalsToBeRemoved.add(goal);
+				}
+			} catch (GOALDatabaseException e) {
+				throw new IllegalStateException(String.format(Resources
+						.get(WarningStrings.FAILED_REMOVING_GOAL_FROM_GB), goal
+						.toString()), e);
+			}
+		}
+
+		Gamygdala gam = Gamygdala.getInstance();
+		goal.core.gam.Agent agent = gam.getAgentByName(self.getName());
+		for (SingleGoal goal : goalsToBeRemoved) {
+			goal.core.gam.Goal gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
+
+			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+			affectedGoals.add(gamGoal);
+			ArrayList<Double> congruences = new ArrayList<Double>();
+			congruences.add(0.2);
+			Belief bel = new Belief(0.2, agent, affectedGoals, congruences, false);
+		//	gam.appraise(bel, agent); //TODO: Wait for bugfixes in Gam port so that we can use regular appraise.
+			gam.appraiseByAllAgents(affectedGoals.get(0), bel, 0.5, 0.5, 0.5);
+			agent.removeGoal(gamGoal);
 			try {
 				getAttentionSet(true).remove(goal, debugger);
 			} catch (KRInitFailedException e) {

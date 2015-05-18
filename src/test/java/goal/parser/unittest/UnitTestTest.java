@@ -1,5 +1,8 @@
 package goal.parser.unittest;
 
+import java.io.File;
+
+import goal.tools.SingleRun;
 import goal.tools.unittest.result.UnitTestResult;
 
 import org.junit.Test;
@@ -62,13 +65,15 @@ public class UnitTestTest extends AbstractUnitTestTest {
 
 		assertPassedAndPrint(results);
 	}
-
+	
+	
 	@Test
 	public void testExampleImprovedBlocksWorld() throws Exception {
-		UnitTestResult results = runTest("src/test/resources/goal/parser/unittest/example/blocksworld/improved/blocksworld.test2g");
+		UnitTestResult results = runTest("src/test/resources/goal/parser/unittest/example/blocksworld/improved/");
 
 		assertPassedAndPrint(results);
 	}
+
 
 	@Test
 	public void testScope() throws Exception {
