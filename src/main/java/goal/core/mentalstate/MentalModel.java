@@ -540,7 +540,6 @@ public class MentalModel {
 		Engine.getInstance().setGain(1);
 		//Engine.getInstance().
 		
-		
 		Set<SingleGoal> goals = getAttentionSet(true).getGoals();
 		List<SingleGoal> goalsToBeRemoved = new LinkedList<>();
 		for (SingleGoal goal : goals) {
@@ -565,11 +564,12 @@ public class MentalModel {
 			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 			affectedGoals.add(gamGoal);
 			ArrayList<Double> congruences = new ArrayList<Double>();
-			congruences.add(1.0);
-			Belief bel = new Belief(1, agent, affectedGoals, congruences, true);
+			congruences.add(0.5);
+			Belief bel = new Belief(0.5, agent, affectedGoals, congruences, true);
 		//	gam.appraise(bel, agent); //TODO: Wait for bugfixes in Gam port so that we can use regular appraise.
 			gam.appraise(bel);
 			agent.removeGoal(gamGoal);
+			gam.getMap().getGoalMap().removeGoal(gamGoal);
 			try {
 				getAttentionSet(true).remove(goal, debugger);
 			} catch (KRInitFailedException e) {

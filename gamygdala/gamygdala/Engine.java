@@ -52,7 +52,7 @@ public class Engine {
     public synchronized static Engine getInstance(){
     	if(GamEngine == null){
     		GamEngine = new Engine(new Gamygdala());
-    		 double decayFactor = 10;
+    		 double decayFactor = 1;
     	        double gain = 15;
 
     	        GamEngine.setDecay(decayFactor, new ExponentialDecay(decayFactor));
@@ -128,7 +128,7 @@ public class Engine {
      */
     public void decayAll() {
 
-        Engine.debug("\n=====\nDecaying all emotions\n=====\n");
+        //Engine.debug("\n=====\nDecaying all emotions\n=====\n");
 
         // Record current time
         long now = System.currentTimeMillis();

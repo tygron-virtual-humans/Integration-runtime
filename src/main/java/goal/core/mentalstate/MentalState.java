@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import decayfunction.ExponentialDecay;
 import krTools.KRInterface;
 import krTools.errors.exceptions.KRDatabaseException;
 import krTools.errors.exceptions.KRInitFailedException;
@@ -596,6 +597,8 @@ public class MentalState {
 		}
 		
 		Engine gam = Engine.getInstance();
+		Engine.getInstance().decayAll();
+
 		Engine.getInstance().printAllEmotions(false);
 	}
 

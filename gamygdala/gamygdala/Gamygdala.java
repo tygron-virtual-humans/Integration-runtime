@@ -94,7 +94,6 @@ public class Gamygdala {
                     belief.getLikelihood(), belief.isIncremental());
 
             Engine.debug("   deltaLikelihood: " + deltaLikelihood);
-
             // if affectedAgent is null, calculate emotions for all agents.
             if (affectedAgent == null) {
 
@@ -180,7 +179,6 @@ public class Gamygdala {
     public void decayAll(long lastMillis, long currentMillis) {
 
         long millisPassed = currentMillis - lastMillis;
-
         Agent agent;
         for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
             agent = pair.getValue();
@@ -210,11 +208,7 @@ public class Gamygdala {
 
         Double oldLikelihood = goal.getLikelihood();
         double newLikelihood;
-        
-        System.out.println("oldL= " + oldLikelihood);
-        System.out.println("newL= " + oldLikelihood);
-        System.out.println("cong= " + congruence);
-
+       
         if (!goal.isMaintenanceGoal() && (oldLikelihood >= 1 || oldLikelihood <= -1)) {
             return 0;
         }
@@ -227,7 +221,6 @@ public class Gamygdala {
         }
 
         goal.setLikelihood(newLikelihood);
-
         return newLikelihood - oldLikelihood;
     }
 
