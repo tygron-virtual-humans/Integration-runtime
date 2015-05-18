@@ -18,10 +18,9 @@
 
 package goal.core.mentalstate;
 
-import goal.core.gam.Agent;
-import goal.core.gam.Belief;
-import goal.core.gam.Gamygdala;
-import goal.core.gam.Goal;
+
+import gamygdala.Engine;
+import gamygdala.Gamygdala;
 import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.errorhandling.Resources;
@@ -40,6 +39,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import agent.Agent;
+import data.Belief;
+import data.Goal;
 import krTools.KRInterface;
 import krTools.errors.exceptions.KRDatabaseException;
 import krTools.errors.exceptions.KRInitFailedException;
@@ -533,7 +535,12 @@ public class MentalModel {
 			// nothing to do here (model is not used).
 			return;
 		}
-
+		//Engine.getInstance()
+		//Engine.getInstance().setGain(10);
+		//Engine.getInstance().setDecay(0.1);
+		//Engine.getInstance().
+		
+		
 		Set<SingleGoal> goals = getAttentionSet(true).getGoals();
 		List<SingleGoal> goalsToBeRemoved = new LinkedList<>();
 		for (SingleGoal goal : goals) {
@@ -549,18 +556,19 @@ public class MentalModel {
 			}
 		}
 
-		Gamygdala gam = Gamygdala.getInstance();
-		goal.core.gam.Agent agent = gam.getAgentByName(self.getName());
+		Engine gam = Engine.getInstance();
+		//System.out.println(gam);
+		Agent agent = gam.getAgentByName(self.getName());
 		for (SingleGoal goal : goalsToBeRemoved) {
-			goal.core.gam.Goal gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
+			Goal gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
 
 			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 			affectedGoals.add(gamGoal);
 			ArrayList<Double> congruences = new ArrayList<Double>();
-			congruences.add(0.2);
-			Belief bel = new Belief(0.2, agent, affectedGoals, congruences, false);
+			congruences.add(0.99);
+			Belief bel = new Belief(1, agent, affectedGoals, congruences, false);
 		//	gam.appraise(bel, agent); //TODO: Wait for bugfixes in Gam port so that we can use regular appraise.
-			gam.appraiseByAllAgents(affectedGoals.get(0), bel, 0.5, 0.5, 0.5);
+			gam.appraise(bel);
 			agent.removeGoal(gamGoal);
 			try {
 				getAttentionSet(true).remove(goal, debugger);

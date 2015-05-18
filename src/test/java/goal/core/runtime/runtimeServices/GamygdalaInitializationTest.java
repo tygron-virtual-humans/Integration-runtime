@@ -2,10 +2,11 @@ package goal.core.runtime.runtimeServices;
 
 import static org.junit.Assert.assertEquals;
 import eis.exceptions.EnvironmentInterfaceException;
+import gamygdala.Engine;
 import goal.core.agent.AbstractAgentFactory;
 import goal.core.agent.AgentFactory;
 import goal.core.agent.GOALInterpreter;
-import goal.core.gam.Gamygdala;
+import gamygdala.Gamygdala;
 import goal.core.runtime.MessagingService;
 import goal.core.runtime.RemoteRuntimeService;
 import goal.core.runtime.RuntimeManager;
@@ -50,7 +51,7 @@ public class GamygdalaInitializationTest {
 	RemoteRuntimeService<NOPDebugger, GOALInterpreter<NOPDebugger>> remoteRuntimeService;
 	
 	RuntimeManager<NOPDebugger, GOALInterpreter<NOPDebugger>> runtimeManager;
-	Gamygdala gamInstance;
+	Engine gamInstance;
 
 	@Before
 	public void setUp() throws Exception {
@@ -89,7 +90,7 @@ public class GamygdalaInitializationTest {
 
 	@After
 	public void tearDown() throws Exception {
-		Gamygdala.getInstance().reset();
+		Engine.getInstance().reset();
 		runtimeManager.awaitTermination(AbstractRun.TIMEOUT_FIRST_AGENT_SECONDS);
 		messagingService.shutDown();
 	}
@@ -97,10 +98,10 @@ public class GamygdalaInitializationTest {
 	@Test
 	public void testStart() throws MessagingException, EnvironmentInterfaceException,
 			InterruptedException, GOALLaunchFailureException, FileNotFoundException, InvalidEmotionConfigFile {
-		Gamygdala.getInstance().reset();
+		Engine.getInstance().reset();
 		runtimeManager.start(true);
 		
 		// fibonaci.mas2g has four agents
-		assertEquals(Gamygdala.getInstance().gamydgalaMap.getAgentMap().size(), 4);
+		assertEquals(Engine.getInstance().getMap().getAgentMap().size(), 4);
 	}
 }

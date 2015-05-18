@@ -1,4 +1,4 @@
-package goal.core.gam;
+package decayfunction;
 
 /**
  * Interface for emotion intensity decay functions.
@@ -40,7 +40,7 @@ public abstract class DecayFunction {
     /**
      * Decay function for emotion intensity.
      *
-     * @param initial      Initial emotion intensity.
+     * @param initial Initial emotion intensity.
      * @param millisPassed Milliseconds since last decay function execution.
      * @return New emotion intensity.
      */

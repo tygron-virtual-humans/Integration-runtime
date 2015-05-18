@@ -18,8 +18,8 @@
 
 package goal.core.mentalstate;
 
-import goal.core.gam.Gamygdala;
-import goal.core.gam.Goal;
+import gamygdala.Engine;
+import gamygdala.Gamygdala;
 import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.debugger.SteppingDebugger;
@@ -37,6 +37,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import agent.Agent;
+import data.Goal;
 import krTools.errors.exceptions.KRInitFailedException;
 import krTools.errors.exceptions.KRQueryFailedException;
 import krTools.language.Query;
@@ -313,16 +315,22 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	 * Add goal to the gamygdala engine.
 	 */
 	private void addGamygdalaGoal(SingleGoal goal) {
-		if(!Gamygdala.getInstance().getStart()) { //TODO: FIND BETTER PLACE TO START
-			Gamygdala.getInstance().setStart(true);
-		}
-		if (Gamygdala.getInstance().getStart()) {
-			goal.core.gam.Agent gamAgent = 
-					Gamygdala.getInstance().getAgentByName(this.agentName.getName());
-			goal.core.gam.Goal gamGoal = new Goal(goal.getGoal().getSignature(), 1, false); //TODO default 1?
-			Gamygdala.getInstance().registerGoal(gamGoal);
-			gamAgent.addGoal(gamGoal);
-		}
+		
+		Engine engine = Engine.getInstance();
+		//System.out.println("Engine");
+		//System.out.println(engine);
+		
+		Agent gamAgent = 
+					engine.getAgentByName(this.agentName.getName());
+			engine.createGoalForAgent(gamAgent,goal.getGoal().getSignature(),1,false);
+	
+			//System.out.println("KORAAL");
+			//engine.printAllEmotions(false);
+		
+			
+			
+			
+			
 	}
 
 	// *********** deletion methods ****************/

@@ -1,7 +1,9 @@
-package goal.core.gam;
+package agent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import data.Emotion;
 
 /**
  * Pleasure Arousal Dominance mapping of the emotional states.
