@@ -69,7 +69,7 @@ public class UnitTestTest extends AbstractUnitTestTest {
 	
 	@Test
 	public void testExampleImprovedBlocksWorld() throws Exception {
-		UnitTestResult results = runTest("src/test/resources/goal/parser/unittest/example/blocksworld/improved/");
+		UnitTestResult results = runTest("src/test/resources/goal/parser/unittest/example/blocksworld/improved/blocksworld.test2g");
 
 		assertPassedAndPrint(results);
 	}

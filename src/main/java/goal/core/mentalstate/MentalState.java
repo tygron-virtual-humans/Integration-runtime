@@ -596,8 +596,7 @@ public class MentalState {
 		}
 		
 		Engine gam = Engine.getInstance();
-		if(gam.getAgentByName(name.getName()).getEmotionalState(null).size()>0){
-		System.out.println("EMOTIONS: " + gam.getAgentByName(name.getName()).getEmotionalState(null).toString());}
+		Engine.getInstance().printAllEmotions(false);
 	}
 
 	/**

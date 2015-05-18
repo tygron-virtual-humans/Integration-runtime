@@ -9,6 +9,7 @@ import data.Belief;
 import data.Goal;
 import data.map.GamygdalaMap;
 import decayfunction.DecayFunction;
+import decayfunction.ExponentialDecay;
 
 /**
  * Gaming Engine adapter for Gamygdala.
@@ -51,7 +52,12 @@ public class Engine {
     public synchronized static Engine getInstance(){
     	if(GamEngine == null){
     		GamEngine = new Engine(new Gamygdala());
-    		
+    		 double decayFactor = 10;
+    	        double gain = 15;
+
+    	        GamEngine.setDecay(decayFactor, new ExponentialDecay(decayFactor));
+    	        GamEngine.setGain(gain);
+
     		
     	}
     	return GamEngine;

@@ -322,7 +322,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		
 		Agent gamAgent = 
 					engine.getAgentByName(this.agentName.getName());
-			engine.createGoalForAgent(gamAgent,goal.getGoal().getSignature(),1,false);
+			engine.createGoalForAgent(gamAgent,goal.getGoal().getSignature(),1.0/6.0,false);
 	
 			//System.out.println("KORAAL");
 			//engine.printAllEmotions(false);

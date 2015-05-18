@@ -42,6 +42,7 @@ import java.util.Stack;
 import agent.Agent;
 import data.Belief;
 import data.Goal;
+import decayfunction.DecayFunction;
 import krTools.KRInterface;
 import krTools.errors.exceptions.KRDatabaseException;
 import krTools.errors.exceptions.KRInitFailedException;
@@ -536,8 +537,7 @@ public class MentalModel {
 			return;
 		}
 		//Engine.getInstance()
-		//Engine.getInstance().setGain(10);
-		//Engine.getInstance().setDecay(0.1);
+		Engine.getInstance().setGain(1);
 		//Engine.getInstance().
 		
 		
@@ -565,8 +565,8 @@ public class MentalModel {
 			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 			affectedGoals.add(gamGoal);
 			ArrayList<Double> congruences = new ArrayList<Double>();
-			congruences.add(0.99);
-			Belief bel = new Belief(1, agent, affectedGoals, congruences, false);
+			congruences.add(1.0);
+			Belief bel = new Belief(1, agent, affectedGoals, congruences, true);
 		//	gam.appraise(bel, agent); //TODO: Wait for bugfixes in Gam port so that we can use regular appraise.
 			gam.appraise(bel);
 			agent.removeGoal(gamGoal);
