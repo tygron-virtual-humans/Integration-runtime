@@ -1,4 +1,4 @@
-package goal.core.gam;
+package agent;
 
 import java.util.ArrayList;
 
@@ -20,20 +20,25 @@ public class AgentRelations extends ArrayList<Relation> {
      * @param agent The agent who is the target of the relation.
      * @param like The relation (between -1 and 1).
      */
-    public void updateRelation(Agent agent, double like) {
+    public Relation updateRelation(Agent agent, double like) {
+        
+        Relation relation = null;
+        
         if (!this.hasRelationWith(agent)) {
             // This relation does not exist, just add it.
-            add(new Relation(agent, like));
+            relation = new Relation(agent, like);
+            add(relation);
         } else {
             // The relation already exists, update it.
-            Relation relation;
-            for (int i = 0; i < size(); i++) {
-                relation = get(i);
-                if (relation.agent.equals(agent)) {
-                    relation.like = like;
+            for (Relation rel: this) {
+                if (rel.agent.equals(agent)) {
+                    rel.like = like;
                 }
+                return rel;
             }
         }
+        
+        return relation;
     }
 
     /**
@@ -71,30 +76,32 @@ public class AgentRelations extends ArrayList<Relation> {
      *            all relations are printed.
      */
     public String printRelations(Agent agent) {
-        boolean found = false;
         String output = "";
 
-        for (int i = 0; i < size(); i++) {
+        int size = size();
+        int emotionListSize = 0;
+        
+        for (int i = 0; i < size; i++) {
 
             if (agent == null || get(i).agent.equals(agent)) {
-                for (int j = 0; j < get(i).emotionList.size(); j++) {
-                    output += get(i).emotionList.get(j).name + "(" + get(i).emotionList.get(j).intensity + ") ";
-                    found = true;
+                emotionListSize = get(i).emotionList.size();
+                for (int j = 0; j < emotionListSize; j++) {
+                    output += get(i).emotionList.get(j).name + "(" + get(i).emotionList.get(j).intensity + ")";
+
+                    if (j < emotionListSize - 1) {
+                        output += ", and ";
+                    }
                 }
             }
 
             output += " for " + get(i).agent;
 
-            if (i < size() - 1) {
-                output += ", and\n   ";
+            if (i < size - 1) {
+                output += ", and\n";
             }
         }
 
-        if (found) {
-            return output;
-        }
-
-        return "";
+        return output;
     }
 
 }

@@ -19,9 +19,8 @@
 package goal.core.runtime;
 
 import eis.exceptions.EnvironmentInterfaceException;
-import goal.core.gam.Gamygdala;
-import goal.core.gam.AgentFactory;
-import goal.core.gam.Goal;
+import gamygdala.Engine;
+import gamygdala.Gamygdala;
 import goal.core.agent.Agent;
 import goal.core.agent.GOALInterpreter;
 import goal.core.runtime.RuntimeEvent.EventType;
@@ -65,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+
 import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.parser.relationParser.EmotionConfig;
 import languageTools.parser.relationParser.GamGoal;
@@ -374,7 +374,7 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 
 	private final RemoteRuntimeService<D, C> remoteRuntimeService;
 
-	private final Gamygdala gamEngine;
+	private final Engine gamEngine;
 
 	/**
 	 * Creates a new runtime service manager to manage a multi-agent system.
@@ -446,7 +446,7 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 					"EIS failed to start environment", e);
 		}
 		
-		gamEngine = Gamygdala.getInstance();
+		gamEngine = Engine.getInstance();
 
 		// inform other Runtimes about this launch
 		remoteRuntimeService.broadcastRuntimeLaunched();

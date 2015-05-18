@@ -1,4 +1,4 @@
-package goal.core.gam;
+package decayfunction;
 
 /**
  * Calculate the decay by a linear model.
@@ -7,6 +7,7 @@ public class LinearDecay extends DecayFunction {
 
     /**
      * Constructor.
+     * 
      * @param decayFactor The decay factor.
      */
     public LinearDecay(double decayFactor) {
@@ -15,7 +16,8 @@ public class LinearDecay extends DecayFunction {
 
     /**
      * Returns the decay by linear model.
-     * @param initial      Initial emotion intensity.
+     * 
+     * @param initial Initial emotion intensity.
      * @param millisPassed Milliseconds since last decay function execution.
      * @return the decay by linear model.
      */

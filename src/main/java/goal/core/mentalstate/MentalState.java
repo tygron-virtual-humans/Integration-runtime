@@ -21,7 +21,8 @@ package goal.core.mentalstate;
 import goal.core.agent.Agent;
 import goal.core.executors.ExecuteTools;
 import goal.core.executors.MentalStateConditionExecutor;
-import goal.core.gam.Gamygdala;
+import gamygdala.Engine;
+import gamygdala.Gamygdala;
 import goal.tools.debugger.Debugger;
 import goal.tools.debugger.SteppingDebugger;
 import goal.tools.errorhandling.exceptions.GOALBug;
@@ -594,8 +595,9 @@ public class MentalState {
 		 this.models.get(name).updateGoalStateAndGamygdala(debugger, name);
 		}
 		
-		Gamygdala gam = Gamygdala.getInstance();
-		System.out.println("EMOTIONS: " + gam.getAgentByName(name.getName()).getEmotionalState(null).toString());
+		Engine gam = Engine.getInstance();
+		if(gam.getAgentByName(name.getName()).getEmotionalState(null).size()>0){
+		System.out.println("EMOTIONS: " + gam.getAgentByName(name.getName()).getEmotionalState(null).toString());}
 	}
 
 	/**
