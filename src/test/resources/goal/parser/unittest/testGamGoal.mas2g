@@ -1,0 +1,9 @@
+agentfiles{
+	"testGamGoal.goal" [name = filename] .
+}
+
+launchpolicy{
+	launch agentUnderTest : filename.
+	launch secondAgentUnderTest : filename.
+}
+

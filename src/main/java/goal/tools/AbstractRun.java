@@ -181,7 +181,6 @@ public abstract class AbstractRun<D extends Debugger, C extends GOALInterpreter<
 			// Start the environment (if any).
 			// This will also start the multi-agent system!
 			runtimeManager.start(true);
-
 			/*
 			 * Wait for at least one agent to show up. Not all environments
 			 * start agents directly in response to init.

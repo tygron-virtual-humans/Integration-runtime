@@ -1,5 +1,7 @@
 package goal.core.agent;
 
+import gamygdala.Engine;
+import gamygdala.Gamygdala;
 import goal.tools.errorhandling.Resources;
 import goal.tools.errorhandling.Warning;
 import goal.tools.errorhandling.WarningStrings;
@@ -66,6 +68,7 @@ public class Agent<CONTROLLER extends Controller> {
 		this.logging = logger;
 		this.controller = controller;
 		this.controller.initalizeController(this);
+		Engine.getInstance().createAgent(id.getName());
 	}
 
 	/**

@@ -1,0 +1,9 @@
+%Correct: minimal version
+
+masTest {
+
+	mas 		= 	"testGamGoal.mas2g".
+
+	agentUnderTest {
+	}
+}
