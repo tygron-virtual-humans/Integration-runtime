@@ -1,10 +1,10 @@
-package data;
+package gamygdala.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import agent.Agent;
-import gamygdala.Engine;
+import gamygdala.agent.Agent;
+import gamygdala.gamygdala.Engine;
 
 /**
  * A Belief contains information about events (Goals) and the amount of positive

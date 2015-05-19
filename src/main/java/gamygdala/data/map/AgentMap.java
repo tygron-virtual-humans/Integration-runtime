@@ -1,11 +1,11 @@
-package data.map;
+package gamygdala.data.map;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import agent.Agent;
-import gamygdala.Engine;
+import gamygdala.agent.Agent;
+import gamygdala.gamygdala.Engine;
 
 /**
  * HashMap containing Agents.

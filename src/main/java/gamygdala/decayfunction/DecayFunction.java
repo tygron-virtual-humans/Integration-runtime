@@ -1,4 +1,4 @@
-package decayfunction;
+package gamygdala.decayfunction;
 
 /**
  * Interface for emotion intensity decay functions.

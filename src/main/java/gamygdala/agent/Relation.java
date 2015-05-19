@@ -1,9 +1,9 @@
-package agent;
+package gamygdala.agent;
 
 import java.util.ArrayList;
 
-import data.Emotion;
-import decayfunction.DecayFunction;
+import gamygdala.data.Emotion;
+import gamygdala.decayfunction.DecayFunction;
 
 /**
  * Describes a Relation between two Agents.

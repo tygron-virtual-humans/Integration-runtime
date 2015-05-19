@@ -2,11 +2,11 @@ package goal.core.runtime.runtimeServices;
 
 import static org.junit.Assert.assertEquals;
 import eis.exceptions.EnvironmentInterfaceException;
-import gamygdala.Engine;
+import gamygdala.gamygdala.Engine;
 import goal.core.agent.AbstractAgentFactory;
 import goal.core.agent.AgentFactory;
 import goal.core.agent.GOALInterpreter;
-import gamygdala.Gamygdala;
+import gamygdala.gamygdala.Gamygdala;
 import goal.core.runtime.MessagingService;
 import goal.core.runtime.RemoteRuntimeService;
 import goal.core.runtime.RuntimeManager;

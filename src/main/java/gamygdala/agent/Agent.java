@@ -1,12 +1,12 @@
-package agent;
+package gamygdala.agent;
 
 import java.util.ArrayList;
 
-import data.Emotion;
-import data.Goal;
-import data.map.GoalMap;
-import decayfunction.DecayFunction;
-import gamygdala.Engine;
+import gamygdala.data.Emotion;
+import gamygdala.data.Goal;
+import gamygdala.data.map.GoalMap;
+import gamygdala.decayfunction.DecayFunction;
+import gamygdala.gamygdala.Engine;
 
 /**
  * The main interacting character in the Gamygdala engine.

@@ -1,9 +1,9 @@
-package data.map;
+package gamygdala.data.map;
 
 import java.util.HashMap;
 
-import data.Goal;
-import gamygdala.Engine;
+import gamygdala.data.Goal;
+import gamygdala.gamygdala.Engine;
 
 /**
  * HashMap to store Goals. Extended with add / remove / has goal methods for

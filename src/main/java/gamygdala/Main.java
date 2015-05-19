@@ -1,11 +1,13 @@
+package gamygdala;
+
 import java.util.ArrayList;
 
-import agent.Agent;
-import data.Belief;
-import data.Goal;
-import decayfunction.ExponentialDecay;
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
+import gamygdala.agent.Agent;
+import gamygdala.data.Belief;
+import gamygdala.data.Goal;
+import gamygdala.decayfunction.ExponentialDecay;
+import gamygdala.gamygdala.Engine;
+import gamygdala.gamygdala.Gamygdala;
 
 /**
  * Function test case during development.

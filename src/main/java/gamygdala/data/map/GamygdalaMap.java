@@ -1,11 +1,11 @@
-package data.map;
+package gamygdala.data.map;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import agent.Agent;
-import data.Goal;
+import gamygdala.agent.Agent;
+import gamygdala.data.Goal;
 
 /**
  * A collection of Agents and Goals for a Gamygdala instance.
