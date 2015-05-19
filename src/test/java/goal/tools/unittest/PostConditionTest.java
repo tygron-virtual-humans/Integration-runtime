@@ -3,6 +3,7 @@ package goal.tools.unittest;
 import goal.parser.unittest.AbstractUnitTestTest;
 import goal.tools.unittest.result.UnitTestResult;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -23,10 +24,11 @@ public class PostConditionTest extends AbstractUnitTestTest {
 	 *             TODO: {@link AbstractUnitTestTest#runTest} throws lots of
 	 *             unexpected exceptions...
 	 */
+	@Ignore
 	@Test
 	public void test() throws Exception {
-		//UnitTestResult results = runTest("src/test/resources/goal/tools/unittest/postConditionTest.test2g");
-		//assertPassedAndPrint(results);
+		UnitTestResult results = runTest("src/test/resources/goal/tools/unittest/postConditionTest.test2g");
+		assertPassedAndPrint(results);
 	}
 
 }
