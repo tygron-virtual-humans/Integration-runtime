@@ -73,7 +73,7 @@ public class AgentTest {
 		this.controller.run();
 		assertTrue(this.controller.isRunning());
 		assertFalse(this.controller.isTerminated());
-		this.controller.awaitTermination(1);
+		this.controller.awaitTermination(100);
 		assertFalse(this.controller.isRunning());
 		assertTrue(this.controller.isTerminated());
 	}

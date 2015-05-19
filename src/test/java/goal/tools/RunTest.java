@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import krTools.errors.exceptions.ParserException;
 
 import org.apache.commons.cli.ParseException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class RunTest {
@@ -13,7 +14,8 @@ public class RunTest {
 			Exception {
 		Run.run("src/test/resources/goal/tools/testselect.mas2g");
 	}
-
+	
+	@Ignore
 	@Test
 	public void testMultipleFiles() throws ParserException, ParseException,
 			Exception {
