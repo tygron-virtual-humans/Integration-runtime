@@ -66,58 +66,58 @@ public class AgentTest {
 		// this.language.reset();
 	}
 
-//	@Test
-//	public void testStart() throws InterruptedException {
-//		assertFalse(this.controller.isRunning());
-//		assertTrue(this.controller.isTerminated());
-//		this.controller.run();
-//		assertTrue(this.controller.isRunning());
-//		assertFalse(this.controller.isTerminated());
-//		this.controller.awaitTermination(1);
-//		assertFalse(this.controller.isRunning());
-//		assertTrue(this.controller.isTerminated());
-//	}
-//
-//	@Test
-//	public void testStartStop() throws InterruptedException {
-//		assertFalse(this.controller.isRunning());
-//		assertTrue(this.controller.isTerminated());
-//		this.controller.run();
-//		assertTrue(this.controller.isRunning());
-//		assertFalse(this.controller.isTerminated());
-//		this.controller.terminate();
-//		this.controller.awaitTermination(1);
-//		assertFalse(this.controller.isRunning());
-//		assertTrue(this.controller.isTerminated());
-//	}
-//
-//	@Test
-//	public void testIsRunningAfterStop() {
-//		assertFalse(this.controller.isRunning());
-//		assertTrue(this.controller.isTerminated());
-//		this.controller.run();
-//		assertTrue(this.controller.isRunning());
-//		assertFalse(this.controller.isTerminated());
-//		this.controller.terminate();
-//		assertFalse(this.controller.isRunning());
-//		assertFalse(this.controller.isTerminated());
-//	}
-//
-//	@Test
-//	public void testReset() throws InterruptedException, KRInitFailedException,
-//	KRDatabaseException, KRQueryFailedException, UnknownObjectException {
-//		assertFalse(this.controller.isRunning());
-//		assertTrue(this.controller.isTerminated());
-//		this.controller.run();
-//		assertTrue(this.controller.isRunning());
-//		assertFalse(this.controller.isTerminated());
-//		this.controller.reset();
-//		assertTrue(this.controller.isRunning());
-//		assertFalse(this.controller.isTerminated());
-//		this.controller.terminate();
-//		this.controller.awaitTermination(1);
-//		assertFalse(this.controller.isRunning());
-//		assertTrue(this.controller.isTerminated());
-//	}
+	@Test
+	public void testStart() throws InterruptedException {
+		assertFalse(this.controller.isRunning());
+		assertTrue(this.controller.isTerminated());
+		this.controller.run();
+		assertTrue(this.controller.isRunning());
+		assertFalse(this.controller.isTerminated());
+		this.controller.awaitTermination(1);
+		assertFalse(this.controller.isRunning());
+		assertTrue(this.controller.isTerminated());
+	}
+
+	@Test
+	public void testStartStop() throws InterruptedException {
+		assertFalse(this.controller.isRunning());
+		assertTrue(this.controller.isTerminated());
+		this.controller.run();
+		assertTrue(this.controller.isRunning());
+		assertFalse(this.controller.isTerminated());
+		this.controller.terminate();
+		this.controller.awaitTermination(1);
+		assertFalse(this.controller.isRunning());
+		assertTrue(this.controller.isTerminated());
+	}
+
+	@Test
+	public void testIsRunningAfterStop() {
+		assertFalse(this.controller.isRunning());
+		assertTrue(this.controller.isTerminated());
+		this.controller.run();
+		assertTrue(this.controller.isRunning());
+		assertFalse(this.controller.isTerminated());
+		this.controller.terminate();
+		assertFalse(this.controller.isRunning());
+		assertFalse(this.controller.isTerminated());
+	}
+
+	@Test
+	public void testReset() throws InterruptedException, KRInitFailedException,
+	KRDatabaseException, KRQueryFailedException, UnknownObjectException {
+		assertFalse(this.controller.isRunning());
+		assertTrue(this.controller.isTerminated());
+		this.controller.run();
+		assertTrue(this.controller.isRunning());
+		assertFalse(this.controller.isTerminated());
+		this.controller.reset();
+		assertTrue(this.controller.isRunning());
+		assertFalse(this.controller.isTerminated());
+		this.controller.terminate();
+		this.controller.awaitTermination(1);
+		assertFalse(this.controller.isRunning());
+		assertTrue(this.controller.isTerminated());
+	}
 
 }
