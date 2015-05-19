@@ -19,8 +19,8 @@
 package goal.core.mentalstate;
 
 
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
+import gamygdala.gamygdala.Engine;
+import gamygdala.gamygdala.Gamygdala;
 import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.errorhandling.Resources;
@@ -39,10 +39,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import agent.Agent;
-import data.Belief;
-import data.Goal;
-import decayfunction.DecayFunction;
+import gamygdala.agent.Agent;
+import gamygdala.data.Belief;
+import gamygdala.data.Goal;
+import gamygdala.decayfunction.DecayFunction;
 import krTools.KRInterface;
 import krTools.errors.exceptions.KRDatabaseException;
 import krTools.errors.exceptions.KRInitFailedException;

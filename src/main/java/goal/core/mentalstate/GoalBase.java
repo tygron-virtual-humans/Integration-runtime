@@ -18,8 +18,8 @@
 
 package goal.core.mentalstate;
 
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
+import gamygdala.gamygdala.Engine;
+import gamygdala.gamygdala.Gamygdala;
 import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.debugger.SteppingDebugger;
@@ -38,9 +38,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import agent.Agent;
-import data.Belief;
-import data.Goal;
+import gamygdala.agent.Agent;
+import gamygdala.data.Belief;
+import gamygdala.data.Goal;
 import krTools.errors.exceptions.KRInitFailedException;
 import krTools.errors.exceptions.KRQueryFailedException;
 import krTools.language.Query;

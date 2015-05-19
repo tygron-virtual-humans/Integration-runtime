@@ -1,15 +1,15 @@
-package gamygdala;
+package gamygdala.gamygdala;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import agent.Agent;
-import data.Belief;
-import data.Goal;
-import data.map.GamygdalaMap;
-import decayfunction.DecayFunction;
-import decayfunction.ExponentialDecay;
+import gamygdala.agent.Agent;
+import gamygdala.data.Belief;
+import gamygdala.data.Goal;
+import gamygdala.data.map.GamygdalaMap;
+import gamygdala.decayfunction.DecayFunction;
+import gamygdala.decayfunction.ExponentialDecay;
 
 /**
  * Gaming Engine adapter for Gamygdala.

@@ -1,7 +1,7 @@
 package goal.core.agent;
 
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
+import gamygdala.gamygdala.Engine;
+import gamygdala.gamygdala.Gamygdala;
 import goal.tools.errorhandling.Resources;
 import goal.tools.errorhandling.Warning;
 import goal.tools.errorhandling.WarningStrings;

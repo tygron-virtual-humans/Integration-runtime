@@ -1,4 +1,4 @@
-package decayfunction;
+package gamygdala.decayfunction;
 
 /**
  * Calculate exponential decay function.

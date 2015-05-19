@@ -1,4 +1,4 @@
-package decayfunction;
+package gamygdala.decayfunction;
 
 /**
  * Calculate the decay by a linear model.
