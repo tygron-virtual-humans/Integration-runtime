@@ -52,11 +52,11 @@ public class Engine {
     public synchronized static Engine getInstance(){
     	if(GamEngine == null){
     		GamEngine = new Engine(new Gamygdala());
-    		 double decayFactor = 1;
-    	        double gain = 15;
+    		double decayFactor = 0.95;
+    	    double gain = 15;
 
-    	        GamEngine.setDecay(decayFactor, new ExponentialDecay(decayFactor));
-    	        GamEngine.setGain(gain);
+    	    GamEngine.setDecay(decayFactor, new ExponentialDecay(decayFactor));
+    	    GamEngine.setGain(gain);
 
     		
     	}

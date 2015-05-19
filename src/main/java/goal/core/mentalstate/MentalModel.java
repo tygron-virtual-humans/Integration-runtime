@@ -582,7 +582,7 @@ public class MentalModel {
 			affectedGoals.add(gamGoal);
 			ArrayList<Double> congruences = new ArrayList<Double>();
 			congruences.add(0.5);
-			Belief bel = new Belief(0.5, agent, affectedGoals, congruences, true);
+			Belief bel = new Belief(1, agent, affectedGoals, congruences, true);
 		//	gam.appraise(bel, agent); //TODO: Wait for bugfixes in Gam port so that we can use regular appraise.
 			gam.appraise(bel);
 			agent.removeGoal(gamGoal);

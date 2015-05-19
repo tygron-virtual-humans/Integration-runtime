@@ -427,7 +427,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 			affectedGoals.add(gamGoal);
 			ArrayList<Double> congruences = new ArrayList<Double>();
 			congruences.add(-0.1);
-			Belief bel = new Belief(0.5, agent, affectedGoals, congruences, true);
+			Belief bel = new Belief(1.0, agent, affectedGoals, congruences, true);
 			gam.appraise(bel, agent);
 			agent.removeGoal(gamGoal);
 			
