@@ -563,7 +563,11 @@ public class MentalState {
 	 */
 	public void drop(Update update, Debugger debugger, AgentId... agent) throws GOALDatabaseException {
 		AgentId name = ((agent.length == 0) ? getAgentId() : agent[0]);
-		this.models.get(name).drop(update, debugger);
+		if(!this.getAgentId().equals(name)) {
+			this.models.get(name).drop(update, debugger);
+		} else {
+			this.models.get(name).dropWithGamygdala(update, debugger, name);
+		}
 	}
 
 	/**

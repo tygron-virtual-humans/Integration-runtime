@@ -466,6 +466,23 @@ public class MentalModel {
 			this.goalBases.elementAt(i).drop(goal, debugger);
 		}
 	}
+	
+	/**
+	 * Removes all goals from each {@link GoalBase} in the attention set
+	 * {@link #goalBases} from which the goal to be dropped can be derived.
+	 *
+	 * @param goal
+	 *            The goal to be dropped.
+	 * @param debugger
+	 *            Debugger observing the procedure.
+	 * @throws GOALDatabaseException
+	 */
+	public void dropWithGamygdala(Update goal, Debugger debugger, AgentId self)
+			throws GOALDatabaseException {
+		for (int i = 0; i < this.goalBases.size(); i++) {
+			this.goalBases.elementAt(i).dropWithGamygdala(goal, debugger, self);
+		}
+	}
 
 	/**
 	 * Implements the blind commitment strategy of a GOAL agent. It removes

@@ -31,6 +31,7 @@ import goal.tools.errorhandling.exceptions.GOALDatabaseException;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 import agent.Agent;
+import data.Belief;
 import data.Goal;
 import krTools.errors.exceptions.KRInitFailedException;
 import krTools.errors.exceptions.KRQueryFailedException;
@@ -376,6 +378,65 @@ public final class GoalBase implements Iterable<SingleGoal> {
 			updateTimeUsed();
 
 		}
+		return goalsToBeDropped;
+	}
+	
+	/**
+	 * Drops all goals that entail the goal to be dropped.
+	 *
+	 * @param dropgoal
+	 *            goal to be dropped.
+	 * @param debugger
+	 *            the current debugger
+	 * @return A (possibly empty) list of goals that have been dropped.
+	 */
+	public List<SingleGoal> dropWithGamygdala(Update dropgoal, Debugger debugger, AgentId self) throws GOALDatabaseException{
+		List<SingleGoal> goalsToBeDropped = new LinkedList<>();
+		for (SingleGoal goal : this.goals) {
+			try {
+				// Get current time used in this thread.
+				this.count++;
+				getTime();
+				if (!goal.getGoalDatabase().query(dropgoal.toQuery()).isEmpty()) {
+					goalsToBeDropped.add(goal);
+				}
+				// Update time used.
+				updateTimeUsed();
+			} catch (KRQueryFailedException e) {
+				throw new GOALDatabaseException(String.format(Resources
+						.get(WarningStrings.FAILED_GB_QUERY), dropgoal
+						.toQuery().toString(), this.owner.toString()), e);
+			}
+		}
+		this.goals.removeAll(goalsToBeDropped);
+
+		Engine gam = Engine.getInstance();
+		Agent agent = gam.getAgentByName(self.getName());
+		for (SingleGoal goal : goalsToBeDropped) {
+			debugger.breakpoint(Channel.GB_UPDATES, goal, goal.getGoal()
+					.getSourceInfo(), "Goal %s"
+					+ " has been dropped from the "
+					+ (this.owner.equals(this.agentName) ? "" : this.agentName
+							+ "'s ") + "goal base: %s.", goal, this.name);
+
+		
+			
+			Goal gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
+
+			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+			affectedGoals.add(gamGoal);
+			ArrayList<Double> congruences = new ArrayList<Double>();
+			congruences.add(-0.1);
+			Belief bel = new Belief(0.5, agent, affectedGoals, congruences, true);
+			gam.appraise(bel, agent);
+			agent.removeGoal(gamGoal);
+			
+			this.count++;
+			getTime();
+			goal.unmarkOccurrence();
+			updateTimeUsed();
+		}	
+			
 		return goalsToBeDropped;
 	}
 
