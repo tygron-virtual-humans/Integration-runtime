@@ -86,7 +86,7 @@ public class LaunchManager {
 					Resources.get(WarningStrings.FAILED_LAUNCH_MAS_ERRORS),
 					masProgram.getSourceFile().getName()));
 		}
-
+		
 		for (AgentProgram agent : agents.values()) {
 			if (!agent.isValid()) {
 				throw new GOALLaunchFailureException(String.format(Resources
@@ -98,7 +98,6 @@ public class LaunchManager {
 
 		// Launch the multi-agent system. and start the runtime environment.
 		new InfoLog("Launching MAS " + masProgram.getSourceFile() + ".");
-
 		// Initialize Messaging support.
 		MessagingFactory.add(new LocalMessaging());
 		MessagingFactory.add(new RmiMessaging());
@@ -175,7 +174,6 @@ public class LaunchManager {
 
 		// Launch the multi-agent system. and start the runtime environment.
 		new InfoLog("Launching MAS " + test.getSourceFile() + ".");
-
 		// Initialize Messaging support.
 		MessagingFactory.add(new LocalMessaging());
 		MessagingFactory.add(new RmiMessaging());
