@@ -2,6 +2,7 @@
 package gamIntegration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -26,8 +27,8 @@ public class GamAgentServiceTest extends AbstractUnitTestTest {
 		Iterator<Entry<String, Agent>> iter = gamEngine.getMap().getAgentMap().getIterator();
 		
 		
-		assertEquals(iter.next().getKey(), "agentUnderTest");
-		assertEquals(iter.next().getKey(),"secondAgentUnderTest");
+		assertTrue(gamEngine.getMap().getAgentMap().containsKey("agentUnderTest"));
+		assertTrue(gamEngine.getMap().getAgentMap().containsKey("secondAgentUnderTest"));
 		
 		//gamEngine.reset();
 	}

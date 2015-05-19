@@ -1,6 +1,7 @@
 package gamIntegration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -31,9 +32,8 @@ public class GamGoalTest extends AbstractUnitTestTest {
 			System.out.println(testIterator.next().getName());
 
 		}
-		
-		assertEquals(iter.next().getKey(), "agentUnderTest");
-		assertEquals(iter.next().getKey(),"secondAgentUnderTest");
+		assertTrue(gamEngine.getMap().getAgentMap().containsKey("agentUnderTest"));
+		assertTrue(gamEngine.getMap().getAgentMap().containsKey("secondAgentUnderTest"));
 		
 		//gamEngine.reset();
 	}
