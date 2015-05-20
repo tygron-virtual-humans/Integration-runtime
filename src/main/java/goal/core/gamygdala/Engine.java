@@ -1,15 +1,9 @@
-package gamygdala;
+package goal.core.gamygdala;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import agent.Agent;
-import data.Belief;
-import data.Goal;
-import data.map.GamygdalaMap;
-import decayfunction.DecayFunction;
-import decayfunction.ExponentialDecay;
 
 /**
  * Gaming Engine adapter for Gamygdala.
@@ -74,7 +68,7 @@ public class Engine {
      * @param name The name of the Agent.
      */
     public Agent createAgent(String name) {
-        Agent agent = new Agent(name);
+    	Agent agent = new Agent(name);
         gamygdala.getGamygdalaMap().registerAgent(agent);
         return agent;
     }
@@ -89,7 +83,7 @@ public class Engine {
      * @return The newly created Goal.
      */
     public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility, boolean isMaintenanceGoal) {
-        Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
+    	Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
 
         // Add Goal to Agent
         agent.addGoal(goal);

@@ -1,9 +1,6 @@
-package agent;
+package goal.core.gamygdala;
 
 import java.util.ArrayList;
-
-import data.Emotion;
-import decayfunction.DecayFunction;
 
 /**
  * Describes a Relation between two Agents.
@@ -129,5 +126,4 @@ public class Relation {
         String str = "<Relation[causalAgent=" + this.agent + ", like=" + this.like + "]>";
         return str;
     }
-
 }

@@ -1,4 +1,4 @@
-package data;
+package goal.core.gamygdala;
 
 /**
  * Goal for an Agent.

@@ -1,4 +1,4 @@
-package agent;
+package goal.core.gamygdala;
 
 import java.util.ArrayList;
 

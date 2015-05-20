@@ -1,4 +1,4 @@
-package decayfunction;
+package goal.core.gamygdala;
 
 /**
  * Calculate exponential decay function.

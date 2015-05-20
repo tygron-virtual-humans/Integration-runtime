@@ -19,10 +19,9 @@
 package goal.core.runtime;
 
 import eis.exceptions.EnvironmentInterfaceException;
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
 import goal.core.agent.Agent;
 import goal.core.agent.GOALInterpreter;
+import goal.core.gamygdala.Engine;
 import goal.core.runtime.RuntimeEvent.EventType;
 import goal.core.runtime.events.DeadAgent;
 import goal.core.runtime.events.NewAgent;
