@@ -1,11 +1,11 @@
-package gamIntegration;
+package goal.core.runtime.runtimeServices;
 
 import static org.junit.Assert.assertEquals;
 import eis.exceptions.EnvironmentInterfaceException;
 import goal.core.agent.AbstractAgentFactory;
 import goal.core.agent.AgentFactory;
 import goal.core.agent.GOALInterpreter;
-import goal.core.gam.Gamygdala;
+import goal.core.gamygdala.Engine;
 import goal.core.runtime.MessagingService;
 import goal.core.runtime.RemoteRuntimeService;
 import goal.core.runtime.RuntimeManager;
@@ -21,6 +21,7 @@ import goal.tools.logging.Loggers;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.program.mas.MASProgram;
 import localmessaging.LocalMessaging;
 import nl.tudelft.goal.messaging.exceptions.MessagingException;
@@ -49,7 +50,7 @@ public class GamygdalaInitializationTest {
 	RemoteRuntimeService<NOPDebugger, GOALInterpreter<NOPDebugger>> remoteRuntimeService;
 	
 	RuntimeManager<NOPDebugger, GOALInterpreter<NOPDebugger>> runtimeManager;
-	Gamygdala gamInstance;
+	Engine gamInstance;
 
 	@Before
 	public void setUp() throws Exception {
@@ -88,18 +89,18 @@ public class GamygdalaInitializationTest {
 
 	@After
 	public void tearDown() throws Exception {
-		Gamygdala.getInstance().reset();
+		Engine.getInstance().reset();
 		runtimeManager.awaitTermination(AbstractRun.TIMEOUT_FIRST_AGENT_SECONDS);
 		messagingService.shutDown();
 	}
 
 	@Test
 	public void testStart() throws MessagingException, EnvironmentInterfaceException,
-			InterruptedException, GOALLaunchFailureException, FileNotFoundException {
-		Gamygdala.getInstance().reset();
+			InterruptedException, GOALLaunchFailureException, FileNotFoundException, InvalidEmotionConfigFile {
+		Engine.getInstance().reset();
 		runtimeManager.start(true);
 		
 		// fibonaci.mas2g has four agents
-		assertEquals(Gamygdala.getInstance().gamydgalaMap.getAgentMap().size(), 4);
+		assertEquals(Engine.getInstance().getMap().getAgentMap().size(), 4);
 	}
 }

@@ -19,11 +19,9 @@
 package goal.core.runtime;
 
 import eis.exceptions.EnvironmentInterfaceException;
-import goal.core.gam.Gamygdala;
-import goal.core.gam.AgentFactory;
-import goal.core.gam.Goal;
 import goal.core.agent.Agent;
 import goal.core.agent.GOALInterpreter;
+import goal.core.gamygdala.Engine;
 import goal.core.runtime.RuntimeEvent.EventType;
 import goal.core.runtime.events.DeadAgent;
 import goal.core.runtime.events.NewAgent;
@@ -65,6 +63,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
+import languageTools.parser.relationParser.EmotionConfig;
+import languageTools.parser.relationParser.GamGoal;
+import languageTools.parser.relationParser.RelationParser;
 import languageTools.program.agent.AgentId;
 import nl.tudelft.goal.messaging.Messaging;
 import nl.tudelft.goal.messaging.client.MessagingClient;
@@ -370,7 +373,7 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 
 	private final RemoteRuntimeService<D, C> remoteRuntimeService;
 
-	private final Gamygdala gamEngine;
+	private final Engine gamEngine;
 
 	/**
 	 * Creates a new runtime service manager to manage a multi-agent system.
@@ -442,7 +445,7 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 					"EIS failed to start environment", e);
 		}
 		
-		gamEngine = Gamygdala.getInstance();
+		gamEngine = Engine.getInstance();
 
 		// inform other Runtimes about this launch
 		remoteRuntimeService.broadcastRuntimeLaunched();
@@ -648,7 +651,7 @@ public class RuntimeManager<D extends Debugger, C extends GOALInterpreter<D>>
 	 * @throws FileNotFoundException 
 	 */
 	public void start(boolean startEnvironments) throws MessagingException,
-			EnvironmentInterfaceException, GOALLaunchFailureException, FileNotFoundException {
+			EnvironmentInterfaceException, GOALLaunchFailureException, FileNotFoundException, InvalidEmotionConfigFile {
 		Collection<EnvironmentPort> ports = this.environmentService
 				.getEnvironmentPorts();
 		if (startEnvironments) {

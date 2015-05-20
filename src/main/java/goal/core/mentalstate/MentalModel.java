@@ -18,6 +18,11 @@
 
 package goal.core.mentalstate;
 
+
+import goal.core.gamygdala.Agent;
+import goal.core.gamygdala.Belief;
+import goal.core.gamygdala.Engine;
+import goal.core.gamygdala.Goal;
 import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.errorhandling.Resources;
@@ -26,6 +31,7 @@ import goal.tools.errorhandling.exceptions.GOALBug;
 import goal.tools.errorhandling.exceptions.GOALDatabaseException;
 import goal.tools.errorhandling.exceptions.GOALRuntimeErrorException;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -458,6 +464,23 @@ public class MentalModel {
 			this.goalBases.elementAt(i).drop(goal, debugger);
 		}
 	}
+	
+	/**
+	 * Removes all goals from each {@link GoalBase} in the attention set
+	 * {@link #goalBases} from which the goal to be dropped can be derived.
+	 *
+	 * @param goal
+	 *            The goal to be dropped.
+	 * @param debugger
+	 *            Debugger observing the procedure.
+	 * @throws GOALDatabaseException
+	 */
+	public void dropWithGamygdala(Update goal, Debugger debugger, AgentId self)
+			throws GOALDatabaseException {
+		for (int i = 0; i < this.goalBases.size(); i++) {
+			this.goalBases.elementAt(i).dropWithGamygdala(goal, debugger, self);
+		}
+	}
 
 	/**
 	 * Implements the blind commitment strategy of a GOAL agent. It removes
@@ -497,6 +520,71 @@ public class MentalModel {
 		}
 
 		for (SingleGoal goal : goalsToBeRemoved) {
+			try {
+				getAttentionSet(true).remove(goal, debugger);
+			} catch (KRInitFailedException e) {
+				throw new IllegalStateException(String.format(Resources
+						.get(WarningStrings.FAILED_REMOVING_GOAL_FROM_GB), goal
+						.toString()), e);
+			}
+		}
+	}
+	
+	/**
+	 * Implements the blind commitment strategy of a GOAL agent. It removes
+	 * goals when they are believed to be achieved completely. For efficiency
+	 * reasons, this method should be called only twice: (i) after updating a
+	 * mental state with percepts, and (ii) after performing an action.<br>
+	 * If no goals are present in the goal base after removing achieved goals,
+	 * it is attempted to de-focus the agent from the module currently focused
+	 * on, up to a module where goals are present again (or the top-level
+	 * module).
+	 *
+	 * @param debugger
+	 *            The debugger controlling the call
+	 * @throws IllegalStateException
+	 *             if update fails. If we fail to update this probably is a bug
+	 *             in GOAL.
+	 */
+	public void updateGoalStateAndGamygdala(Debugger debugger, AgentId self) {
+		if (this.goalBases.isEmpty()) {
+			// nothing to do here (model is not used).
+			return;
+		}
+		//Engine.getInstance()
+		Engine.getInstance().setGain(1);
+		//Engine.getInstance().
+		
+		Set<SingleGoal> goals = getAttentionSet(true).getGoals();
+		List<SingleGoal> goalsToBeRemoved = new LinkedList<>();
+		for (SingleGoal goal : goals) {
+			try {
+				if (!this.beliefBases.get(BASETYPE.BELIEFBASE)
+						.query(goal.getGoal().toQuery(), debugger).isEmpty()) {
+					goalsToBeRemoved.add(goal);
+				}
+			} catch (GOALDatabaseException e) {
+				throw new IllegalStateException(String.format(Resources
+						.get(WarningStrings.FAILED_REMOVING_GOAL_FROM_GB), goal
+						.toString()), e);
+			}
+		}
+
+		Engine gam = Engine.getInstance();
+		//System.out.println(gam);
+		Agent agent = gam.getAgentByName(self.getName());
+		for (SingleGoal goal : goalsToBeRemoved) {
+			Goal gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
+
+			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+			affectedGoals.add(gamGoal);
+			ArrayList<Double> congruences = new ArrayList<Double>();
+			congruences.add(0.5);
+			Belief bel = new Belief(1, agent, affectedGoals, congruences, true);
+		//	gam.appraise(bel, agent); //TODO: Wait for bugfixes in Gam port so that we can use regular appraise.
+			gam.appraise(bel);
+			agent.removeGoal(gamGoal);
+			gam.getMap().getGoalMap().removeGoal(gamGoal);
 			try {
 				getAttentionSet(true).remove(goal, debugger);
 			} catch (KRInitFailedException e) {
