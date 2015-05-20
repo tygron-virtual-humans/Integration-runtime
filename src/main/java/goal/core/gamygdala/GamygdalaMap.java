@@ -1,11 +1,8 @@
-package data.map;
+package goal.core.gamygdala;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import agent.Agent;
-import data.Goal;
 
 /**
  * A collection of Agents and Goals for a Gamygdala instance.
@@ -51,17 +48,8 @@ public class GamygdalaMap {
      * 
      * @param agent The agent to add.
      */
-    public void registerAgent(Agent agent) {
+    public void registerAgent(goal.core.gamygdala.Agent agent) {
         getAgentMap().put(agent.name, agent);
-    }
-    
-    /**
-     * Adds a Goal to this GamygdalaMap.
-     * 
-     * @param goal The goal to add.
-     */
-    public void registerGoal(Goal goal) {
-        getGoalMap().put(goal.getName(), goal);
     }
     
     /**
@@ -78,5 +66,14 @@ public class GamygdalaMap {
      */
     public Set<Map.Entry<String, Agent>> getAgentSet() {
         return getAgentMap().entrySet();
+    }
+
+    /**
+     * Adds a Goal to this GamygdalaMap.
+     * 
+     * @param goal The goal to add.
+     */
+	public void registerGoal(Goal goal) {
+		getGoalMap().put(goal.getName(), goal);
     }
 }

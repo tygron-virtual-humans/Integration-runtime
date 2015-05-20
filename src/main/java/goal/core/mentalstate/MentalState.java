@@ -21,8 +21,7 @@ package goal.core.mentalstate;
 import goal.core.agent.Agent;
 import goal.core.executors.ExecuteTools;
 import goal.core.executors.MentalStateConditionExecutor;
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
+import goal.core.gamygdala.Engine;
 import goal.tools.debugger.Debugger;
 import goal.tools.debugger.SteppingDebugger;
 import goal.tools.errorhandling.exceptions.GOALBug;
@@ -41,7 +40,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import decayfunction.ExponentialDecay;
 import krTools.KRInterface;
 import krTools.errors.exceptions.KRDatabaseException;
 import krTools.errors.exceptions.KRInitFailedException;

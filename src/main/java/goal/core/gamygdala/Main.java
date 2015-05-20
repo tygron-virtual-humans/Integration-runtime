@@ -1,11 +1,5 @@
+package goal.core.gamygdala;
 import java.util.ArrayList;
-
-import agent.Agent;
-import data.Belief;
-import data.Goal;
-import decayfunction.ExponentialDecay;
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
 
 /**
  * Function test case during development.

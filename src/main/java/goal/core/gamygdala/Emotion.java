@@ -1,4 +1,4 @@
-package data;
+package goal.core.gamygdala;
 
 import java.util.ArrayList;
 

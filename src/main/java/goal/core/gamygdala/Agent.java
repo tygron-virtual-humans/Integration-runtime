@@ -1,12 +1,6 @@
-package agent;
+package goal.core.gamygdala;
 
 import java.util.ArrayList;
-
-import data.Emotion;
-import data.Goal;
-import data.map.GoalMap;
-import decayfunction.DecayFunction;
-import gamygdala.Engine;
 
 /**
  * The main interacting character in the Gamygdala engine.
@@ -230,7 +224,7 @@ public class Agent {
 
         // Init emotion variable
         Emotion emotion = new Emotion(null, 0);
-        Relation relation;
+        goal.core.gamygdala.Relation relation;
 
         // If we are the affectedAgent, and we are not causing the action
         if (affectedAgent.equals(this)) {

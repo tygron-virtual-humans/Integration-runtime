@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 
 import org.junit.Test;
 
-import agent.Agent;
-import gamygdala.Engine;
+import goal.core.gamygdala.Agent;
+import goal.core.gamygdala.Engine;
 import goal.parser.unittest.AbstractUnitTestTest;
 
 @SuppressWarnings("javadoc")
