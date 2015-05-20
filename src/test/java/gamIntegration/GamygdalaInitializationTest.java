@@ -1,4 +1,4 @@
-package goal.core.runtime.runtimeServices;
+package gamIntegration;
 
 import static org.junit.Assert.assertEquals;
 import eis.exceptions.EnvironmentInterfaceException;
