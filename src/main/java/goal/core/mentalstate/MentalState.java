@@ -601,7 +601,7 @@ public class MentalState {
 		Engine gam = Engine.getInstance();
 		Engine.getInstance().decayAll();
 
-		// Engine.getInstance().printAllEmotions(false);
+		Engine.getInstance().printAllEmotions(false);
 	}
 
 	/**

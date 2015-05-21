@@ -412,6 +412,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 
 		Engine gam = Engine.getInstance();
 		Agent agent = gam.getAgentByName(self.getName());
+		EmotionConfig config = EmotionConfig.getInstance();
 		for (SingleGoal goal : goalsToBeDropped) {
 			debugger.breakpoint(Channel.GB_UPDATES, goal, goal.getGoal()
 					.getSourceInfo(), "Goal %s"
@@ -426,8 +427,8 @@ public final class GoalBase implements Iterable<SingleGoal> {
 			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 			affectedGoals.add(gamGoal);
 			ArrayList<Double> congruences = new ArrayList<Double>();
-			congruences.add(-0.1);
-			Belief bel = new Belief(1.0, agent, affectedGoals, congruences, true);
+			congruences.add(config.getDefaultNegativeCongruence());
+			Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
 			gam.appraise(bel, agent);
 			agent.removeGoal(gamGoal);
 			
