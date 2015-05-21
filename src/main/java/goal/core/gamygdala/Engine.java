@@ -33,7 +33,7 @@ public class Engine {
      * 
      * @param gamygdala Gamygdala instance.
      */
-    public Engine(Gamygdala gamygdala) {
+    private Engine(Gamygdala gamygdala) {
 
         // Store Gamygdala instance
         this.gamygdala = gamygdala;
