@@ -5,18 +5,20 @@ import static org.junit.Assert.assertTrue;
 import goal.util.Extension;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 import krTools.errors.exceptions.ParserException;
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.program.mas.MASProgram;
 
 import org.junit.Test;
 
 public class PlatformManagerTest {
 	@Test
-	public void testLoadMASFiles_File() throws ParserException {
+	public void testLoadMASFiles_File() throws ParserException, FileNotFoundException, InvalidEmotionConfigFile {
 		File file = new File("src/test/resources/goal/tools/testselect.mas2g");
 		MASProgram mas = PlatformManager.createNew().parseMASFile(file);
 
@@ -25,7 +27,7 @@ public class PlatformManagerTest {
 	}
 
 	@Test
-	public void testLoadMASFiles_Directory() throws ParserException {
+	public void testLoadMASFiles_Directory() throws ParserException, FileNotFoundException, InvalidEmotionConfigFile {
 		File folder = new File("src/test/resources/goal/tools/");
 		List<MASProgram> masFileRegistries = new LinkedList<MASProgram>();
 		for (final File mas2g : PlatformManager.getMASFiles(folder, false)) {

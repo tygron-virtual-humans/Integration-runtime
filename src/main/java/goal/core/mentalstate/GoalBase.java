@@ -430,7 +430,6 @@ public final class GoalBase implements Iterable<SingleGoal> {
 			Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
 			gam.appraise(bel, agent);
 			agent.removeGoal(gamGoal);
-			
 			this.count++;
 			getTime();
 			goal.unmarkOccurrence();

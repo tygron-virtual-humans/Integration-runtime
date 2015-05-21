@@ -11,8 +11,10 @@ import goal.tools.debugger.NOPDebugger;
 import goal.tools.debugger.ObservableDebugger;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import krTools.errors.exceptions.ParserException;
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.program.mas.MASProgram;
 
 /**
@@ -39,8 +41,10 @@ public class SingleRun extends AbstractRun<Debugger, GOALInterpreter<Debugger>> 
 	 *            to terminate; 0 for indefinite.
 	 * @throws ParserException
 	 *             when the mas file could not be parsed.
+	 * @throws InvalidEmotionConfigFile 
+	 * @throws FileNotFoundException 
 	 */
-	public SingleRun(File masFile, long timeout) throws ParserException {
+	public SingleRun(File masFile, long timeout) throws ParserException, FileNotFoundException, InvalidEmotionConfigFile {
 		super(PlatformManager.createNew().parseMASFile(masFile),
 				PlatformManager.getCurrent().getParsedAgentPrograms(), timeout);
 	}
