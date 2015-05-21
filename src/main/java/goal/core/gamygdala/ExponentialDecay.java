@@ -23,7 +23,7 @@ public class ExponentialDecay extends DecayFunction {
      */
     @Override
     public double decay(double initial, long millisPassed) {
-        return initial * Math.pow(getDecayFactor(), millisPassed / (double) 1000);
+        return initial * Math.pow(getDecayFactor(), millisPassed / 1000);
     }
 
 }
