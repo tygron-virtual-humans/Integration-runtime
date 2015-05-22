@@ -20,6 +20,8 @@ package goal.core.runtime.service.agent;
 import eis.exceptions.ActException;
 import eis.exceptions.EnvironmentInterfaceException;
 import eis.iilang.Action;
+import eis.iilang.Function;
+import eis.iilang.Identifier;
 import eis.iilang.Numeral;
 import eis.iilang.Percept;
 import goal.core.agent.Agent;
@@ -537,7 +539,7 @@ public class RunState<D extends Debugger> {
 			ListIterator<Emotion> emoIterator = emoState.listIterator();
 			while(emoIterator.hasNext()){
 				Emotion emo = emoIterator.next();
-				Percept percept = new Percept(emo.name, new Numeral(emo.intensity));
+				Percept percept = new Percept("gam", new Identifier(emo.name), new Numeral(emo.intensity));
 				addList.add(percept);
 			}
 
