@@ -598,8 +598,8 @@ public class MentalState {
 		 this.models.get(name).updateGoalStateAndGamygdala(debugger, name);
 		}
 		
-		Engine gam = Engine.getInstance();
 		Engine.getInstance().decayAll();
+
 
 		// Engine.getInstance().printAllEmotions(false);
 	}

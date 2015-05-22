@@ -26,7 +26,6 @@ import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.debugger.SteppingDebugger;
 import goal.tools.errorhandling.Resources;
-import goal.tools.errorhandling.Warning;
 import goal.tools.errorhandling.WarningStrings;
 import goal.tools.errorhandling.exceptions.GOALActionFailedException;
 import goal.tools.errorhandling.exceptions.GOALDatabaseException;

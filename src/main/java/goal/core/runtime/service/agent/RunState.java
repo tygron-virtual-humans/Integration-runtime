@@ -20,6 +20,9 @@ package goal.core.runtime.service.agent;
 import eis.exceptions.ActException;
 import eis.exceptions.EnvironmentInterfaceException;
 import eis.iilang.Action;
+import eis.iilang.Function;
+import eis.iilang.Identifier;
+import eis.iilang.Numeral;
 import eis.iilang.Percept;
 import goal.core.agent.Agent;
 import goal.core.agent.Controller;
@@ -27,6 +30,9 @@ import goal.core.agent.EnvironmentCapabilities;
 import goal.core.agent.LoggingCapabilities;
 import goal.core.agent.MessagingCapabilities;
 import goal.core.executors.ModuleExecutor;
+import goal.core.gamygdala.AgentInternalState;
+import goal.core.gamygdala.Emotion;
+import goal.core.gamygdala.Engine;
 import goal.core.mentalstate.MentalState;
 import goal.core.mentalstate.SingleGoal;
 import goal.core.runtime.service.environmentport.EnvironmentPort;
@@ -51,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Set;
 
 import krTools.errors.exceptions.KRDatabaseException;
@@ -383,8 +390,9 @@ public class RunState<D extends Debugger> {
 	 * Processes all given messages. Processing involves updating the mental
 	 * model of the sending agent in a way that depends on the messages mood,
 	 * which is indicated by the ACL's performative.
+	 * @throws GOALDatabaseException 
 	 */
-	private void processMessages(Set<Message> messages)  {
+	private void processMessages(Set<Message> messages) {
 		if (!messages.isEmpty()) {
 			getDebugger().breakpoint(Channel.MAILS, null, null,
 					"Processing mails."); //$NON-NLS-1$
@@ -524,7 +532,18 @@ public class RunState<D extends Debugger> {
 
 	private Set<Percept> getPercepts() throws DebuggerKilledException {
 		try {
-			return this.environment.getPercepts();
+			// Update emotions
+			Set<Percept> addList = this.environment.getPercepts();
+	
+			AgentInternalState emoState = Engine.getInstance().getAgentByName(agentName.getName()).getEmotionalState(null);
+			ListIterator<Emotion> emoIterator = emoState.listIterator();
+			while(emoIterator.hasNext()){
+				Emotion emo = emoIterator.next();
+				Percept percept = new Percept("gam", new Identifier(emo.name), new Numeral(emo.intensity));
+				addList.add(percept);
+			}
+
+			return addList;
 		} catch (MessagingException e) {
 			// typically, when system is taken down.
 			// HACK Only Debugger should throw this.
@@ -556,6 +575,7 @@ public class RunState<D extends Debugger> {
 	 * @param initial
 	 *            the initial set of percepts to use
 	 * @throws GOALActionFailedException
+	 * @throws  
 	 */
 	// TODO: Does not yet support measuring time used in Thread.
 	public void startCycle(boolean isActionPerformed, Set<Percept> initial)
