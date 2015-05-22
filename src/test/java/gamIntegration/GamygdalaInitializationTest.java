@@ -89,7 +89,8 @@ public class GamygdalaInitializationTest {
 
 	@After
 	public void tearDown() throws Exception {
-		Engine.getInstance().reset();
+		Engine.getInstance();
+		Engine.reset();
 		runtimeManager.awaitTermination(AbstractRun.TIMEOUT_FIRST_AGENT_SECONDS);
 		messagingService.shutDown();
 	}
@@ -97,7 +98,8 @@ public class GamygdalaInitializationTest {
 	@Test
 	public void testStart() throws MessagingException, EnvironmentInterfaceException,
 			InterruptedException, GOALLaunchFailureException, FileNotFoundException, InvalidEmotionConfigFile {
-		Engine.getInstance().reset();
+		Engine.getInstance();
+		Engine.reset();
 		runtimeManager.start(true);
 		
 		// fibonaci.mas2g has four agents
