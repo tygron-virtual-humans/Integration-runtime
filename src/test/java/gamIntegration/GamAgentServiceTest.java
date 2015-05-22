@@ -18,7 +18,7 @@ public class GamAgentServiceTest extends AbstractUnitTestTest {
 		//gamEngine.useFile(true);
 		
 		runTest("src/test/resources/goal/parser/unittest/correctMinimal.test2g");
-		
+
 		assertTrue(gamEngine.getMap().getAgentMap().containsKey("agentUnderTest"));
 		assertTrue(gamEngine.getMap().getAgentMap().containsKey("secondAgentUnderTest"));
 		
