@@ -1,14 +1,14 @@
 masTest {
 	
 	mas = "counter2.mas2g".
-	timeout = 1.
+	timeout = 2.
 	
 	counter2 {
 		timeOutTest {
 			evaluate {
 				watch bel(counter(X)).
 				eventually bel(counter(100)).
-				eventually bel(joy(100.0)).
+				eventually bel(joy(Y), Y > 0).
 				always bel(true).
 				atend bel(true).
 			} in do main.

@@ -572,32 +572,9 @@ public class MentalModel {
 		}
 
 		Engine gam = Engine.getInstance();
-		//System.out.println(gam);
-		Agent agent = gam.getAgentByName(self.getName());
-		
-		// Update emotions
-		/*
-		Set<Percept> addList = new HashSet<Percept>();
-		if(temp == false){
-			addList.add(new Percept("joy", new Numeral(100.0)));
-			temp = true;
-		}
-		AgentInternalState something = gam.getAgentByName(self.getName()).getEmotionalState(null);
-		ListIterator<Emotion> iterating = something.listIterator();
-		while(iterating.hasNext()){
-			Emotion emo = iterating.next();
-			Percept percept = new Percept(emo.name, new Numeral(emo.intensity));
-			addList.add(percept);
-		}
-		this.beliefBases.get(BASETYPE.PERCEPTBASE).updatePercepts(addList, new HashSet<Percept>(), debugger);
-		System.out.println("testing: "+this.beliefBases.get(BASETYPE.PERCEPTBASE).toString());
-		
-		System.out.println("testing: "+this.beliefBases.get(BASETYPE.PERCEPTBASE).toString());
-		System.out.println("testing2: "+this.beliefBases.get(BASETYPE.BELIEFBASE).toString());
-		*/
 
-		
-		
+		Agent agent = gam.getAgentByName(self.getName());
+				
 		for (SingleGoal goal : goalsToBeRemoved) {
 			Goal gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
 

@@ -185,7 +185,6 @@ public class RunState<D extends Debugger> {
 	 * Keep track of executed actions
 	 */
 	private UserSpecAction lastAction;
-	private boolean temp = false;;
 
 	/**
 	 * Creates a new {@link RunState}.
@@ -533,12 +532,7 @@ public class RunState<D extends Debugger> {
 		try {
 			// Update emotions
 			Set<Percept> addList = this.environment.getPercepts();
-			// TODO: dit ze 3 regels worden nu alleen gebruikt om te testen
-			if(temp == false){
-				addList.add(new Percept("joy", new Numeral(100.0)));
-				temp = true;
-			}
-			
+	
 			AgentInternalState emoState = Engine.getInstance().getAgentByName(agentName.getName()).getEmotionalState(null);
 			ListIterator<Emotion> emoIterator = emoState.listIterator();
 			while(emoIterator.hasNext()){
@@ -546,8 +540,6 @@ public class RunState<D extends Debugger> {
 				Percept percept = new Percept(emo.name, new Numeral(emo.intensity));
 				addList.add(percept);
 			}
-		//	this.beliefBases.get(BASETYPE.PERCEPTBASE).updatePercepts(addList, new HashSet<Percept>(), debugger);
-		//	System.out.println("testing: "+this.beliefBases.get(BASETYPE.PERCEPTBASE).toString());
 
 			return addList;
 		} catch (MessagingException e) {
