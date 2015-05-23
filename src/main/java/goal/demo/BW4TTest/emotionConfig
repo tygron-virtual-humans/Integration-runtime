@@ -1,3 +1,3 @@
 default goal utility, 0.16
-default positive congruence, 1
-default negative congruence, -1
+default achieved congruence, 1
+default dropped congruence, -1
