@@ -1,7 +1,7 @@
 masTest {
 	
 	mas = "counter.mas2g".
-	timeout = 1.
+	timeout = 2.
 	
 	counter {
 		timeOutTest {
