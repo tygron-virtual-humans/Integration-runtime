@@ -2,8 +2,8 @@ package gamIntegration;
 
 import org.junit.Test;
 
-import goal.core.gamygdala.Engine;
 import goal.parser.unittest.AbstractUnitTestTest;
+import goal.tools.unittest.result.UnitTestResult;
 
 @SuppressWarnings("javadoc")
 public class EmotionBeliefTest extends AbstractUnitTestTest {
@@ -14,7 +14,8 @@ public class EmotionBeliefTest extends AbstractUnitTestTest {
 		//gamEngine.setStart(true);
 		//gamEngine.useFile(true);
 		
-		runTest("src/test/resources/goal/parser/unittest/CountsTo100Test2.test2g");
+		UnitTestResult results = runTest("src/test/resources/goal/parser/unittest/CountsTo100Test2.test2g");
+		assertPassedAndPrint(results);
 		//testGamGoals.test2g");
 		}		
 		//gamEngine.reset();
