@@ -48,6 +48,7 @@ import krTools.language.DatabaseFormula;
 import krTools.language.Query;
 import krTools.language.Substitution;
 import krTools.language.Update;
+import languageTools.parser.relationParser.EmotionConfig;
 import languageTools.program.agent.AgentId;
 import languageTools.program.agent.AgentProgram;
 import languageTools.program.agent.Module;
@@ -598,10 +599,11 @@ public class MentalState {
 		 this.models.get(name).updateGoalStateAndGamygdala(debugger, name);
 		}
 		
+		Engine gam = Engine.getInstance();
 		Engine.getInstance().decayAll();
 
+		Engine.getInstance().printAllEmotions(false);
 
-		// Engine.getInstance().printAllEmotions(false);
 	}
 
 	/**

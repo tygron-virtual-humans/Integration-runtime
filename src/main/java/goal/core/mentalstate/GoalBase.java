@@ -44,6 +44,7 @@ import krTools.errors.exceptions.KRQueryFailedException;
 import krTools.language.Query;
 import krTools.language.Substitution;
 import krTools.language.Update;
+import languageTools.parser.relationParser.EmotionConfig;
 import languageTools.program.agent.AgentId;
 import languageTools.program.agent.AgentProgram;
 
@@ -322,10 +323,10 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		
 		Agent gamAgent = 
 					engine.getAgentByName(this.agentName.getName());
-			engine.createGoalForAgent(gamAgent,goal.getGoal().getSignature(),1.0/6.0,false);
-	
-			//System.out.println("KORAAL");
-			//engine.printAllEmotions(false);
+			engine.createGoalForAgent(gamAgent,goal.getGoal().getSignature(),EmotionConfig.getInstance().getDefaultUtility(),false);
+			
+			System.out.println("DEFAULT: " + EmotionConfig.getInstance().getDefaultUtility());
+			//engine.printAllEmotions(false); 
 		
 			
 			
@@ -410,6 +411,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 
 		Engine gam = Engine.getInstance();
 		Agent agent = gam.getAgentByName(self.getName());
+		EmotionConfig config = EmotionConfig.getInstance();
 		for (SingleGoal goal : goalsToBeDropped) {
 			debugger.breakpoint(Channel.GB_UPDATES, goal, goal.getGoal()
 					.getSourceInfo(), "Goal %s"
@@ -424,11 +426,10 @@ public final class GoalBase implements Iterable<SingleGoal> {
 			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 			affectedGoals.add(gamGoal);
 			ArrayList<Double> congruences = new ArrayList<Double>();
-			congruences.add(-0.1);
-			Belief bel = new Belief(1.0, agent, affectedGoals, congruences, true);
+			congruences.add(config.getDefaultNegativeCongruence());
+			Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
 			gam.appraise(bel, agent);
 			agent.removeGoal(gamGoal);
-			
 			this.count++;
 			getTime();
 			goal.unmarkOccurrence();

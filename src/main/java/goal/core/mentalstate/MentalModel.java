@@ -49,6 +49,7 @@ import krTools.language.DatabaseFormula;
 import krTools.language.Query;
 import krTools.language.Substitution;
 import krTools.language.Update;
+import languageTools.parser.relationParser.EmotionConfig;
 import languageTools.program.agent.AgentId;
 import languageTools.program.agent.AgentProgram;
 import languageTools.program.agent.msc.AGoalLiteral;
@@ -542,7 +543,6 @@ public class MentalModel {
 	 *
 	 * @param debugger
 	 *            The debugger controlling the call
-	 * @throws GOALDatabaseException 
 	 * @throws IllegalStateException
 	 *             if update fails. If we fail to update this probably is a bug
 	 *             in GOAL.
@@ -572,20 +572,18 @@ public class MentalModel {
 		}
 
 		Engine gam = Engine.getInstance();
-
+		//System.out.println(gam);
 		Agent agent = gam.getAgentByName(self.getName());
-				
+		EmotionConfig config = EmotionConfig.getInstance();
 		for (SingleGoal goal : goalsToBeRemoved) {
 			Goal gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
 
 			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 			affectedGoals.add(gamGoal);
 			ArrayList<Double> congruences = new ArrayList<Double>();
-			congruences.add(0.5);
-			Belief bel = new Belief(1, agent, affectedGoals, congruences, true);
-		//	gam.appraise(bel, agent); //TODO: Wait for bugfixes in Gam port so that we can use regular appraise.
+			congruences.add(config.getDefaultPositiveCongruence());
+			Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
 			gam.appraise(bel);
-			
 			agent.removeGoal(gamGoal);
 			gam.getMap().getGoalMap().removeGoal(gamGoal);
 			try {

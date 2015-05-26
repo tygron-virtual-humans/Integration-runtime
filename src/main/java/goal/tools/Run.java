@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import krTools.errors.exceptions.ParserException;
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.program.test.UnitTest;
 import localmessaging.LocalMessaging;
 import nl.tudelft.goal.messaging.Messaging;
@@ -108,9 +109,10 @@ public class Run {
 	 * @throws ParserException
 	 * @throws FileNotFoundException
 	 * @throws GOALRunFailedException 
+	 * @throws InvalidEmotionConfigFile 
 	 * @throws Exception
 	 */
-	public static void run(String... args) throws GOALRunFailedException, ParseException, FileNotFoundException, ParserException {
+	public static void run(String... args) throws GOALRunFailedException, ParseException, FileNotFoundException, ParserException, InvalidEmotionConfigFile {
 		// Get start time.
 		long startTime = System.nanoTime();
 

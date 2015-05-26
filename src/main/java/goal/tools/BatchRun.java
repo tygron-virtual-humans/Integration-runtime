@@ -5,10 +5,12 @@ import goal.tools.errorhandling.Warning;
 import goal.tools.errorhandling.exceptions.GOALRunFailedException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
 import krTools.errors.exceptions.ParserException;
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.program.mas.MASProgram;
 import localmessaging.LocalMessaging;
 import nl.tudelft.goal.messaging.Messaging;
@@ -85,12 +87,14 @@ public class BatchRun {
 	/**
 	 * Starts the BatchRun. This will repeat running all {@link MASProgram}s for
 	 * a given number of times.
+	 * @throws InvalidEmotionConfigFile 
+	 * @throws FileNotFoundException 
 	 *
 	 * @throws Exception
 	 *             thrown when a run fails; if multiple runs fail, only the last
 	 *             exception is thrown, e.g. all runs are executed at all times
 	 */
-	public void run() throws GOALRunFailedException {
+	public void run() throws GOALRunFailedException, FileNotFoundException, InvalidEmotionConfigFile {
 		GOALRunFailedException last = null;
 		for (long i = 0; i < this.repeats; i++) {
 			for (File masFile : this.masFiles) {

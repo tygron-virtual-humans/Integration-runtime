@@ -9,6 +9,10 @@ agentfiles{
 	"kreynen_spanoghe.goal" [name = robot] .
 }
 
+emotionFile{
+ "src/main/java/goal/demo/BW4TTest/emotionConfig"
+}
+
 launchpolicy{
 	% insert appropriate launch rules for your environment and agents below.
 	when [max=2]@env do launch robot : robot .

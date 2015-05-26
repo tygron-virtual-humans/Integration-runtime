@@ -28,6 +28,7 @@ import goal.util.Extension;
 import goalhub.krTools.KRFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,6 +48,8 @@ import languageTools.analyzer.agent.AgentValidatorSecondPass;
 import languageTools.analyzer.mas.MASValidator;
 import languageTools.analyzer.test.TestValidator;
 import languageTools.errors.Message;
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
+import languageTools.parser.relationParser.EmotionConfig;
 import languageTools.program.Program;
 import languageTools.program.agent.AgentProgram;
 import languageTools.program.mas.MASProgram;
@@ -407,8 +410,10 @@ public class PlatformManager {
 	 * @throws IOException
 	 *             If file could not be closed properly.
 	 * @return The parsed and validated MAS program.
+	 * @throws InvalidEmotionConfigFile 
+	 * @throws FileNotFoundException 
 	 */
-	public MASProgram parseMASFile(File masFile) throws ParserException {
+	public MASProgram parseMASFile(File masFile) throws ParserException, FileNotFoundException, InvalidEmotionConfigFile {
 		// Logger to report issues found during parsing and validation.
 		GOALLogger parserLogger = Loggers.getParserLogger();
 		parserLogger.log(new StringsLogRecord(Level.INFO, "Parsing mas file " //$NON-NLS-1$
@@ -417,10 +422,17 @@ public class PlatformManager {
 		MASValidator validator = new MASValidator(masFile.getPath());
 		validator.validate();
 		MASProgram masProgram = validator.getProgram();
+		
+	
+		
 		if (masProgram == null) {
 			throw new ParserException("Invalid MAS file"); //$NON-NLS-1$
 		}
 		addParsedProgram(masFile, masProgram);
+		
+		if(masProgram.hasEmotionFile()) {
+			 EmotionConfig.parse(masProgram.getEmotionFile());
+		}
 
 		// Log messages.
 		boolean hasErrors = false, hasWarnings = false;
@@ -439,6 +451,8 @@ public class PlatformManager {
 			parserLogger.log(new StringsLogRecord(Level.WARNING, warning
 					.toString()));
 		}
+		
+		
 
 		if (hasErrors) {
 			// Output errors to parser tab (via parser logger).
