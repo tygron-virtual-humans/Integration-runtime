@@ -2,6 +2,10 @@ agentfiles{
 	"counter2.goal".
 }
 
+emotionFile{
+ "src/main/java/goal/demo/BW4TTest/emotionConfig"
+}
+
 launchpolicy{
 	launch counter2 : counter2.
 }
