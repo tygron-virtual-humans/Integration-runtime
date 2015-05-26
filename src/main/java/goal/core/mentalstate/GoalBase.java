@@ -325,7 +325,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 					engine.getAgentByName(this.agentName.getName());
 			engine.createGoalForAgent(gamAgent,goal.getGoal().getSignature(),EmotionConfig.getInstance().getDefaultUtility(),false);
 			
-			System.out.println("DEFAULT: " + EmotionConfig.getInstance().getDefaultUtility());
+			//System.out.println("DEFAULT: " + EmotionConfig.getInstance().getDefaultUtility());
 			//engine.printAllEmotions(false); 
 		
 			
