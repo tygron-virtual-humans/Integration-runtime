@@ -45,6 +45,7 @@ import krTools.language.Query;
 import krTools.language.Substitution;
 import krTools.language.Update;
 import languageTools.parser.relationParser.EmotionConfig;
+import languageTools.parser.relationParser.GamGoal;
 import languageTools.program.agent.AgentId;
 import languageTools.program.agent.AgentProgram;
 
@@ -323,10 +324,11 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		
 		Agent gamAgent = 
 					engine.getAgentByName(this.agentName.getName());
-			engine.createGoalForAgent(gamAgent,goal.getGoal().getSignature(),EmotionConfig.getInstance().getDefaultUtility(),false);
+		EmotionConfig conf = EmotionConfig.getInstance();
+		GamGoal gamGoal = conf.getGoal(goal.getGoal().getSignature());
+		engine.createGoalForAgent(gamAgent,gamGoal.getGoal(),gamGoal.getValue(),false);
 			
-			//System.out.println("DEFAULT: " + EmotionConfig.getInstance().getDefaultUtility());
-			//engine.printAllEmotions(false); 
+		//System.out.println("DEFAULT: " + gamGoal.getValue());
 		
 			
 			
