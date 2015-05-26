@@ -328,7 +328,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		GamGoal gamGoal = conf.getGoal(goal.getGoal().getSignature());
 		engine.createGoalForAgent(gamAgent,gamGoal.getGoal(),gamGoal.getValue(),false);
 			
-		System.out.println("DEFAULT: " + gamGoal.getValue());
+		//System.out.println("DEFAULT: " + gamGoal.getValue());
 		
 			
 			
