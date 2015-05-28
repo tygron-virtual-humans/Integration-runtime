@@ -429,10 +429,6 @@ public class PlatformManager {
 			throw new ParserException("Invalid MAS file"); //$NON-NLS-1$
 		}
 		addParsedProgram(masFile, masProgram);
-		
-		if(masProgram.hasEmotionFile()) {
-			 EmotionConfig.parse(masProgram.getEmotionFile());
-		}
 
 		// Log messages.
 		boolean hasErrors = false, hasWarnings = false;

@@ -16,10 +16,13 @@ import goal.tools.errorhandling.exceptions.GOALRunFailedException;
 import goal.tools.logging.InfoLog;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Map;
 
 import krTools.errors.exceptions.ParserException;
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
+import languageTools.parser.relationParser.EmotionConfig;
 import languageTools.program.agent.AgentProgram;
 import languageTools.program.mas.MASProgram;
 import localmessaging.LocalMessaging;
@@ -75,12 +78,17 @@ public abstract class AbstractRun<D extends Debugger, C extends GOALInterpreter<
 	 * @param timeout
 	 *            the number of seconds we should wait for the run to terminate;
 	 *            0 for indefinite.
+	 * @throws InvalidEmotionConfigFile 
+	 * @throws FileNotFoundException 
 	 */
 	public AbstractRun(MASProgram program, Map<File, AgentProgram> agents,
-			long timeout) {
+			long timeout) throws FileNotFoundException, InvalidEmotionConfigFile {
 		this.masProgram = program;
 		this.agentPrograms = agents;
 		this.timeout = timeout;
+		if(program.hasEmotionFile()) {
+			EmotionConfig.parse(program.getEmotionFile());
+		}
 	}
 
 	/**
