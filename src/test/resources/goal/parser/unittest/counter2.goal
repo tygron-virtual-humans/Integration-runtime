@@ -6,8 +6,6 @@ init module{
 
 main module{
 	program[order=random]{
-	%	if bel( percept(joy(X)) ) then insert( joy(X) ).
-%		if bel( percept(hope(X)) ) then insert( hope(X) ).
 		if bel(counter(X), X>120) then exit-module.
 		if bel(counter(X), Y is X+1, Z is X+2) then print(X) + adopt( counter(Z)) + insert(counter(Y)) + delete(counter(X)).
 	}
@@ -16,6 +14,7 @@ main module{
 event module {	
 	program {
 		if bel( percept(gam(hope, X)) ) then insert( gam(hope, X) ).
+		if bel( percept(gam(joy, X)) ) then insert( gam(joy, X) ).
 	}
 }
 
