@@ -10,11 +10,13 @@ import goal.tools.logging.Loggers;
 import goal.tools.unittest.result.UnitTestResult;
 import goal.tools.unittest.result.UnitTestResultFormatter;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Set;
 
 import languageTools.analyzer.test.TestValidator;
 import languageTools.errors.Message;
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.program.test.UnitTest;
 
 import org.junit.After;
@@ -66,7 +68,7 @@ public class AbstractUnitTestTest {
 	}
 
 	protected UnitTestResult runTest(String testFileName)
-			throws GOALRunFailedException {
+			throws GOALRunFailedException, FileNotFoundException, InvalidEmotionConfigFile {
 		UnitTest unitTest;
 		try {
 			unitTest = setup(testFileName);
