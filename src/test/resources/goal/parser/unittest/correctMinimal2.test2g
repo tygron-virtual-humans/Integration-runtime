@@ -1,0 +1,9 @@
+%Correct: minimal version
+
+masTest {
+
+	mas 		= 	"correctMasUnderTest2.mas2g".
+
+	agent1 {
+	}
+}

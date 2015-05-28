@@ -8,4 +8,5 @@ emotionFile{
 
 launchpolicy{
 	launch counter2 : counter2.
+	launch counter3 : counter2.
 }

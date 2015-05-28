@@ -20,7 +20,7 @@ public class Agent {
     /**
      * Collection of relations for this Agent.
      */
-    AgentRelations currentRelations;
+    public AgentRelations currentRelations;
 
     /**
      * Collection of emotions for this Agent.
