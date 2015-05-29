@@ -290,6 +290,8 @@ public class MentalState {
 						new LinkedList<DatabaseFormula>(), BASETYPE.MAILBOX);
 				model.addBase(this.agentProgram, this.agentId, this.state,
 						new LinkedList<DatabaseFormula>(), BASETYPE.PERCEPTBASE);
+				model.addBase(this.agentProgram, this.agentId, this.state,
+						new LinkedList<DatabaseFormula>(), BASETYPE.EMOTIONBASE);
 			}
 			// Create the belief base.
 			model.addBase(this.agentProgram, id, this.state,
@@ -771,7 +773,7 @@ public class MentalState {
 	 */
 	public String toString(boolean addknowledge, boolean addbeliefs,
 			boolean addpercepts, boolean addmailbox, boolean addgoals,
-			boolean focus) {
+				boolean addemotion, boolean focus) {
 		String text = "";
 
 		if (addknowledge) {
@@ -788,6 +790,11 @@ public class MentalState {
 		if (addpercepts) {
 			text += "% ----- percepts -----\n";
 			text += getOwnBase(BASETYPE.PERCEPTBASE).getTheory();
+		}
+		
+		if (addemotion) {
+			text += "% ----- percepts -----\n";
+			text += getOwnBase(BASETYPE.EMOTIONBASE).getTheory();
 		}
 
 		if (addmailbox) {
