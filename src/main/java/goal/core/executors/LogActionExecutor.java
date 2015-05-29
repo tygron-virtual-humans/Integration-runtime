@@ -39,7 +39,7 @@ public class LogActionExecutor extends ActionExecutor {
 		MentalState mentalState = runState.getMentalState();
 
 		for (final Term param : this.action.getParameters()) {
-			boolean bb = false, gb = false, kb = false, mb = false, pb = false;
+			boolean bb = false, gb = false, kb = false, mb = false, pb = false, eb = false;
 			switch (LogOptions.fromString(param.toString())) {
 			case BB:
 				bb = true;
@@ -56,13 +56,16 @@ public class LogActionExecutor extends ActionExecutor {
 			case PB:
 				pb = true;
 				break;
+			case EB:
+				eb = true;
+				break;
 			default:
 			case TEXT:
 				runState.doLog(param.toString());
 				break;
 			}
-			if (kb || bb || pb || mb || gb) {
-				String ms = mentalState.toString(kb, bb, pb, mb, gb, true);
+			if (kb || bb || pb || mb || gb || eb) {
+				String ms = mentalState.toString(kb, bb, pb, mb, gb, eb, true);
 				runState.doLog(ms);
 			}
 		}
@@ -90,6 +93,8 @@ public class LogActionExecutor extends ActionExecutor {
 		MB,
 		/** export knowledge base */
 		KB,
+		/** export emotion base */
+		EB,
 		/** export plain text */
 		TEXT;
 
