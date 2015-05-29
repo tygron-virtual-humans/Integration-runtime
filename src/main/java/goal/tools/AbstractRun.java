@@ -88,6 +88,7 @@ public abstract class AbstractRun<D extends Debugger, C extends GOALInterpreter<
 		this.timeout = timeout;
 		if(program.hasEmotionFile()) {
 			EmotionConfig.parse(program.getEmotionFile());
+			goal.core.gamygdala.Engine.insertRelations();
 		}
 	}
 
