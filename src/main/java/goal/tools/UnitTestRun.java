@@ -1,5 +1,7 @@
 package goal.tools;
 
+import java.io.FileNotFoundException;
+
 import goal.core.agent.AbstractAgentFactory;
 import goal.core.agent.Agent;
 import goal.core.agent.AgentFactory;
@@ -9,6 +11,7 @@ import goal.tools.adapt.Learner;
 import goal.tools.debugger.LoggingObserver;
 import goal.tools.debugger.ObservableDebugger;
 import goal.tools.unittest.UnitTestInterpreter;
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.program.test.AgentTest;
 import languageTools.program.test.UnitTest;
 
@@ -61,7 +64,7 @@ public class UnitTestRun extends AbstractRun<IDEDebugger, UnitTestInterpreter> {
 	 */
 	private final UnitTest unitTest;
 
-	public UnitTestRun(UnitTest program) {
+	public UnitTestRun(UnitTest program) throws FileNotFoundException, InvalidEmotionConfigFile {
 		super(program.getMasProgram(), program.getAgents(), program
 				.getTimeout());
 		this.unitTest = program;
