@@ -253,5 +253,9 @@ public class Gamygdala {
     public void setDecayFactor(double decayFactor) {
         this.decayFactor = decayFactor;
     }
+    
+    public GamygdalaMap getMap(){
+    	return gamygdalaMap;
+    }
 
 }
