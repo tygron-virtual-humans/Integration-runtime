@@ -240,6 +240,10 @@ public class Engine {
     	return gamygdala.getMap().getAgentMap().getAgentByName(name);
     }
     
+    public Goal getGoalByName(String name){
+    	return gamygdala.getMap().getGoalMap().getGoalByName(name);
+    }
+    
     /**
      * Facilitator method to print all emotional states to the console.
      *
