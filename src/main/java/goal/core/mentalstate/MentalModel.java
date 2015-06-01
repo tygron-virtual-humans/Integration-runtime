@@ -49,7 +49,9 @@ import krTools.language.DatabaseFormula;
 import krTools.language.Query;
 import krTools.language.Substitution;
 import krTools.language.Update;
+import languageTools.exceptions.relationParser.InvalidGamBeliefException;
 import languageTools.parser.relationParser.EmotionConfig;
+import languageTools.parser.relationParser.GamBelief;
 import languageTools.program.agent.AgentId;
 import languageTools.program.agent.AgentProgram;
 import languageTools.program.agent.msc.AGoalLiteral;
@@ -576,16 +578,8 @@ public class MentalModel {
 		Agent agent = gam.getAgentByName(self.getName());
 		EmotionConfig config = EmotionConfig.getInstance();
 		for (SingleGoal goal : goalsToBeRemoved) {
-			Goal gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
-
-			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
-			affectedGoals.add(gamGoal);
-			ArrayList<Double> congruences = new ArrayList<Double>();
-			congruences.add(config.getDefaultPositiveCongruence());
-			Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
-			gam.appraise(bel);
-			agent.removeGoal(gamGoal);
-			gam.getMap().getGoalMap().removeGoal(gamGoal);
+				appraiseGoal(agent, goal);
+				appraiseGoalAsSubgoal(agent, goal);
 			try {
 				getAttentionSet(true).remove(goal, debugger);
 			} catch (KRInitFailedException e) {
@@ -594,6 +588,43 @@ public class MentalModel {
 						.toString()), e);
 			}
 		}
+	}
+	
+	public static void appraiseGoal(Agent agent, SingleGoal goal) {
+		Engine gam = Engine.getInstance();
+		EmotionConfig config = EmotionConfig.getInstance();
+		Goal gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
+		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+		affectedGoals.add(gamGoal);
+		ArrayList<Double> congruences = new ArrayList<Double>();
+		congruences.add(config.getDefaultPositiveCongruence());
+		Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
+		gam.appraise(bel);
+		agent.removeGoal(gamGoal);
+		gam.getMap().getGoalMap().removeGoal(gamGoal);
+	}
+	
+	public static void appraiseGoalAsSubgoal(Agent agent, SingleGoal goal) {
+		if(EmotionConfig.getInstance().getBeliefs().containsKey(goal.getGoal().getSignature())) {	
+				Engine gam = Engine.getInstance();
+				EmotionConfig config = EmotionConfig.getInstance();
+				GamBelief gamBel;
+				try {
+					gamBel = config.getBelief(goal.getGoal().getSignature());
+					Goal affectedGoal = gam.getGoalByName(gamBel.getAffected());
+					ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+					affectedGoals.add(affectedGoal);
+					ArrayList<Double> congruences = new ArrayList<Double>();
+					congruences.add(gamBel.getCongruence());
+					Belief bel = new Belief(gamBel.getLikelihood(), agent, affectedGoals, congruences, gamBel.isIncremental());
+					gam.appraise(bel);
+				} catch (InvalidGamBeliefException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+
+		}
+		
 	}
 
 	/**
