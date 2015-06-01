@@ -236,6 +236,10 @@ public class Engine {
         this.gamygdala = gamygdala;
     }
 
+    public Agent getAgentByName(String name){
+    	return gamygdala.getMap().getAgentMap().getAgentByName(name);
+    }
+    
     /**
      * Facilitator method to print all emotional states to the console.
      *
