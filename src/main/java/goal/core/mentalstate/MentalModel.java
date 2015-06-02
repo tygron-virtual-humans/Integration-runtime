@@ -611,13 +611,15 @@ public class MentalModel {
 				GamBelief gamBel;
 				try {
 					gamBel = config.getBelief(goal.getGoal().getSignature());
-					Goal affectedGoal = gam.getGoalByName(gamBel.getAffected());
-					ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
-					affectedGoals.add(affectedGoal);
-					ArrayList<Double> congruences = new ArrayList<Double>();
-					congruences.add(gamBel.getCongruence());
-					Belief bel = new Belief(gamBel.getLikelihood(), agent, affectedGoals, congruences, gamBel.isIncremental());
-					gam.appraise(bel);
+					if(gam.getMap().getGoalMap().containsKey(gamBel.getAffected())) {
+						Goal affectedGoal = gam.getGoalByName(gamBel.getAffected());
+						ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+						affectedGoals.add(affectedGoal);
+						ArrayList<Double> congruences = new ArrayList<Double>();
+						congruences.add(gamBel.getCongruence());
+						Belief bel = new Belief(gamBel.getLikelihood(), agent, affectedGoals, congruences, gamBel.isIncremental());
+						gam.appraise(bel);
+					}
 				} catch (InvalidGamBeliefException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
