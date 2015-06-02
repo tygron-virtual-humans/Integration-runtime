@@ -7,37 +7,27 @@ import java.util.ArrayList;
  */
 public class Agent {
 
+    public static final double DEFAULT_GAIN = 1;
     /**
      * The name of this Agent.
      */
     public String name;
-
-    /**
-     * Collection of goals for this Agent.
-     */
-    GoalMap goals;
-
-    /**
-     * Collection of relations for this Agent.
-     */
-    public AgentRelations currentRelations;
-
-    /**
-     * Collection of emotions for this Agent.
-     */
-    AgentInternalState internalState;
-
     /**
      * The gain for this agent. Must be between 0 and 20 inclusive.
      */
     public double gain;
-
     /**
-     * Pleasure Arousal Dominance mapping.
+     * Collection of goals for this Agent.
      */
-    private MapPad mapPad;
-
-    public static final double DEFAULT_GAIN = 1;
+    GoalMap goals;
+    /**
+     * Collection of relations for this Agent.
+     */
+    AgentRelations currentRelations;
+    /**
+     * Collection of emotions for this Agent.
+     */
+    AgentInternalState internalState;
 
     /**
      * Create new Agent.
@@ -57,8 +47,10 @@ public class Agent {
         // Set gain
         this.gain = Agent.DEFAULT_GAIN;
 
-        // Initialize PAD map
-        this.mapPad = new MapPad();
+    }
+
+    public AgentRelations getCurrentRelations() {
+        return this.currentRelations;
     }
 
     /**
@@ -159,7 +151,7 @@ public class Agent {
      * the relation does not exist, it will be created, otherwise it will be
      * updated.
      *
-     * @param agent The agent who is the target of the relation.
+     * @param agent    The agent who is the target of the relation.
      * @param relation The relation (between -1 and 1).
      */
     public Relation updateRelation(Agent agent, double relation) {
@@ -196,7 +188,7 @@ public class Agent {
      * Prints the relations this agent has with the agent defined by agentName.
      *
      * @param agent The agent who is the target of the relation. When omitted,
-     *            all relations are printed.
+     *              all relations are printed.
      */
     public void printRelations(Agent agent) {
         String output = this.name + " has the following sentiments:\n   ";
@@ -206,11 +198,11 @@ public class Agent {
 
     /**
      * Update Agent's emotion based on actions by other Agents.
-     * 
+     *
      * @param affectedAgent The Agent affected by the action.
-     * @param causalAgent The Agent causal to the action.
-     * @param desirability How much the current Agent desires the Goal subject
-     *            to the action.
+     * @param causalAgent   The Agent causal to the action.
+     * @param desirability  How much the current Agent desires the Goal subject
+     *                      to the action.
      * @return The Emotion arising from the action.
      */
     public Emotion agentActions(Agent affectedAgent, Agent causalAgent, double desirability) {
@@ -224,7 +216,7 @@ public class Agent {
 
         // Init emotion variable
         Emotion emotion = new Emotion(null, 0);
-        goal.core.gamygdala.Relation relation;
+        Relation relation;
 
         // If we are the affectedAgent, and we are not causing the action
         if (affectedAgent.equals(this)) {
@@ -275,12 +267,10 @@ public class Agent {
      * resentment. Emotions that arise when we evaluate events that affect goals
      * of others.
      *
-     * @param utility
-     * @param desirability The desirability is the desirability from the goal
-     *            owner's perspective.
-     * @param deltaLikelihood
-     * @param relation A relation object between the agent being evaluated and
-     *            the goal owner of the affected goal.
+     * @param desirability    The desirability is the desirability from the goal
+     *                        owner's perspective.
+     * @param relation        A relation object between the agent being evaluated and
+     *                        the goal owner of the affected goal.
      */
     public Emotion evaluateSocialEmotion(double desirability, Relation relation) {
         Emotion emotion = new Emotion(null, 0);
@@ -304,9 +294,9 @@ public class Agent {
      * This method evaluates the event in terms of internal emotions that do not
      * need relations to exist, such as hope, fear, etc..
      *
-     * @param utility the utility.
+     * @param utility     the utility.
      * @param deltaLikelh the delta likelihood.
-     * @param likelihood the likelihood.
+     * @param likelihood  the likelihood.
      */
     public boolean evaluateInternalEmotion(double utility, double deltaLikelh, double likelihood) {
 
@@ -337,12 +327,11 @@ public class Agent {
      * individual agents, you should tweak the decayFactor per agent not the
      * "frame rate" of the decay (as this doesn't change the rate).
      *
-     * @param dfunc The Decay Function used to decay emotions and relations.
+     * @param dfunc        The Decay Function used to decay emotions and relations.
      * @param millisPassed The time passed (in milliseconds) since the last
-     *            decay.
+     *                     decay.
      */
     public void decay(DecayFunction dfunc, long millisPassed) {
-
         // Decay all internal emotions
         for (int i = 0; i < this.internalState.size(); i++) {
 

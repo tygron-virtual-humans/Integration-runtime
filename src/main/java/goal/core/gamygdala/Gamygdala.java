@@ -23,8 +23,6 @@ public class Gamygdala {
      * The decay factor used in the DecayFunction.
      */
     private double decayFactor;
-    
-    private Gamygdala gamInstance;
 
     /**
      * Constructor for Gamygdala Emotion Engine.
@@ -41,7 +39,7 @@ public class Gamygdala {
         this.decayFunction = new LinearDecay(this.decayFactor);
 
     }
-   
+
     /**
      * Performs the complete appraisal of a single event (belief) for all
      * agents.
@@ -86,6 +84,7 @@ public class Gamygdala {
                     belief.getLikelihood(), belief.isIncremental());
 
             Engine.debug("   deltaLikelihood: " + deltaLikelihood);
+
             // if affectedAgent is null, calculate emotions for all agents.
             if (affectedAgent == null) {
 
@@ -171,6 +170,7 @@ public class Gamygdala {
     public void decayAll(long lastMillis, long currentMillis) {
 
         long millisPassed = currentMillis - lastMillis;
+
         Agent agent;
         for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
             agent = pair.getValue();
@@ -200,7 +200,7 @@ public class Gamygdala {
 
         Double oldLikelihood = goal.getLikelihood();
         double newLikelihood;
-       
+
         if (!goal.isMaintenanceGoal() && (oldLikelihood >= 1 || oldLikelihood <= -1)) {
             return 0;
         }
@@ -213,6 +213,7 @@ public class Gamygdala {
         }
 
         goal.setLikelihood(newLikelihood);
+
         return newLikelihood - oldLikelihood;
     }
 
@@ -252,7 +253,6 @@ public class Gamygdala {
     public void setDecayFactor(double decayFactor) {
         this.decayFactor = decayFactor;
     }
-    
     
     public GamygdalaMap getMap(){
     	return gamygdalaMap;

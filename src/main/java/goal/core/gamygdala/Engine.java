@@ -8,11 +8,15 @@ import java.util.Map.Entry;
 import languageTools.parser.relationParser.EmotionConfig;
 import languageTools.parser.relationParser.GamRelation;
 
-
 /**
  * Gaming Engine adapter for Gamygdala.
  */
 public class Engine {
+
+    /**
+     * Singleton Engine object.
+     */
+    private static Engine engineInstance;
 
     /**
      * Debug flag.
@@ -22,49 +26,44 @@ public class Engine {
     /**
      * Gamygdala instance.
      */
-    private Gamygdala gamygdala;
+    private Gamygdala gamygdala = new Gamygdala();
 
     /**
      * Timestamp of last emotion calculation.
      */
-    private long lastMillis;
-    
-    
-    private static Engine GamEngine;
+    private long lastMillis = System.currentTimeMillis();
 
     /**
-     * Instantiate new Engine.
-     * 
-     * @param gamygdala Gamygdala instance.
+     * Empty constructor to prevent instantiating.
+     * Use Engine.getInstance() instead.
      */
-    private Engine(Gamygdala gamygdala) {
-
-        // Store Gamygdala instance
-        this.gamygdala = gamygdala;
-
-        // Record current time on creation
-        this.lastMillis = System.currentTimeMillis();
-
-    }
-    
-    public synchronized static Engine getInstance(){
-    	if(GamEngine == null){
-    		GamEngine = new Engine(new Gamygdala());
-    		double decayFactor = 0.95;
-    	    double gain = 15;
-
-    	    GamEngine.setDecay(decayFactor, new ExponentialDecay(decayFactor));
-    	    GamEngine.setGain(gain);
-
-    		
-    	}
-    	return GamEngine;
-    }
-    
-    public static void reset(){
-    	GamEngine = null;
+    private Engine() {
     }
 
+    /**
+     * Get the Engine object. If no Engine has been instantiated,
+     * create a new Engine with a fresh Gamygdala instance.
+     */
+    public static synchronized Engine getInstance() {
+
+        if (engineInstance == null) {
+            engineInstance = new Engine();
+        }
+
+        return engineInstance;
+    }
+
+    public static Engine reset() {
+        if (engineInstance != null) {
+            synchronized (Engine.class) {
+                if (engineInstance != null) {
+                    engineInstance = new Engine();
+                }
+            }
+        }
+
+        return engineInstance;
+    }
 
     /**
      * Create and add an Agent to the Engine.
@@ -72,7 +71,7 @@ public class Engine {
      * @param name The name of the Agent.
      */
     public Agent createAgent(String name) {
-    	Agent agent = new Agent(name);
+        Agent agent = new Agent(name);
         gamygdala.getGamygdalaMap().registerAgent(agent);
         return agent;
     }
@@ -86,8 +85,9 @@ public class Engine {
      * @param isMaintenanceGoal Whether or not this Goal is a maintenance goal.
      * @return The newly created Goal.
      */
-    public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility, boolean isMaintenanceGoal) {
-    	Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
+    public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility,
+                    boolean isMaintenanceGoal) {
+        Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
 
         // Add Goal to Agent
         agent.addGoal(goal);
@@ -126,7 +126,7 @@ public class Engine {
      */
     public void decayAll() {
 
-        //Engine.debug("\n=====\nDecaying all emotions\n=====\n");
+        Engine.debug("\n=====\nDecaying all emotions\n=====\n");
 
         // Record current time
         long now = System.currentTimeMillis();
@@ -179,7 +179,8 @@ public class Engine {
     public boolean setGain(double gain) {
 
         if (gain <= 0 || gain > 20) {
-            Engine.debug("[Engine.setGain] Error: " + "gain factor for appraisal integration must be between 0 and 20.");
+            Engine.debug("[Engine.setGain] Error: "
+                            + "gain factor for appraisal integration must be between 0 and 20.");
             return false;
         }
 
@@ -222,35 +223,23 @@ public class Engine {
     }
 
     /**
-     * Facilitator method to print all emotional states to the console.
-     *
-     * @param gain Whether you want to print the gained (true) emotional states
-     *            or non-gained (false).
+     * Get the Gamygdala instance for this Engine.
+     * 
+     * @return The Gamygdala instance.
      */
-    public void printAllEmotions(boolean gain) {
-
-        Iterator<Entry<String, Agent>> it = gamygdala.getGamygdalaMap().getAgentIterator();
-        Agent agent;
-        while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = it.next();
-            agent = pair.getValue();
-
-            agent.printEmotionalState(gain);
-            agent.printRelations(null);
-        }
+    public Gamygdala getGamygdala() {
+        return gamygdala;
     }
 
     /**
-     * Print debug information to console if the debug flag is set to true.
-     *
-     * @param what Object to print to console.
+     * Set a new Gamygdala instance for this Engine.
+     * 
+     * @param gamygdala The Gamygdala instance.
      */
-    public static void debug(Object what) {
-        if (Engine.DEBUG) {
-            System.out.println(what);
-        }
+    public void setGamygdala(Gamygdala gamygdala) {
+        this.gamygdala = gamygdala;
     }
-    
+
     public Agent getAgentByName(String name){
     	return gamygdala.getMap().getAgentMap().getAgentByName(name);
     }
@@ -288,4 +277,35 @@ public class Engine {
  			engine.createRelation(agent1, agent2, relation.getValue());
 		}
 	}
+    
+    /**
+     * Facilitator method to print all emotional states to the console.
+     *
+     * @param gain Whether you want to print the gained (true) emotional states
+     *            or non-gained (false).
+     */
+    public void printAllEmotions(boolean gain) {
+
+        Iterator<Entry<String, Agent>> it = gamygdala.getGamygdalaMap().getAgentIterator();
+        Agent agent;
+        while (it.hasNext()) {
+            Map.Entry<String, Agent> pair = it.next();
+            agent = pair.getValue();
+
+            agent.printEmotionalState(gain);
+            agent.printRelations(null);
+        }
+    }
+
+    /**
+     * Print debug information to console if the debug flag is set to true.
+     *
+     * @param what Object to print to console.
+     */
+    public static void debug(Object what) {
+        if (Engine.DEBUG) {
+            System.out.println(what);
+        }
+    }
+
 }
