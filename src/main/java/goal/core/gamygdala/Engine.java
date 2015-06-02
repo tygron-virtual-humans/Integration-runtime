@@ -1,8 +1,12 @@
 package goal.core.gamygdala;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import languageTools.parser.relationParser.EmotionConfig;
+import languageTools.parser.relationParser.GamRelation;
 
 /**
  * Gaming Engine adapter for Gamygdala.
@@ -243,6 +247,36 @@ public class Engine {
     public Goal getGoalByName(String name){
     	return gamygdala.getMap().getGoalMap().getGoalByName(name);
     }
+    
+    public GamygdalaMap getMap(){
+    	return gamygdala.getMap();
+    }
+    
+    public static void insertRelations(){
+		// getting both instances
+		EmotionConfig emo = EmotionConfig.getInstance();
+		Engine engine = Engine.getInstance();
+		
+		//for all relations
+		ArrayList<GamRelation> map = emo.getRelations();
+		for(int i=0; i<map.size();i++){
+			
+			//create agents via their names
+			GamRelation relation = map.get(i);
+			Agent agent1 = Engine.getInstance().createAgent(relation.getAgent1());
+			Agent agent2 = Engine.getInstance().createAgent(relation.getAgent2());
+			
+			Engine.getInstance().createAgent(agent2.name);
+			//System.out.println("-----rel created-------");
+			//System.out.println(relation.toString());
+			//System.out.println(agent1);
+			//System.out.println(agent2);
+			//System.out.println(relation.getValue());
+			//System.out.println("-----rel created-------");
+			//add relation to gamygdala instance
+ 			engine.createRelation(agent1, agent2, relation.getValue());
+		}
+	}
     
     /**
      * Facilitator method to print all emotional states to the console.

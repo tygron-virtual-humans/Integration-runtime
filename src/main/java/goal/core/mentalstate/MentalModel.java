@@ -23,6 +23,7 @@ import goal.core.gamygdala.Agent;
 import goal.core.gamygdala.Belief;
 import goal.core.gamygdala.Engine;
 import goal.core.gamygdala.Goal;
+import goal.core.gamygdala.GoalCongruenceMapException;
 import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.errorhandling.Resources;
@@ -582,7 +583,13 @@ public class MentalModel {
 			affectedGoals.add(gamGoal);
 			ArrayList<Double> congruences = new ArrayList<Double>();
 			congruences.add(config.getDefaultPositiveCongruence());
-			Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
+			Belief bel = null;
+			try {
+				bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
+			} catch (GoalCongruenceMapException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			gam.appraise(bel);
 			agent.removeGoal(gamGoal);
 			gam.getMap().getGoalMap().removeGoal(gamGoal);

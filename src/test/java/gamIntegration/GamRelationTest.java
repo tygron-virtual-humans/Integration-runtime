@@ -30,6 +30,6 @@ public class GamRelationTest extends AbstractUnitTestTest {
 		AgentRelations relations = new AgentRelations();
 		relations.add(rel);
 
-		assertEquals(relations.toString(), gamEngine.getAgentByName("agent1").currentRelations.toString());
+		assertEquals(relations.toString(), gamEngine.getAgentByName("agent1").getCurrentRelations().toString());
 	}
 }
