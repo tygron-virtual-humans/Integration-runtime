@@ -4,7 +4,6 @@ package goal.core.gamygdala;
  * Calculate exponential decay function.
  */
 public class ExponentialDecay extends DecayFunction {
-
     /**
      * Constructor.
      * 

@@ -1,0 +1,2 @@
+GOAL, agent1, goal1, 0.8
+DECAY, EXP, 0.99

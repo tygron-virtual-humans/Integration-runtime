@@ -18,6 +18,9 @@
 
 package goal.tools;
 
+import goal.core.gamygdala.Engine;
+import goal.core.gamygdala.ExponentialDecay;
+import goal.core.gamygdala.LinearDecay;
 import goal.tools.errorhandling.Resources;
 import goal.tools.errorhandling.WarningStrings;
 import goal.tools.errorhandling.exceptions.GOALBug;
@@ -44,7 +47,6 @@ import java.util.logging.Level;
 import krTools.KRInterface;
 import krTools.errors.exceptions.ParserException;
 import languageTools.analyzer.agent.AgentValidator;
-import languageTools.analyzer.agent.AgentValidatorSecondPass;
 import languageTools.analyzer.mas.MASValidator;
 import languageTools.analyzer.test.TestValidator;
 import languageTools.errors.Message;
@@ -422,9 +424,7 @@ public class PlatformManager {
 		MASValidator validator = new MASValidator(masFile.getPath());
 		validator.validate();
 		MASProgram masProgram = validator.getProgram();
-		
 	
-		
 		if (masProgram == null) {
 			throw new ParserException("Invalid MAS file"); //$NON-NLS-1$
 		}
@@ -432,6 +432,13 @@ public class PlatformManager {
 		
 		if(masProgram.hasEmotionFile()) {
 			 EmotionConfig.parse(masProgram.getEmotionFile());
+			 EmotionConfig config = EmotionConfig.getInstance();
+			 double decayFactor = config.getDecay();
+			 if (config.isDecayExponential()) {
+				 Engine.getInstance().setDecay(decayFactor, new ExponentialDecay(decayFactor));
+			 } else {
+				 Engine.getInstance().setDecay(decayFactor, new LinearDecay(decayFactor));
+			 }
 		}
 
 		// Log messages.

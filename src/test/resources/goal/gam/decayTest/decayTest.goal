@@ -1,0 +1,38 @@
+init module {
+	beliefs {
+		% Start at cycle 0.
+		counter(0).
+	}
+
+	goals {
+		% Goal to make the program run for 10 cycles.
+		counter(10).
+	}
+	
+	program [order=linearall] {
+		% Add goal to goalbase which is used to make the agent happy
+		if true then adopt( bla(ding) ).
+	
+		% Make sure a goal is achieved to make the agent happy
+		if true then insert( bla(ding) ).
+	}
+}
+
+main module [exit=nogoals] {
+	program [order=linearall] {
+		% Last cycle
+		if bel( counter(9) ) then {
+			% Goal is achieved, agent should be happy
+			if bel( emotion(joy, X), X >= 0.01 ) then insert( result(ok) ).
+		
+			% If the agent is not happy, result a failure
+			if bel( emotion(joy, X), X < 0.01 ) then insert( result(failure) ).	
+		}
+		
+		% Suppress warning.
+		if bel( result(anders) ) then insert( bla(anderding) ).	
+		
+		% Repeat main module by incrementing count belief.
+		if bel( counter(X), Y is X + 1 ) then insert( not(counter(X)), counter(Y) ).
+	}
+}
