@@ -23,7 +23,7 @@ import java.util.TreeMap;
 
 public class DBExportPreferences {
 	public enum Pref {
-		exportbeliefs, exportpercepts, exportmailbox, exportgoals, separatefiles, openaftersave, exportBrowseDir, rememberLastUsedExportDir
+		exportbeliefs, exportpercepts, exportemotions, exportmailbox, exportgoals, separatefiles, openaftersave, exportBrowseDir, rememberLastUsedExportDir
 	}
 
 	private static Map<String, Object> preferences;
@@ -38,6 +38,7 @@ public class DBExportPreferences {
 		init(Pref.exportbeliefs, true);
 		init(Pref.exportmailbox, true);
 		init(Pref.exportpercepts, true);
+		init(Pref.exportemotions, true);
 		init(Pref.exportgoals, true);
 		init(Pref.separatefiles, true);
 		init(Pref.openaftersave, false);
@@ -75,6 +76,16 @@ public class DBExportPreferences {
 	 */
 	public static boolean getExportPercepts() {
 		return (Boolean) get(Pref.exportpercepts);
+	}
+
+	/**
+	 * get preference for export of emotions
+	 *
+	 * @return true if user wants emotions to be exported (included with
+	 *         beliefs)
+	 */
+	public static boolean getExportEmotions() {
+		return (Boolean) get(Pref.exportemotions);
 	}
 
 	/**
@@ -142,6 +153,13 @@ public class DBExportPreferences {
 	 */
 	public static void setExportPercepts(boolean exportpercepts) {
 		put(Pref.exportpercepts, exportpercepts);
+	}
+
+	/**
+	 * set preference for export of emotions
+	 */
+	public static void setExportEmotions(boolean exportemotions) {
+		put(Pref.exportemotions, exportemotions);
 	}
 
 	/**
