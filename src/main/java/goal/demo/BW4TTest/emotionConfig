@@ -2,6 +2,7 @@ WHITELIST, on
 default goal utility, 0.16
 default achieved congruence, 1
 default dropped congruence, -1
-GOAL, ANY, atBlock/1
-GOAL, ANY, getSequence/1
-BEL,atBlock/1, 0.16,  ANY  ,getSequence/1, 0.16,false 
+IGOAL, in/1, 0.01
+CGOAL, atBlock/1
+CGOAL, getSequence/1
+SUB,atBlock/1, 0.16  ,getSequence/1, 0.16,false 

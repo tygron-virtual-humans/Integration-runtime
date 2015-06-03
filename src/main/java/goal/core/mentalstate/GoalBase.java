@@ -327,7 +327,12 @@ public final class GoalBase implements Iterable<SingleGoal> {
 					engine.getAgentByName(this.agentName.getName());
 		EmotionConfig conf = EmotionConfig.getInstance();
 		GamGoal gamGoal = conf.getGoal(goal.getGoal().getSignature());
-		engine.createGoalForAgent(gamAgent,gamGoal.getGoal(),gamGoal.getValue(),false);
+		if(gamGoal.isIndividualGoal()) {
+		 engine.createGoalForAgent(gamAgent,gamGoal.getGoal() + this.agentName.getName(),gamGoal.getValue(),false);
+		} else {
+		 engine.createGoalForAgent(gamAgent,gamGoal.getGoal(),gamGoal.getValue(),false);
+
+		}
 			
 		//System.out.println("DEFAULT: " + gamGoal.getValue());
 		
@@ -412,33 +417,16 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		}
 		this.goals.removeAll(goalsToBeDropped);
 
+	
 		Engine gam = Engine.getInstance();
 		Agent agent = gam.getAgentByName(self.getName());
-		EmotionConfig config = EmotionConfig.getInstance();
 		for (SingleGoal goal : goalsToBeDropped) {
 			debugger.breakpoint(Channel.GB_UPDATES, goal, goal.getGoal()
 					.getSourceInfo(), "Goal %s"
 					+ " has been dropped from the "
 					+ (this.owner.equals(this.agentName) ? "" : this.agentName
 							+ "'s ") + "goal base: %s.", goal, this.name);
-
-		
-			
-			Goal gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
-
-			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
-			affectedGoals.add(gamGoal);
-			ArrayList<Double> congruences = new ArrayList<Double>();
-			congruences.add(config.getDefaultNegativeCongruence());
-			Belief bel = null;
-			try {
-				bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
-			} catch (GoalCongruenceMapException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			gam.appraise(bel, agent);
-			agent.removeGoal(gamGoal);
+			dropGamGoal(agent, goal);
 			this.count++;
 			getTime();
 			goal.unmarkOccurrence();
@@ -446,6 +434,31 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		}	
 			
 		return goalsToBeDropped;
+	}
+	
+	public static void dropGamGoal(Agent agent, SingleGoal goal) {
+		Engine gam = Engine.getInstance();
+		EmotionConfig config = EmotionConfig.getInstance();
+		Goal gamGoal;
+		if(config.getGoal(goal.getGoal().getSignature()).isIndividualGoal()) {
+		 gamGoal = gam.getGoalByName(goal.getGoal().getSignature() + agent.name);
+		}
+		else {
+		 gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
+		}
+		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+		affectedGoals.add(gamGoal);
+		ArrayList<Double> congruences = new ArrayList<Double>();
+		congruences.add(config.getDefaultNegativeCongruence());
+		Belief bel = null;
+		try {
+			bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
+		} catch (GoalCongruenceMapException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		gam.appraise(bel, agent);
+		agent.removeGoal(gamGoal);
 	}
 
 	/**
