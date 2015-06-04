@@ -562,17 +562,7 @@ public class RunState<D extends Debugger> {
 
 	private Set<Percept> getPercepts() throws DebuggerKilledException {
 		try {
-			// Update emotions
 			Set<Percept> addList = this.environment.getPercepts();
-	
-			AgentInternalState emoState = Engine.getInstance().getAgentByName(agentName.getName()).getEmotionalState(null);
-			ListIterator<Emotion> emoIterator = emoState.listIterator();
-			while(emoIterator.hasNext()){
-				Emotion emo = emoIterator.next();
-				Percept percept = new Percept("gam", new Identifier(emo.name), new Numeral(emo.intensity));
-				addList.add(percept);
-			}
-
 			return addList;
 		} catch (MessagingException e) {
 			// typically, when system is taken down.
@@ -634,7 +624,7 @@ public class RunState<D extends Debugger> {
 		if (initial_emotions.isEmpty()){
 			newEmotions = getEmotions();
 		}
-
+		
 		this.lastAction = null;
 		this.event = !newMessages.isEmpty() || !newPercepts.isEmpty() || !newEmotions.isEmpty()
 				|| isActionPerformed;

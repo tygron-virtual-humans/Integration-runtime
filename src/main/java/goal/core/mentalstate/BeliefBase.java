@@ -479,6 +479,8 @@ public class BeliefBase {
 			return Channel.MAILS_CONDITIONAL_VIEW;
 		case PERCEPTBASE:
 			return Channel.PERCEPTS_CONDITIONAL_VIEW;
+		case EMOTIONBASE:
+			return Channel.EMOTIONS_CONDITIONAL_VIEW;
 		default:
 			// knowledge base changes are not reported via debug channels and
 			// goal base cannot be here.
