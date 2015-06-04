@@ -264,6 +264,11 @@ public class GOALInterpreter<DEBUGGER extends Debugger> extends Controller {
 			Set<Percept> previousPercepts) {
 		this.runState.processPercepts(newPercepts, previousPercepts);
 	}
+	
+	public void processEmotions(Set<Percept> newEmotions, 
+			Set<Percept> previousEmotions) {
+		this.runState.processEmotions(newEmotions, previousEmotions);
+	}
 
 	@Override
 	public void dispose() throws InterruptedException {

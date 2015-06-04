@@ -126,6 +126,11 @@ public class Engine {
      */
     public void decayAll() {
 
+<<<<<<< HEAD
+=======
+        // Engine.debug("\n=====\nDecaying all emotions\n=====\n");
+
+>>>>>>> Changed runtime to (hopefully) work with the emotionbase. Not tested yet.
         // Record current time
         long now = System.currentTimeMillis();
 

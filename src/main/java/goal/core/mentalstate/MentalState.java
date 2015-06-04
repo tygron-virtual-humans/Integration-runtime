@@ -329,7 +329,7 @@ public class MentalState {
 		// base.
 		getOwnBase(BASETYPE.BELIEFBASE).updateAgentFact(false, id, false);
 		this.knownAgents.remove(id);
-
+		
 		// Agent with agentName no longer exists; remove corresponding mental
 		// model.
 		if (this.models.get(id) != null) {
@@ -793,7 +793,7 @@ public class MentalState {
 		}
 		
 		if (addemotion) {
-			text += "% ----- percepts -----\n";
+			text += "% ----- emotions -----\n";
 			text += getOwnBase(BASETYPE.EMOTIONBASE).getTheory();
 		}
 
