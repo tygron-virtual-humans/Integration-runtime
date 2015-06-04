@@ -322,16 +322,18 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		Engine engine = Engine.getInstance();
 		//System.out.println("Engine");
 		//System.out.println(engine);
-		
+	//	System.out.println("ADDLIST: " + goal.getGoal().getAddList());
+		//System.out.println("SIGNATURE: " + goal.getGoal().getSignature());
 		Agent gamAgent = 
 					engine.getAgentByName(this.agentName.getName());
 		EmotionConfig conf = EmotionConfig.getInstance();
 		GamGoal gamGoal = conf.getGoal(goal.getGoal().getSignature());
 		if(gamGoal.isIndividualGoal()) {
-		 engine.createGoalForAgent(gamAgent,gamGoal.getGoal() + this.agentName.getName(),gamGoal.getValue(),false);
+		 engine.createGoalForAgent(gamAgent,goal.getGoal().getAddList().get(0).toString() + this.agentName.getName(),gamGoal.getValue(),false);
+		 engine.getGamygdala().getSubgoalMap().addIndividualGoal(goal.getGoal().getSignature(), this.agentName.getName(), goal.getGoal().getAddList().get(0).toString());
 		} else {
-		 engine.createGoalForAgent(gamAgent,gamGoal.getGoal(),gamGoal.getValue(),false);
-
+		 engine.createGoalForAgent(gamAgent,goal.getGoal().getAddList().get(0).toString(),gamGoal.getValue(),false);
+		 engine.getGamygdala().getSubgoalMap().addCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
 		}
 			
 		//System.out.println("DEFAULT: " + gamGoal.getValue());
@@ -440,11 +442,12 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		Engine gam = Engine.getInstance();
 		EmotionConfig config = EmotionConfig.getInstance();
 		Goal gamGoal;
-		if(config.getGoal(goal.getGoal().getSignature()).isIndividualGoal()) {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getSignature() + agent.name);
+		boolean isIndividual = config.getGoal(goal.getGoal().getSignature()).isIndividualGoal();
+		if(isIndividual) {
+		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString() + agent.name);
 		}
 		else {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
+		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString());
 		}
 		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 		affectedGoals.add(gamGoal);
@@ -459,6 +462,12 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		}
 		gam.appraise(bel, agent);
 		agent.removeGoal(gamGoal);
+		gam.getMap().getGoalMap().remove(gamGoal.getName());
+		if(isIndividual) {
+			gam.getGamygdala().getSubgoalMap().removeIndividualGoal(goal.getGoal().getSignature(), agent.name, goal.getGoal().getAddList().get(0).toString());
+		} else {
+			gam.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
+		}
 	}
 
 	/**
