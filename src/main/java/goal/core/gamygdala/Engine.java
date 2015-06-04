@@ -126,7 +126,7 @@ public class Engine {
      */
     public void decayAll() {
 
-        Engine.debug("\n=====\nDecaying all emotions\n=====\n");
+        // Engine.debug("\n=====\nDecaying all emotions\n=====\n");
 
         // Record current time
         long now = System.currentTimeMillis();

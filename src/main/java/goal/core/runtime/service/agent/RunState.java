@@ -35,6 +35,7 @@ import goal.core.gamygdala.Emotion;
 import goal.core.gamygdala.Engine;
 import goal.core.mentalstate.MentalState;
 import goal.core.mentalstate.SingleGoal;
+import goal.core.mentalstate.Theory;
 import goal.core.runtime.service.environmentport.EnvironmentPort;
 import goal.preferences.PMPreferences;
 import goal.tools.adapt.FileLearner;
@@ -55,6 +56,7 @@ import goal.tools.errorhandling.exceptions.GOALLaunchFailureException;
 import java.rmi.activation.UnknownObjectException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -144,6 +146,7 @@ public class RunState<D extends Debugger> {
 	 */
 	private Set<Percept> previousPercepts = new LinkedHashSet<>();
 	private Set<Message> previousMessages = new LinkedHashSet<>();
+	private Set<Percept> previousEmotions = new LinkedHashSet<>();
 	/**
 	 * The goal that is focused on is stored temporarily in the run state for
 	 * later reference when a {@link ModuleCallAction} is executed. The goal
@@ -327,6 +330,7 @@ public class RunState<D extends Debugger> {
 		//
 		this.previousPercepts.clear();
 		this.previousMessages.clear();
+		this.previousEmotions.clear();
 		this.messaging.reset();
 		this.focusgoal = null;
 		this.activeStackOfModules.clear();
@@ -383,6 +387,38 @@ public class RunState<D extends Debugger> {
 
 		// nothing to do if both add and delete lists are empty.
 		getMentalState().getOwnBase(BASETYPE.PERCEPTBASE).updatePercepts(
+				addList, deleteList, this.debugger);
+	}
+	
+	/**
+	 * Processes EIS percepts received from the agent's environment. Converts
+	 * EIS {@link Percept}s to {@link DatabaseFormula}s and inserts new and
+	 * removes old percepts from the percept base.
+	 *
+	 * @param newPercepts
+	 *            The percepts to be processed.
+	 * @param previousPercepts
+	 *            The percepts processed last round.
+	 */
+	public void processEmotions(Set<Percept> newEmotions,
+			Set<Percept> previousEmotions) {
+		// Compute which percepts need to be deleted and which percepts need to
+		// be added
+		// to the percept base using the list of percepts from the previous
+		// round. The
+		// set of percepts to be deleted/added are called lists for historical
+		// reasons.
+		
+		Set<Percept> deleteList = new HashSet<>(previousEmotions);
+		deleteList.removeAll(newEmotions);
+		Set<Percept> addList = new HashSet<>(newEmotions);
+		addList.removeAll(previousEmotions);
+		String text = "";
+		text += getMentalState().getOwnBase(BASETYPE.EMOTIONBASE).getTheory();
+		System.out.println("HELLO:" );
+		System.out.println(text);
+		// nothing to do if both add and delete lists are empty.
+		getMentalState().getOwnBase(BASETYPE.EMOTIONBASE).updateEmotions(
 				addList, deleteList, this.debugger);
 	}
 
@@ -527,22 +563,12 @@ public class RunState<D extends Debugger> {
 	 */
 	public void startCycle(boolean isActionPerformed)
 			throws GOALActionFailedException {
-		startCycle(isActionPerformed, new HashSet<Percept>());
+		startCycle(isActionPerformed, new HashSet<Percept>(), new HashSet<Percept>());
 	}
 
 	private Set<Percept> getPercepts() throws DebuggerKilledException {
 		try {
-			// Update emotions
 			Set<Percept> addList = this.environment.getPercepts();
-	
-			AgentInternalState emoState = Engine.getInstance().getAgentByName(agentName.getName()).getEmotionalState(null);
-			ListIterator<Emotion> emoIterator = emoState.listIterator();
-			while(emoIterator.hasNext()){
-				Emotion emo = emoIterator.next();
-				Percept percept = new Percept("gam", new Identifier(emo.name), new Numeral(emo.intensity));
-				addList.add(percept);
-			}
-
 			return addList;
 		} catch (MessagingException e) {
 			// typically, when system is taken down.
@@ -553,6 +579,21 @@ public class RunState<D extends Debugger> {
 			new Warning(Resources.get(WarningStrings.FAILED_GET_PERCEPT), e);
 			return new HashSet<>(0);
 		}
+	}
+	
+	private Set<Percept> getEmotions() {
+		// Update emotions
+		Set<Percept> addList = new HashSet<Percept>();
+	
+		AgentInternalState emoState = Engine.getInstance().getAgentByName(agentName.getName()).getEmotionalState(null);
+		ListIterator<Emotion> emoIterator = emoState.listIterator();
+		while(emoIterator.hasNext()){
+			Emotion emo = emoIterator.next();
+			Percept percept = new Percept("gam", new Identifier(emo.name), new Numeral(emo.intensity));
+			addList.add(percept);
+		}
+
+		return addList;
 	}
 
 	/**
@@ -578,21 +619,26 @@ public class RunState<D extends Debugger> {
 	 * @throws  
 	 */
 	// TODO: Does not yet support measuring time used in Thread.
-	public void startCycle(boolean isActionPerformed, Set<Percept> initial)
+	public void startCycle(boolean isActionPerformed, Set<Percept> initial, Set<Percept> initial_emotions)
 			throws GOALActionFailedException {
 		Set<Message> newMessages = this.messaging.getAllMessages();
 		Set<Percept> newPercepts = initial;
+		Set<Percept> newEmotions = initial_emotions;
 		if (initial.isEmpty()) {
 			newPercepts = getPercepts();
 		}
-
+		if (initial_emotions.isEmpty()){
+			newEmotions = getEmotions();
+		}
+		
 		this.lastAction = null;
-		this.event = !newMessages.isEmpty() || !newPercepts.isEmpty()
+		this.event = !newMessages.isEmpty() || !newPercepts.isEmpty() || !newEmotions.isEmpty()
 				|| isActionPerformed;
 
 		boolean sameMessages = newMessages.equals(this.previousMessages);
 		boolean samePercepts = newPercepts.equals(this.previousPercepts);
-		boolean sleepConditionsHoldingNow = samePercepts && sameMessages
+		boolean sameEmotions = newEmotions.equals(this.previousEmotions);
+		boolean sleepConditionsHoldingNow = samePercepts && sameMessages && sameEmotions
 				&& !isActionPerformed;
 
 		/**
@@ -628,9 +674,11 @@ public class RunState<D extends Debugger> {
 
 					newMessages = this.messaging.getAllMessages();
 					newPercepts = getPercepts();
+					newEmotions = getEmotions();
 					sameMessages = newMessages.equals(this.previousMessages);
 					samePercepts = newPercepts.equals(this.previousPercepts);
-					this.sleepConditionsHoldingPreviousCycle = samePercepts
+					sameEmotions = newEmotions.equals(this.previousEmotions);
+					this.sleepConditionsHoldingPreviousCycle = samePercepts && sameEmotions
 							&& sameMessages;
 				}
 				this.debugger.breakpoint(Channel.SLEEP, null, null,
@@ -644,8 +692,9 @@ public class RunState<D extends Debugger> {
 				getRoundCounter(), null, " +++++++ Cycle " + getRoundCounter() //$NON-NLS-1$
 						+ " +++++++ "); //$NON-NLS-1$
 
-		// Get and process percepts.
+		// Get and process percepts and emotions.
 		this.processPercepts(newPercepts, this.previousPercepts);
+		this.processEmotions(newEmotions, this.previousEmotions);
 		// Get messages and update message box.
 			this.processMessages(newMessages);
 
@@ -665,6 +714,7 @@ public class RunState<D extends Debugger> {
 		this.event = false;
 		this.previousMessages = newMessages;
 		this.previousPercepts = newPercepts;
+		this.previousEmotions = newEmotions;
 		this.sleepConditionsHoldingPreviousCycle = sleepConditionsHoldingNow;
 	}
 

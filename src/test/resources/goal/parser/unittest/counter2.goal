@@ -1,6 +1,7 @@
 init module{
 	beliefs{
 		counter(0).
+		joy(0).
 	}
 }
 
@@ -13,8 +14,8 @@ main module{
 
 event module {	
 	program {
-		if bel( percept(gam(hope, X)) ) then insert( gam(hope, X) ).
-		if bel( percept(gam(joy, X)) ) then insert( gam(joy, X) ).
+		% if bel( percept(emotion(hope, X)) ) then insert( emotion(hope, X) ).
+		forall bel( percept(gam(joy, X)), joy(Y) ) do delete( joy(Y) ) + insert( joy(X) ).
 	}
 }
 

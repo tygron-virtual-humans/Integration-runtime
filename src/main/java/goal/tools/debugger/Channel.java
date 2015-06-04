@@ -47,6 +47,8 @@ public enum Channel {
 	 * Channel for reports on received percepts.
 	 */
 	PERCEPTS("Percepts processed", ChannelState.NONE),
+	
+	EMOTIONS("Emotions processed", ChannelState.NONE),
 
 	/**
 	 * Channel for reporting percepts inserted into percept base, but only if
@@ -54,6 +56,9 @@ public enum Channel {
 	 */
 	PERCEPTS_CONDITIONAL_VIEW("Changes to the percept base",
 			ChannelState.CONDITIONALVIEW),
+			
+	EMOTIONS_CONDITIONAL_VIEW("Changes to the emotion base",
+			ChannelState.EMOTIONALVIEW),
 
 	/**
 	 * Channel for reports on received emotions.
@@ -244,6 +249,8 @@ public enum Channel {
 		switch (channel) {
 		case PERCEPTS:
 			return PERCEPTS_CONDITIONAL_VIEW;
+		case EMOTIONS:
+			return EMOTIONS_CONDITIONAL_VIEW;
 		case RULE_CONDITION_EVALUATION:
 			return RULE_CONDITIONAL_VIEW;
 		case ACTION_PRECOND_EVALUATION:
@@ -290,6 +297,8 @@ public enum Channel {
 		 * on the channel to the user.
 		 */
 		CONDITIONALVIEW("Internal Conditional"),
+		
+		EMOTIONALVIEW("Internal emotions"),
 		/**
 		 * Channels in the NONE state will not be displayed in the debug tracer,
 		 * and will not be paused upon when stepping.
