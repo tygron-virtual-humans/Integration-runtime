@@ -620,24 +620,27 @@ public class MentalModel {
 		if(EmotionConfig.getInstance().getBeliefs().containsKey(goal.getGoal().getSignature())) {	
 		 Engine gam = Engine.getInstance();
 		 EmotionConfig config = EmotionConfig.getInstance();
-		 GamBelief gamBel;
+		 ArrayList<GamBelief> gamBel;
 		 try {
-			gamBel = config.getBelief(goal.getGoal().getSignature());
+			 gamBel = config.getBelief(goal.getGoal().getSignature());
+			for(int i = 0; i<gamBel.size(); i++) {
 			String affectedName;
-			if(config.getGoal(gamBel.getAffected()).isIndividualGoal()) {
-				affectedName = gamBel.getAffected() + agent.name;
+			GamBelief currBel = gamBel.get(i);
+			if(config.getGoal(currBel.getAffectedGoalName()).isIndividualGoal()) {
+				affectedName = currBel.getAffectedGoalName() + agent.name;
 			} else {
-				affectedName = gamBel.getAffected();
+				affectedName = currBel.getAffectedGoalName();
 			}
 			 if(gam.getMap().getGoalMap().containsKey(affectedName)) {
 			  Goal affectedGoal = gam.getGoalByName(affectedName);
 			  ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 			  affectedGoals.add(affectedGoal);
 			  ArrayList<Double> congruences = new ArrayList<Double>();
-			  congruences.add(gamBel.getCongruence());
-			  Belief bel = new Belief(gamBel.getLikelihood(), agent, affectedGoals, congruences, gamBel.isIncremental());
+			  congruences.add(currBel.getCongruence());
+			  Belief bel = new Belief(currBel.getLikelihood(), agent, affectedGoals, congruences, currBel.isIncremental());
 			  gam.appraise(bel);
 			 }
+			}
 		} catch (InvalidGamBeliefException e) {
 		 // TODO Auto-generated catch block
 		 e.printStackTrace();
