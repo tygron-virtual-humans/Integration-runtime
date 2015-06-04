@@ -56,6 +56,18 @@ public enum Channel {
 			ChannelState.CONDITIONALVIEW),
 
 	/**
+	 * Channel for reports on received emotions.
+	 */
+	EMOTIONS("Emotions processed", ChannelState.NONE),
+
+	/**
+	 * Channel for reporting emotions inserted into emotion base, but only if
+	 * EMOTIONS channel has VIEW state.
+	 */
+	EMOTIONS_CONDITIONAL_VIEW("Changes to the emotion base",
+			ChannelState.CONDITIONALVIEW),
+
+	/**
 	 * Channel for reporting on the entry of the init module.
 	 */
 	INIT_MODULE_ENTRY("Entry of the init module", ChannelState.PAUSE),
