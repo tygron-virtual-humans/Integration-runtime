@@ -54,6 +54,9 @@ public enum Channel {
 	 */
 	PERCEPTS_CONDITIONAL_VIEW("Changes to the percept base",
 			ChannelState.CONDITIONALVIEW),
+			
+	EMOTIONS_CONDITIONAL_VIEW("Changes to the emotion base",
+			ChannelState.EMOTIONALVIEW),
 
 	/**
 	 * Channel for reporting on the entry of the init module.
@@ -278,6 +281,8 @@ public enum Channel {
 		 * on the channel to the user.
 		 */
 		CONDITIONALVIEW("Internal Conditional"),
+		
+		EMOTIONALVIEW("Internal emotions"),
 		/**
 		 * Channels in the NONE state will not be displayed in the debug tracer,
 		 * and will not be paused upon when stepping.

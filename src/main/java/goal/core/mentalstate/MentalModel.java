@@ -23,6 +23,7 @@ import goal.core.gamygdala.Agent;
 import goal.core.gamygdala.Belief;
 import goal.core.gamygdala.Engine;
 import goal.core.gamygdala.Goal;
+import goal.core.gamygdala.GoalCongruenceMapException;
 import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.errorhandling.Resources;
@@ -49,7 +50,9 @@ import krTools.language.DatabaseFormula;
 import krTools.language.Query;
 import krTools.language.Substitution;
 import krTools.language.Update;
+import languageTools.exceptions.relationParser.InvalidGamBeliefException;
 import languageTools.parser.relationParser.EmotionConfig;
+import languageTools.parser.relationParser.GamBelief;
 import languageTools.program.agent.AgentId;
 import languageTools.program.agent.AgentProgram;
 import languageTools.program.agent.msc.AGoalLiteral;
@@ -576,16 +579,8 @@ public class MentalModel {
 		Agent agent = gam.getAgentByName(self.getName());
 		EmotionConfig config = EmotionConfig.getInstance();
 		for (SingleGoal goal : goalsToBeRemoved) {
-			Goal gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
-
-			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
-			affectedGoals.add(gamGoal);
-			ArrayList<Double> congruences = new ArrayList<Double>();
-			congruences.add(config.getDefaultPositiveCongruence());
-			Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
-			gam.appraise(bel);
-			agent.removeGoal(gamGoal);
-			gam.getMap().getGoalMap().removeGoal(gamGoal);
+			appraiseGoalAsSubgoal(agent,goal);
+			appraiseGoal(agent, goal);
 			try {
 				getAttentionSet(true).remove(goal, debugger);
 			} catch (KRInitFailedException e) {
@@ -595,6 +590,69 @@ public class MentalModel {
 			}
 		}
 	}
+	
+	public static void appraiseGoal(Agent agent, SingleGoal goal) {
+		Engine gam = Engine.getInstance();
+		EmotionConfig config = EmotionConfig.getInstance();
+		Goal gamGoal;
+		if(config.getGoal(goal.getGoal().getSignature()).isIndividualGoal()) {
+		 gamGoal = gam.getGoalByName(goal.getGoal().getSignature() + agent.name);
+		} else {
+		 gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
+		}
+		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+		affectedGoals.add(gamGoal);
+		ArrayList<Double> congruences = new ArrayList<Double>();
+		congruences.add(config.getDefaultPositiveCongruence());
+		try {
+			Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
+			gam.appraise(bel);
+			agent.removeGoal(gamGoal);
+			gam.getMap().getGoalMap().removeGoal(gamGoal);
+		} catch (GoalCongruenceMapException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+			
+	public static void appraiseGoalAsSubgoal(Agent agent, SingleGoal goal) {
+		if(EmotionConfig.getInstance().getBeliefs().containsKey(goal.getGoal().getSignature())) {	
+		 Engine gam = Engine.getInstance();
+		 EmotionConfig config = EmotionConfig.getInstance();
+		 ArrayList<GamBelief> gamBel;
+		 try {
+			 gamBel = config.getBelief(goal.getGoal().getSignature());
+			for(int i = 0; i<gamBel.size(); i++) {
+			String affectedName;
+			GamBelief currBel = gamBel.get(i);
+			if(config.getGoal(currBel.getAffectedGoalName()).isIndividualGoal()) {
+				affectedName = currBel.getAffectedGoalName() + agent.name;
+			} else {
+				affectedName = currBel.getAffectedGoalName();
+			}
+			 if(gam.getMap().getGoalMap().containsKey(affectedName)) {
+			  Goal affectedGoal = gam.getGoalByName(affectedName);
+			  ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+			  affectedGoals.add(affectedGoal);
+			  ArrayList<Double> congruences = new ArrayList<Double>();
+			  congruences.add(currBel.getCongruence());
+			  Belief bel = new Belief(currBel.getLikelihood(), agent, affectedGoals, congruences, currBel.isIncremental());
+			  gam.appraise(bel);
+			 }
+			}
+		} catch (InvalidGamBeliefException e) {
+		 // TODO Auto-generated catch block
+		 e.printStackTrace();
+	    } catch (GoalCongruenceMapException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
+	}
+				
+			}
+		 
 
 	/**
 	 * @return A string representation of the stack of attention sets stored in

@@ -1,0 +1,14 @@
+agentfiles{
+	"fibonaci.goal" [name = filename] .
+}
+
+
+emotionFile{
+ "src/test/resources/goal/parser/unittest/validFile"
+}
+
+launchpolicy{
+	launch agent1 : filename.
+	launch agent2 : filename.
+}
+

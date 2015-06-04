@@ -18,6 +18,9 @@
 
 package goal.tools;
 
+import goal.core.gamygdala.Agent;
+import goal.core.gamygdala.Engine;
+import goal.core.gamygdala.Gamygdala;
 import goal.tools.errorhandling.Resources;
 import goal.tools.errorhandling.WarningStrings;
 import goal.tools.errorhandling.exceptions.GOALBug;
@@ -50,6 +53,7 @@ import languageTools.analyzer.test.TestValidator;
 import languageTools.errors.Message;
 import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.parser.relationParser.EmotionConfig;
+import languageTools.parser.relationParser.GamRelation;
 import languageTools.program.Program;
 import languageTools.program.agent.AgentProgram;
 import languageTools.program.mas.MASProgram;
@@ -640,5 +644,4 @@ public class PlatformManager {
 
 		return newFile;
 	}
-
 }

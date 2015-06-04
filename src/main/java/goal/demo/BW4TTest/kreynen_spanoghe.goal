@@ -68,6 +68,8 @@ main module {
 	program{
 		% Initial code.
 		
+		if true then adopt(getSequence('test')).
+		
 		% if the sequenceIndex is equal to the length of the sequence, then the main goal of the agent has been fulfilled so it can exit the module.
 		if bel( sequence(X), length(X,Length), ( sequenceIndex(Length)) ) 
 			then exit-module.
