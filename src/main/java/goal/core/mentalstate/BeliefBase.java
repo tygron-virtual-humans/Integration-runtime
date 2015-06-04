@@ -420,6 +420,51 @@ public class BeliefBase {
 					"Percepts processed.");
 		}
 	}
+	
+	public void updateEmotions(Set<Percept> addList, Set<Percept> deleteList,
+			Debugger debugger) {
+		if (!addList.isEmpty() || !deleteList.isEmpty()) {
+			debugger.breakpoint(Channel.EMOTIONS, null, null,
+					"Processing emotions.");
+
+			Database emotionbase = getDatabase();
+			for (eis.iilang.Percept percept : deleteList) {
+				try {
+					DatabaseFormula formula = this.state.delete(emotionbase,
+							percept);
+					this.theory.remove(formula);
+					debugger.breakpoint(getChannel(), formula,
+							formula.getSourceInfo(),
+							"%s has been deleted from the emotion base of %s.",
+							formula, this.agentName);
+				} catch (KRDatabaseException e) {
+					throw new GOALRuntimeErrorException(
+							"Could not delete percept" + percept + " from "
+									+ this.agentName + "'s" + "emotion base", e);
+				}
+			}
+			for (eis.iilang.Percept percept : addList) {
+				try {
+					DatabaseFormula formula = this.state.insert(emotionbase,
+							percept);
+					this.theory.add(formula);
+					debugger.breakpoint(
+							getChannel(),
+							formula,
+							formula.getSourceInfo(),
+							"%s has been inserted into the emotion base of %s.",
+							formula, this.agentName);
+				} catch (KRDatabaseException e) {
+					throw new GOALRuntimeErrorException("Could not add emotions"
+							+ percept + " into " + this.agentName + "'s"
+							+ "emotion base", e);
+				}
+			}
+			debugger.breakpoint(Channel.EMOTIONS, null, null,
+					"Emotions processed.");
+		}
+	}
+
 
 	/**
 	 * DOC
@@ -479,6 +524,8 @@ public class BeliefBase {
 			return Channel.MAILS_CONDITIONAL_VIEW;
 		case PERCEPTBASE:
 			return Channel.PERCEPTS_CONDITIONAL_VIEW;
+		case EMOTIONBASE:
+			return Channel.EMOTIONS_CONDITIONAL_VIEW;
 		default:
 			// knowledge base changes are not reported via debug channels and
 			// goal base cannot be here.

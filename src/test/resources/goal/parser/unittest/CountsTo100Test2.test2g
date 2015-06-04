@@ -8,7 +8,7 @@ masTest {
 			evaluate {
 				watch bel(counter(X)).
 				eventually bel(counter(100)).
-				eventually bel(gam(joy, Y), Y > 0).
+				eventually bel(joy(Y), Y > 0).
 				always bel(true).
 				atend bel(true).
 			} in do main.
