@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.Set;
 
 import krTools.errors.exceptions.KRInitFailedException;
@@ -311,6 +312,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		this.goals.add(goal);
 		goal.markOccurrence();
 		
+		
 		this.addGamygdalaGoal(goal);
 	}
 	
@@ -320,25 +322,16 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	private void addGamygdalaGoal(SingleGoal goal) {
 		
 		Engine engine = Engine.getInstance();
-		//System.out.println("Engine");
-		//System.out.println(engine);
-		
-		Agent gamAgent = 
-					engine.getAgentByName(this.agentName.getName());
 		EmotionConfig conf = EmotionConfig.getInstance();
+		
+		Agent gamAgent = engine.getAgentByName(this.agentName.getName());
 		GamGoal gamGoal = conf.getGoal(goal.getGoal().getSignature());
 		if(gamGoal.isIndividualGoal()) {
 		 engine.createGoalForAgent(gamAgent,gamGoal.getGoal() + this.agentName.getName(),gamGoal.getValue(),false);
 		} else {
 		 engine.createGoalForAgent(gamAgent,gamGoal.getGoal(),gamGoal.getValue(),false);
 
-		}
-			
-		//System.out.println("DEFAULT: " + gamGoal.getValue());
-		
-			
-			
-			
+		}	
 			
 	}
 
@@ -354,37 +347,9 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	 * @return A (possibly empty) list of goals that have been dropped.
 	 */
 	public List<SingleGoal> drop(Update dropgoal, Debugger debugger) throws GOALDatabaseException{
-		List<SingleGoal> goalsToBeDropped = new LinkedList<>();
-		for (SingleGoal goal : this.goals) {
-			try {
-				// Get current time used in this thread.
-				this.count++;
-				getTime();
-				if (!goal.getGoalDatabase().query(dropgoal.toQuery()).isEmpty()) {
-					goalsToBeDropped.add(goal);
-				}
-				// Update time used.
-				updateTimeUsed();
-			} catch (KRQueryFailedException e) {
-				throw new GOALDatabaseException(String.format(Resources
-						.get(WarningStrings.FAILED_GB_QUERY), dropgoal
-						.toQuery().toString(), this.owner.toString()), e);
-			}
-		}
+		List<SingleGoal> goalsToBeDropped = this.getGoalsToBeDropped(dropgoal);
 		this.goals.removeAll(goalsToBeDropped);
-		for (SingleGoal goal : goalsToBeDropped) {
-			debugger.breakpoint(Channel.GB_UPDATES, goal, goal.getGoal()
-					.getSourceInfo(), "Goal %s"
-					+ " has been dropped from the "
-					+ (this.owner.equals(this.agentName) ? "" : this.agentName
-							+ "'s ") + "goal base: %s.", goal, this.name);
-
-			this.count++;
-			getTime();
-			goal.unmarkOccurrence();
-			updateTimeUsed();
-
-		}
+		this.dropList(debugger, goalsToBeDropped);
 		return goalsToBeDropped;
 	}
 	
@@ -398,58 +363,74 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	 * @return A (possibly empty) list of goals that have been dropped.
 	 */
 	public List<SingleGoal> dropWithGamygdala(Update dropgoal, Debugger debugger, AgentId self) throws GOALDatabaseException{
-		List<SingleGoal> goalsToBeDropped = new LinkedList<>();
-		for (SingleGoal goal : this.goals) {
-			try {
-				// Get current time used in this thread.
-				this.count++;
-				getTime();
-				if (!goal.getGoalDatabase().query(dropgoal.toQuery()).isEmpty()) {
-					goalsToBeDropped.add(goal);
-				}
-				// Update time used.
-				updateTimeUsed();
-			} catch (KRQueryFailedException e) {
-				throw new GOALDatabaseException(String.format(Resources
-						.get(WarningStrings.FAILED_GB_QUERY), dropgoal
-						.toQuery().toString(), this.owner.toString()), e);
-			}
-		}
+		
+		List<SingleGoal> goalsToBeDropped = this.getGoalsToBeDropped(dropgoal);
 		this.goals.removeAll(goalsToBeDropped);
 
-	
 		Engine gam = Engine.getInstance();
 		Agent agent = gam.getAgentByName(self.getName());
+		
+		for(SingleGoal goal : goalsToBeDropped){
+			dropGamGoal(agent, goal);
+		}
+		
+		this.dropList(debugger,goalsToBeDropped);	
+		return goalsToBeDropped;
+	}
+	
+	public void dropList(Debugger debugger, List<SingleGoal> goalsToBeDropped){
 		for (SingleGoal goal : goalsToBeDropped) {
 			debugger.breakpoint(Channel.GB_UPDATES, goal, goal.getGoal()
 					.getSourceInfo(), "Goal %s"
 					+ " has been dropped from the "
 					+ (this.owner.equals(this.agentName) ? "" : this.agentName
 							+ "'s ") + "goal base: %s.", goal, this.name);
-			dropGamGoal(agent, goal);
+			
 			this.count++;
 			getTime();
 			goal.unmarkOccurrence();
 			updateTimeUsed();
-		}	
-			
+		}
+	}
+	
+	public List<SingleGoal> getGoalsToBeDropped(Update dropgoal) throws GOALDatabaseException, MissingResourceException{
+		
+		List<SingleGoal> goalsToBeDropped = new LinkedList<SingleGoal>();
+		for (SingleGoal goal : this.goals) {
+				try {
+					// Get current time used in this thread.
+					this.count++;
+					getTime();
+					if (!goal.getGoalDatabase().query(dropgoal.toQuery()).isEmpty()) {
+						goalsToBeDropped.add(goal);
+					}
+					// Update time used.
+					updateTimeUsed();
+				} catch (KRQueryFailedException e) {
+					throw new GOALDatabaseException(String.format(Resources
+							.get(WarningStrings.FAILED_GB_QUERY), dropgoal
+							.toQuery().toString(), this.owner.toString()), e);
+				}
+		}
 		return goalsToBeDropped;
 	}
 	
+	
+	
 	public static void dropGamGoal(Agent agent, SingleGoal goal) {
-		Engine gam = Engine.getInstance();
+		
+		Engine engine = Engine.getInstance();
 		EmotionConfig config = EmotionConfig.getInstance();
-		Goal gamGoal;
-		if(config.getGoal(goal.getGoal().getSignature()).isIndividualGoal()) {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getSignature() + agent.name);
-		}
-		else {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
-		}
+		
+		String signature = goal.getGoal().getSignature();
+		boolean isIndividual = config.getGoal(signature).isIndividualGoal();
+		Goal gamGoal = engine.getGoalByName(signature, isIndividual, agent);
+		
 		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 		affectedGoals.add(gamGoal);
 		ArrayList<Double> congruences = new ArrayList<Double>();
 		congruences.add(config.getDefaultNegativeCongruence());
+		
 		Belief bel = null;
 		try {
 			bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
@@ -457,7 +438,8 @@ public final class GoalBase implements Iterable<SingleGoal> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		gam.appraise(bel, agent);
+		
+		engine.appraise(bel, agent);
 		agent.removeGoal(gamGoal);
 	}
 
