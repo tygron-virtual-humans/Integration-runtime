@@ -34,6 +34,7 @@ import goal.tools.errorhandling.exceptions.GOALRuntimeErrorException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -595,10 +596,11 @@ public class MentalModel {
 		Engine gam = Engine.getInstance();
 		EmotionConfig config = EmotionConfig.getInstance();
 		Goal gamGoal;
-		if(config.getGoal(goal.getGoal().getSignature()).isIndividualGoal()) {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getSignature() + agent.name);
+		boolean isIndividual = config.getGoal(goal.getGoal().getSignature()).isIndividualGoal();
+		if(isIndividual) {
+		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString() + agent.name);
 		} else {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getSignature());
+		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString());
 		}
 		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 		affectedGoals.add(gamGoal);
@@ -609,6 +611,11 @@ public class MentalModel {
 			gam.appraise(bel);
 			agent.removeGoal(gamGoal);
 			gam.getMap().getGoalMap().removeGoal(gamGoal);
+			if(isIndividual) {
+				gam.getGamygdala().getSubgoalMap().removeIndividualGoal(goal.getGoal().getSignature(), agent.name, goal.getGoal().getAddList().get(0).toString());
+			} else {
+				gam.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
+			}
 		} catch (GoalCongruenceMapException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -624,13 +631,16 @@ public class MentalModel {
 		 try {
 			 gamBel = config.getBelief(goal.getGoal().getSignature());
 			for(int i = 0; i<gamBel.size(); i++) {
-			String affectedName;
 			GamBelief currBel = gamBel.get(i);
+			HashSet<String> affectedNames = new HashSet<String>();
 			if(config.getGoal(currBel.getAffectedGoalName()).isIndividualGoal()) {
-				affectedName = currBel.getAffectedGoalName() + agent.name;
+				affectedNames = gam.getGamygdala().getSubgoalMap().getAffectedIndividualGoal(goal.getGoal().getSignature(), agent.name);
 			} else {
-				affectedName = currBel.getAffectedGoalName();
+				affectedNames = gam.getGamygdala().getSubgoalMap().getAffectedCommonGoals(goal.getGoal().getSignature());
 			}
+			Iterator<String> it = affectedNames.iterator();
+			while(it.hasNext()) {
+			String affectedName = it.next();
 			 if(gam.getMap().getGoalMap().containsKey(affectedName)) {
 			  Goal affectedGoal = gam.getGoalByName(affectedName);
 			  ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
@@ -640,6 +650,7 @@ public class MentalModel {
 			  Belief bel = new Belief(currBel.getLikelihood(), agent, affectedGoals, congruences, currBel.isIncremental());
 			  gam.appraise(bel);
 			 }
+			}
 			}
 		} catch (InvalidGamBeliefException e) {
 		 // TODO Auto-generated catch block

@@ -18,8 +18,11 @@ public class Gamygdala {
      * The decay function used to calculate emotion intensity.
      */
     private DecayFunction decayFunction;
+    
+    private SubgoalMap subgoalMap;
 
-    /**
+  
+	/**
      * The decay factor used in the DecayFunction.
      */
     private double decayFactor;
@@ -31,6 +34,8 @@ public class Gamygdala {
 
         // Init agent and goal maps
         this.gamygdalaMap = new GamygdalaMap();
+        
+        this.subgoalMap = new SubgoalMap();
 
         // Set default decay factor
         this.decayFactor = .8;
@@ -257,5 +262,14 @@ public class Gamygdala {
     public GamygdalaMap getMap(){
     	return gamygdalaMap;
     }
+    
+    public SubgoalMap getSubgoalMap() {
+  		return subgoalMap;
+  	}
+
+  	public void setSubgoalMap(SubgoalMap subgoalMap) {
+  		this.subgoalMap = subgoalMap;
+  	}
+
 
 }
