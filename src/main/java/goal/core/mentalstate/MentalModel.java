@@ -557,7 +557,7 @@ public class MentalModel {
 			return;
 		}
 		//Engine.getInstance()
-		Engine.getInstance().setGain(1);
+	//	Engine.getInstance().setGain(1);
 		//Engine.getInstance().
 		
 		Set<SingleGoal> goals = getAttentionSet(true).getGoals();
@@ -576,7 +576,6 @@ public class MentalModel {
 		}
 
 		Engine gam = Engine.getInstance();
-		//System.out.println(gam);
 		Agent agent = gam.getAgentByName(self.getName());
 		EmotionConfig config = EmotionConfig.getInstance();
 		for (SingleGoal goal : goalsToBeRemoved) {
@@ -607,11 +606,11 @@ public class MentalModel {
 		ArrayList<Double> congruences = new ArrayList<Double>();
 		congruences.add(config.getDefaultPositiveCongruence());
 		try {
-			Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
+		 Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
 			gam.appraise(bel);
 			agent.removeGoal(gamGoal);
-			gam.getMap().getGoalMap().removeGoal(gamGoal);
-			if(isIndividual) {
+			//gam.getMap().getGoalMap().removeGoal(gamGoal);
+		if(isIndividual) {
 				gam.getGamygdala().getSubgoalMap().removeIndividualGoal(goal.getGoal().getSignature(), agent.name, goal.getGoal().getAddList().get(0).toString());
 			} else {
 				gam.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());

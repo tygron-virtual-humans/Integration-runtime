@@ -593,8 +593,10 @@ public class MentalState {
 	 */
 	public void updateGoalState(Debugger debugger, AgentId... agent) {
 		AgentId name = ((agent.length == 0) ? getAgentId() : agent[0]);
+
 		if(!name.equals(this.getAgentId())) {
 		 this.models.get(name).updateGoalState(debugger);
+
 		} else {
 		 this.models.get(name).updateGoalStateAndGamygdala(debugger, name);
 		}
