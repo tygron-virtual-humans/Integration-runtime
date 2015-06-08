@@ -31,7 +31,7 @@ import java.io.File;
  */
 public enum Extension {
 	MAS(".mas2g"), GOAL(".goal"), PROLOG(".pl"), MODULES(".mod2g"), LEARNING(
-			".lrn"), TEST(".test2g");
+			".lrn"), TEST(".test2g"), EMOTION(".emo2g");
 
 	private String extension;
 
