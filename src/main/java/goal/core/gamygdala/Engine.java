@@ -48,6 +48,7 @@ public class Engine {
 
         if (engineInstance == null) {
             engineInstance = new Engine();
+            engineInstance.setGain(1);
         }
 
         return engineInstance;
@@ -246,6 +247,22 @@ public class Engine {
     
     public Goal getGoalByName(String name){
     	return gamygdala.getMap().getGoalMap().getGoalByName(name);
+    }
+    
+    public boolean goalIsRegistered(String signature, boolean isIndividual, Agent agent){
+    	if(isIndividual) {
+      		 return gamygdala.getMap().getGoalMap().containsKey(signature + agent.name);
+      		} else {
+      		 return gamygdala.getMap().getGoalMap().containsKey(signature);
+      		}
+    }
+    
+    public Goal getGoalByName(String signature, boolean isIndividual, Agent agent){
+    	if(isIndividual) {
+   		 return this.getGoalByName(signature + agent.name);
+   		} else {
+   		 return this.getGoalByName(signature);
+   		}
     }
     
     public GamygdalaMap getMap(){

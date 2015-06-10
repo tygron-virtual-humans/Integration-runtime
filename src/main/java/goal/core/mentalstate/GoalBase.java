@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.Set;
 
 import krTools.errors.exceptions.KRInitFailedException;
@@ -311,6 +312,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		this.goals.add(goal);
 		goal.markOccurrence();
 		
+		
 		this.addGamygdalaGoal(goal);
 	}
 	
@@ -320,18 +322,21 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	private void addGamygdalaGoal(SingleGoal goal) {
 		
 		Engine engine = Engine.getInstance();
-		Agent gamAgent = 
-					engine.getAgentByName(this.agentName.getName());
+
+		Agent gamAgent = engine.getAgentByName(this.agentName.getName());
 		EmotionConfig conf = EmotionConfig.getInstance();
 		GamGoal gamGoal = conf.getGoal(goal.getGoal().getSignature(), this.agentName.getName());
+
+
 		if(gamGoal.isIndividualGoal()) {
 		 engine.createGoalForAgent(gamAgent,goal.getGoal().getAddList().get(0).toString() + this.agentName.getName(),gamGoal.getValue(),false);
 		 engine.getGamygdala().getSubgoalMap().addIndividualGoal(goal.getGoal().getSignature(), this.agentName.getName(), goal.getGoal().getAddList().get(0).toString());
 		} else {
+
 		 engine.createGoalForAgent(gamAgent,goal.getGoal().getAddList().get(0).toString(),gamGoal.getValue(),false);
 		 engine.getGamygdala().getSubgoalMap().addCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
-		}			
-			
+		}						
+
 	}
 
 	// *********** deletion methods ****************/
@@ -346,37 +351,9 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	 * @return A (possibly empty) list of goals that have been dropped.
 	 */
 	public List<SingleGoal> drop(Update dropgoal, Debugger debugger) throws GOALDatabaseException{
-		List<SingleGoal> goalsToBeDropped = new LinkedList<>();
-		for (SingleGoal goal : this.goals) {
-			try {
-				// Get current time used in this thread.
-				this.count++;
-				getTime();
-				if (!goal.getGoalDatabase().query(dropgoal.toQuery()).isEmpty()) {
-					goalsToBeDropped.add(goal);
-				}
-				// Update time used.
-				updateTimeUsed();
-			} catch (KRQueryFailedException e) {
-				throw new GOALDatabaseException(String.format(Resources
-						.get(WarningStrings.FAILED_GB_QUERY), dropgoal
-						.toQuery().toString(), this.owner.toString()), e);
-			}
-		}
+		List<SingleGoal> goalsToBeDropped = this.getGoalsToBeDropped(dropgoal);
 		this.goals.removeAll(goalsToBeDropped);
-		for (SingleGoal goal : goalsToBeDropped) {
-			debugger.breakpoint(Channel.GB_UPDATES, goal, goal.getGoal()
-					.getSourceInfo(), "Goal %s"
-					+ " has been dropped from the "
-					+ (this.owner.equals(this.agentName) ? "" : this.agentName
-							+ "'s ") + "goal base: %s.", goal, this.name);
-
-			this.count++;
-			getTime();
-			goal.unmarkOccurrence();
-			updateTimeUsed();
-
-		}
+		this.dropList(debugger, goalsToBeDropped);
 		return goalsToBeDropped;
 	}
 	
@@ -390,59 +367,81 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	 * @return A (possibly empty) list of goals that have been dropped.
 	 */
 	public List<SingleGoal> dropWithGamygdala(Update dropgoal, Debugger debugger, AgentId self) throws GOALDatabaseException{
-		List<SingleGoal> goalsToBeDropped = new LinkedList<>();
-		for (SingleGoal goal : this.goals) {
-			try {
-				// Get current time used in this thread.
-				this.count++;
-				getTime();
-				if (!goal.getGoalDatabase().query(dropgoal.toQuery()).isEmpty()) {
-					goalsToBeDropped.add(goal);
-				}
-				// Update time used.
-				updateTimeUsed();
-			} catch (KRQueryFailedException e) {
-				throw new GOALDatabaseException(String.format(Resources
-						.get(WarningStrings.FAILED_GB_QUERY), dropgoal
-						.toQuery().toString(), this.owner.toString()), e);
-			}
-		}
+		
+		List<SingleGoal> goalsToBeDropped = this.getGoalsToBeDropped(dropgoal);
 		this.goals.removeAll(goalsToBeDropped);
 
-	
 		Engine gam = Engine.getInstance();
 		Agent agent = gam.getAgentByName(self.getName());
+		
+		for(SingleGoal goal : goalsToBeDropped){
+			dropGamGoal(agent, goal);
+		}
+		
+		this.dropList(debugger,goalsToBeDropped);	
+		return goalsToBeDropped;
+	}
+	
+	public void dropList(Debugger debugger, List<SingleGoal> goalsToBeDropped){
 		for (SingleGoal goal : goalsToBeDropped) {
 			debugger.breakpoint(Channel.GB_UPDATES, goal, goal.getGoal()
 					.getSourceInfo(), "Goal %s"
 					+ " has been dropped from the "
 					+ (this.owner.equals(this.agentName) ? "" : this.agentName
 							+ "'s ") + "goal base: %s.", goal, this.name);
-			dropGamGoal(agent, goal);
+			
 			this.count++;
 			getTime();
 			goal.unmarkOccurrence();
 			updateTimeUsed();
-		}	
-			
+		}
+	}
+	
+	public List<SingleGoal> getGoalsToBeDropped(Update dropgoal) throws GOALDatabaseException, MissingResourceException{
+		
+		List<SingleGoal> goalsToBeDropped = new LinkedList<SingleGoal>();
+		for (SingleGoal goal : this.goals) {
+				try {
+					// Get current time used in this thread.
+					this.count++;
+					getTime();
+					if (!goal.getGoalDatabase().query(dropgoal.toQuery()).isEmpty()) {
+						goalsToBeDropped.add(goal);
+					}
+					// Update time used.
+					updateTimeUsed();
+				} catch (KRQueryFailedException e) {
+					throw new GOALDatabaseException(String.format(Resources
+							.get(WarningStrings.FAILED_GB_QUERY), dropgoal
+							.toQuery().toString(), this.owner.toString()), e);
+				}
+		}
 		return goalsToBeDropped;
 	}
 	
+	
+	
 	public static void dropGamGoal(Agent agent, SingleGoal goal) {
-		Engine gam = Engine.getInstance();
+		
+		Engine engine = Engine.getInstance();
 		EmotionConfig config = EmotionConfig.getInstance();
+
+
 		Goal gamGoal;
 		boolean isIndividual = config.getGoal(goal.getGoal().getSignature(), agent.name).isIndividualGoal();
 		if(isIndividual) {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString() + agent.name);
+		 gamGoal = engine.getGoalByName(goal.getGoal().getAddList().get(0).toString() + agent.name);
 		}
 		else {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString());
+		 gamGoal = engine.getGoalByName(goal.getGoal().getAddList().get(0).toString());
 		}
+
+
 		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 		affectedGoals.add(gamGoal);
 		ArrayList<Double> congruences = new ArrayList<Double>();
 		congruences.add(config.getDefaultNegativeCongruence());
+		
 		Belief bel = null;
 		try {
 			bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
@@ -450,13 +449,14 @@ public final class GoalBase implements Iterable<SingleGoal> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		gam.appraise(bel, agent);
+		
+		engine.appraise(bel, agent);
 		agent.removeGoal(gamGoal);
-		gam.getMap().getGoalMap().remove(gamGoal.getName());
+		engine.getMap().getGoalMap().remove(gamGoal.getName());
 		if(isIndividual) {
-			gam.getGamygdala().getSubgoalMap().removeIndividualGoal(goal.getGoal().getSignature(), agent.name, goal.getGoal().getAddList().get(0).toString());
+			engine.getGamygdala().getSubgoalMap().removeIndividualGoal(goal.getGoal().getSignature(), agent.name, goal.getGoal().getAddList().get(0).toString());
 		} else {
-			gam.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
+			engine.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
 		}
 	}
 

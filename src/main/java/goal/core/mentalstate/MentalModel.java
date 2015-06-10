@@ -505,9 +505,39 @@ public class MentalModel {
 	 *             in GOAL.
 	 */
 	public void updateGoalState(Debugger debugger) {
+		
+		List<SingleGoal> goalsToBeRemoved = this.getGoalsToBeRemoved(debugger);
+		this.removeGoals(debugger, goalsToBeRemoved);
+		
+		
+	}
+	
+	/**
+	 * Removes the list of goals out of the goal base.
+	 * @param debugger
+	 * @param goalsToBeRemoved
+	 */
+	public void removeGoals(Debugger debugger, List<SingleGoal> goalsToBeRemoved){
+		for (SingleGoal goal : goalsToBeRemoved) {
+			try {
+				getAttentionSet(true).remove(goal, debugger);
+			} catch (KRInitFailedException e) {
+				throw new IllegalStateException(String.format(Resources
+						.get(WarningStrings.FAILED_REMOVING_GOAL_FROM_GB), goal
+						.toString()), e);
+			}
+		}
+	}
+	
+	/**
+	 * Gets the goals that are achieved and thus need to be removed from the goalbase.
+	 * @param debugger
+	 * @return
+	 */
+	public List<SingleGoal> getGoalsToBeRemoved(Debugger debugger){
 		if (this.goalBases.isEmpty()) {
 			// nothing to do here (model is not used).
-			return;
+			return new LinkedList<SingleGoal>();
 		}
 
 		Set<SingleGoal> goals = getAttentionSet(true).getGoals();
@@ -524,16 +554,7 @@ public class MentalModel {
 						.toString()), e);
 			}
 		}
-
-		for (SingleGoal goal : goalsToBeRemoved) {
-			try {
-				getAttentionSet(true).remove(goal, debugger);
-			} catch (KRInitFailedException e) {
-				throw new IllegalStateException(String.format(Resources
-						.get(WarningStrings.FAILED_REMOVING_GOAL_FROM_GB), goal
-						.toString()), e);
-			}
-		}
+		return goalsToBeRemoved;
 	}
 	
 	/**
@@ -557,101 +578,102 @@ public class MentalModel {
 			// nothing to do here (model is not used).
 			return;
 		}
-		//Engine.getInstance()
-	//	Engine.getInstance().setGain(1);
-		//Engine.getInstance().
-		
-		Set<SingleGoal> goals = getAttentionSet(true).getGoals();
-		List<SingleGoal> goalsToBeRemoved = new LinkedList<>();
-		for (SingleGoal goal : goals) {
-			try {
-				if (!this.beliefBases.get(BASETYPE.BELIEFBASE)
-						.query(goal.getGoal().toQuery(), debugger).isEmpty()) {
-					goalsToBeRemoved.add(goal);
-				}
-			} catch (GOALDatabaseException e) {
-				throw new IllegalStateException(String.format(Resources
-						.get(WarningStrings.FAILED_REMOVING_GOAL_FROM_GB), goal
-						.toString()), e);
-			}
-		}
+	
+		List<SingleGoal> goalsToBeRemoved = this.getGoalsToBeRemoved(debugger);
+		this.appraiseListOfGoals(goalsToBeRemoved, self);
+		this.removeGoals(debugger, goalsToBeRemoved);		
 
+	}
+	
+	
+	public void appraiseListOfGoals(List<SingleGoal> goalsToBeAppraised, AgentId self){
 		Engine gam = Engine.getInstance();
 		Agent agent = gam.getAgentByName(self.getName());
-		EmotionConfig config = EmotionConfig.getInstance();
-		for (SingleGoal goal : goalsToBeRemoved) {
-			appraiseGoalAsSubgoal(agent,goal);
-			appraiseGoal(agent, goal);
-			try {
-				getAttentionSet(true).remove(goal, debugger);
-			} catch (KRInitFailedException e) {
-				throw new IllegalStateException(String.format(Resources
-						.get(WarningStrings.FAILED_REMOVING_GOAL_FROM_GB), goal
-						.toString()), e);
-			}
+		
+		for (SingleGoal goal : goalsToBeAppraised) {
+		appraiseGoalAsSubgoal(agent,goal);
+		appraiseGoal(agent, goal);
 		}
 	}
 	
+	
+	
+	
+	
 	public static void appraiseGoal(Agent agent, SingleGoal goal) {
-		Engine gam = Engine.getInstance();
+		
+		Engine engine = Engine.getInstance();
 		EmotionConfig config = EmotionConfig.getInstance();
+
 		Goal gamGoal;
 		boolean isIndividual = config.getGoal(goal.getGoal().getSignature(), agent.name).isIndividualGoal();
 		if(isIndividual) {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString() + agent.name);
+		 gamGoal = engine.getGoalByName(goal.getGoal().getAddList().get(0).toString() + agent.name);
 		} else {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString());
+		 gamGoal = engine.getGoalByName(goal.getGoal().getAddList().get(0).toString());
 		}
+
+
 		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 		affectedGoals.add(gamGoal);
 		ArrayList<Double> congruences = new ArrayList<Double>();
 		congruences.add(config.getDefaultPositiveCongruence());
+		
+		
 		try {
 		 Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
-			gam.appraise(bel);
+			engine.appraise(bel);
 			agent.removeGoal(gamGoal);
 			//gam.getMap().getGoalMap().removeGoal(gamGoal);
 		if(isIndividual) {
-				gam.getGamygdala().getSubgoalMap().removeIndividualGoal(goal.getGoal().getSignature(), agent.name, goal.getGoal().getAddList().get(0).toString());
+				engine.getGamygdala().getSubgoalMap().removeIndividualGoal(goal.getGoal().getSignature(), agent.name, goal.getGoal().getAddList().get(0).toString());
 			} else {
-				gam.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
+				engine.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
 			}
+
+
 		} catch (GoalCongruenceMapException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
+	
+	
+	
 			
 	public static void appraiseGoalAsSubgoal(Agent agent, SingleGoal goal) {
 		if(EmotionConfig.getInstance().getGoals().containsKey(goal.getGoal().getSignature())) {	
-		 Engine gam = Engine.getInstance();
+		 Engine engine = Engine.getInstance();
 		 EmotionConfig config = EmotionConfig.getInstance();
-		 ArrayList<GamSubGoal> gamBel;
+		 ArrayList<GamSubGoal> gamSub;
 		 try {
-			 gamBel = config.getSubGoal(goal.getGoal().getSignature());
-			for(int i = 0; i<gamBel.size(); i++) {
-			GamSubGoal currBel = gamBel.get(i);
+			 gamSub = config.getSubGoal(goal.getGoal().getSignature());
+			for(int i = 0; i<gamSub.size(); i++) {
+			GamSubGoal currSub = gamSub.get(i);
 			HashSet<String> affectedNames = new HashSet<String>();
-			if(config.getGoal(currBel.getAffectedGoalName(), agent.name).isIndividualGoal()) {
-				affectedNames = gam.getGamygdala().getSubgoalMap().getAffectedIndividualGoal(goal.getGoal().getSignature(), agent.name);
+			if(config.getGoal(currSub.getAffectedGoalName(), agent.name).isIndividualGoal()) {
+				affectedNames = engine.getGamygdala().getSubgoalMap().getAffectedIndividualGoal(goal.getGoal().getSignature(), agent.name);
 			} else {
-				affectedNames = gam.getGamygdala().getSubgoalMap().getAffectedCommonGoals(goal.getGoal().getSignature());
+				affectedNames = engine.getGamygdala().getSubgoalMap().getAffectedCommonGoals(goal.getGoal().getSignature());
 			}
 			Iterator<String> it = affectedNames.iterator();
 			while(it.hasNext()) {
 			String affectedName = it.next();
-			 if(gam.getMap().getGoalMap().containsKey(affectedName)) {
-			  Goal affectedGoal = gam.getGoalByName(affectedName);
+			 if(engine.getMap().getGoalMap().containsKey(affectedName)) {
+			  Goal affectedGoal = engine.getGoalByName(affectedName);
+
 			  ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 			  affectedGoals.add(affectedGoal);
 			  ArrayList<Double> congruences = new ArrayList<Double>();
-			  congruences.add(currBel.getCongruence());
-			  Belief bel = new Belief(currBel.getLikelihood(), agent, affectedGoals, congruences, currBel.isIncremental());
-			  gam.appraise(bel);
+			  congruences.add(currSub.getCongruence());
+			  
+			  
+			  Belief bel = new Belief(currSub.getLikelihood(), agent, affectedGoals, congruences, currSub.isIncremental());
+			  engine.appraise(bel);
 			 }
 			}
 			}
+
 		} catch (InvalidGamSubGoalException e) {
 		 // TODO Auto-generated catch block
 		 e.printStackTrace();
