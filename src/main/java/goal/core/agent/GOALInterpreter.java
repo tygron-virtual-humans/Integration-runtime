@@ -1,6 +1,7 @@
 package goal.core.agent;
 
 import eis.iilang.Percept;
+import emotion_p.Emotion2;
 import goal.core.executors.ActionExecutor;
 import goal.core.executors.ModuleExecutor;
 import goal.core.runtime.service.agent.RunState;
@@ -265,8 +266,8 @@ public class GOALInterpreter<DEBUGGER extends Debugger> extends Controller {
 		this.runState.processPercepts(newPercepts, previousPercepts);
 	}
 	
-	public void processEmotions(Set<Percept> newEmotions, 
-			Set<Percept> previousEmotions) {
+	public void processEmotions(Set<Emotion2> newEmotions, 
+			Set<Emotion2> previousEmotions) {
 		this.runState.processEmotions(newEmotions, previousEmotions);
 	}
 

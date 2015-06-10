@@ -429,7 +429,7 @@ public class BeliefBase {
 					"Processing emotions.");
 
 			Database emotionbase = getDatabase();
-			for (eis.iilang.Percept percept : deleteList) {
+			for (Emotion2 percept : deleteList) {
 				try {
 					DatabaseFormula formula = this.state.delete(emotionbase,
 							percept);

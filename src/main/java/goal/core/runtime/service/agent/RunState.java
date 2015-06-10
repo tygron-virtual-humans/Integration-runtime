@@ -24,6 +24,7 @@ import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
 import eis.iilang.Percept;
+import emotion_p.Emotion2;
 import goal.core.agent.Agent;
 import goal.core.agent.Controller;
 import goal.core.agent.EnvironmentCapabilities;
@@ -400,8 +401,8 @@ public class RunState<D extends Debugger> {
 	 * @param previousPercepts
 	 *            The percepts processed last round.
 	 */
-	public void processEmotions(Set<Emotion> newEmotions,
-			Set<Emotion> previousEmotions) {
+	public void processEmotions(Set<Emotion2> newEmotions,
+			Set<Emotion2> previousEmotions) {
 		// Compute which percepts need to be deleted and which percepts need to
 		// be added
 		// to the percept base using the list of percepts from the previous
@@ -409,9 +410,9 @@ public class RunState<D extends Debugger> {
 		// set of percepts to be deleted/added are called lists for historical
 		// reasons.
 		
-		Set<Emotion> deleteList = new HashSet<>(previousEmotions);
+		Set<Emotion2> deleteList = new HashSet<>(previousEmotions);
 		deleteList.removeAll(newEmotions);
-		Set<Emotion> addList = new HashSet<>(newEmotions);
+		Set<Emotion2> addList = new HashSet<>(newEmotions);
 		addList.removeAll(previousEmotions);
 		String text = "";
 		text += getMentalState().getOwnBase(BASETYPE.EMOTIONBASE).getTheory();
@@ -563,7 +564,7 @@ public class RunState<D extends Debugger> {
 	 */
 	public void startCycle(boolean isActionPerformed)
 			throws GOALActionFailedException {
-		startCycle(isActionPerformed, new HashSet<Percept>(), new HashSet<Percept>());
+		startCycle(isActionPerformed, new HashSet<Percept>(), new HashSet<Emotion2>());
 	}
 
 	private Set<Percept> getPercepts() throws DebuggerKilledException {
@@ -581,15 +582,15 @@ public class RunState<D extends Debugger> {
 		}
 	}
 	
-	private Set<Percept> getEmotions() {
+	private Set<Emotion2> getEmotions() {
 		// Update emotions
-		Set<Percept> addList = new HashSet<Percept>();
+		Set<Emotion2> addList = new HashSet<Emotion2>();
 	
 		AgentInternalState emoState = Engine.getInstance().getAgentByName(agentName.getName()).getEmotionalState(null);
 		ListIterator<Emotion> emoIterator = emoState.listIterator();
 		while(emoIterator.hasNext()){
 			Emotion emo = emoIterator.next();
-			Percept percept = new Percept("gam", new Identifier(emo.name), new Numeral(emo.intensity));
+			Emotion2 percept = new Emotion2("gam", new Identifier(emo.name), new Numeral(emo.intensity));
 			addList.add(percept);
 		}
 
@@ -619,11 +620,11 @@ public class RunState<D extends Debugger> {
 	 * @throws  
 	 */
 	// TODO: Does not yet support measuring time used in Thread.
-	public void startCycle(boolean isActionPerformed, Set<Percept> initial, Set<Percept> initial_emotions)
+	public void startCycle(boolean isActionPerformed, Set<Percept> initial, Set<Emotion2> initial_emotions)
 			throws GOALActionFailedException {
 		Set<Message> newMessages = this.messaging.getAllMessages();
 		Set<Percept> newPercepts = initial;
-		Set<Percept> newEmotions = initial_emotions;
+		Set<Emotion2> newEmotions = initial_emotions;
 		if (initial.isEmpty()) {
 			newPercepts = getPercepts();
 		}
