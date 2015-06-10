@@ -645,11 +645,11 @@ public class MentalModel {
 		if(EmotionConfig.getInstance().getGoals().containsKey(goal.getGoal().getSignature())) {	
 		 Engine engine = Engine.getInstance();
 		 EmotionConfig config = EmotionConfig.getInstance();
-		 ArrayList<GamSubGoal> gamBel;
+		 ArrayList<GamSubGoal> gamSub;
 		 try {
-			 gamBel = config.getSubGoal(goal.getGoal().getSignature());
-			for(int i = 0; i<gamBel.size(); i++) {
-			GamSubGoal currSub = gamBel.get(i);
+			 gamSub = config.getSubGoal(goal.getGoal().getSignature());
+			for(int i = 0; i<gamSub.size(); i++) {
+			GamSubGoal currSub = gamSub.get(i);
 			HashSet<String> affectedNames = new HashSet<String>();
 			if(config.getGoal(currSub.getAffectedGoalName(), agent.name).isIndividualGoal()) {
 				affectedNames = engine.getGamygdala().getSubgoalMap().getAffectedIndividualGoal(goal.getGoal().getSignature(), agent.name);
