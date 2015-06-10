@@ -15,6 +15,7 @@ emotionFile{
 
 launchpolicy{
 	% insert appropriate launch rules for your environment and agents below.
-	when [max=2]@env do launch robot : robot .
+	when [max=1]@env do launch robot0 : robot.
+	when [max=1]@env do launch robot1 : robot.
 	
 }

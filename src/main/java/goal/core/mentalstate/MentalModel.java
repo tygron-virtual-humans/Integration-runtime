@@ -51,9 +51,10 @@ import krTools.language.DatabaseFormula;
 import krTools.language.Query;
 import krTools.language.Substitution;
 import krTools.language.Update;
-import languageTools.exceptions.relationParser.InvalidGamBeliefException;
+import languageTools.exceptions.relationParser.InvalidGamSubGoalException;
 import languageTools.parser.relationParser.EmotionConfig;
-import languageTools.parser.relationParser.GamBelief;
+import languageTools.parser.relationParser.GamGoal;
+import languageTools.parser.relationParser.GamSubGoal;
 import languageTools.program.agent.AgentId;
 import languageTools.program.agent.AgentProgram;
 import languageTools.program.agent.msc.AGoalLiteral;
@@ -595,7 +596,7 @@ public class MentalModel {
 		Engine gam = Engine.getInstance();
 		EmotionConfig config = EmotionConfig.getInstance();
 		Goal gamGoal;
-		boolean isIndividual = config.getGoal(goal.getGoal().getSignature()).isIndividualGoal();
+		boolean isIndividual = config.getGoal(goal.getGoal().getSignature(), agent.name).isIndividualGoal();
 		if(isIndividual) {
 		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString() + agent.name);
 		} else {
@@ -623,16 +624,16 @@ public class MentalModel {
 	}
 			
 	public static void appraiseGoalAsSubgoal(Agent agent, SingleGoal goal) {
-		if(EmotionConfig.getInstance().getBeliefs().containsKey(goal.getGoal().getSignature())) {	
+		if(EmotionConfig.getInstance().getGoals().containsKey(goal.getGoal().getSignature())) {	
 		 Engine gam = Engine.getInstance();
 		 EmotionConfig config = EmotionConfig.getInstance();
-		 ArrayList<GamBelief> gamBel;
+		 ArrayList<GamSubGoal> gamBel;
 		 try {
-			 gamBel = config.getBelief(goal.getGoal().getSignature());
+			 gamBel = config.getSubGoal(goal.getGoal().getSignature());
 			for(int i = 0; i<gamBel.size(); i++) {
-			GamBelief currBel = gamBel.get(i);
+			GamSubGoal currBel = gamBel.get(i);
 			HashSet<String> affectedNames = new HashSet<String>();
-			if(config.getGoal(currBel.getAffectedGoalName()).isIndividualGoal()) {
+			if(config.getGoal(currBel.getAffectedGoalName(), agent.name).isIndividualGoal()) {
 				affectedNames = gam.getGamygdala().getSubgoalMap().getAffectedIndividualGoal(goal.getGoal().getSignature(), agent.name);
 			} else {
 				affectedNames = gam.getGamygdala().getSubgoalMap().getAffectedCommonGoals(goal.getGoal().getSignature());
@@ -651,7 +652,7 @@ public class MentalModel {
 			 }
 			}
 			}
-		} catch (InvalidGamBeliefException e) {
+		} catch (InvalidGamSubGoalException e) {
 		 // TODO Auto-generated catch block
 		 e.printStackTrace();
 	    } catch (GoalCongruenceMapException e) {
