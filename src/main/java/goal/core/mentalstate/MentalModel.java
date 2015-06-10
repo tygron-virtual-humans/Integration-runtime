@@ -574,7 +574,6 @@ public class MentalModel {
 	 *             in GOAL.
 	 */
 	public void updateGoalStateAndGamygdala(Debugger debugger, AgentId self) {
-
 		if (this.goalBases.isEmpty()) {
 			// nothing to do here (model is not used).
 			return;
@@ -583,6 +582,7 @@ public class MentalModel {
 		List<SingleGoal> goalsToBeRemoved = this.getGoalsToBeRemoved(debugger);
 		this.appraiseListOfGoals(goalsToBeRemoved, self);
 		this.removeGoals(debugger, goalsToBeRemoved);		
+
 	}
 	
 	
@@ -613,6 +613,7 @@ public class MentalModel {
 		 gamGoal = engine.getGoalByName(goal.getGoal().getAddList().get(0).toString());
 		}
 
+
 		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 		affectedGoals.add(gamGoal);
 		ArrayList<Double> congruences = new ArrayList<Double>();
@@ -630,6 +631,7 @@ public class MentalModel {
 				engine.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
 			}
 
+
 		} catch (GoalCongruenceMapException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -640,7 +642,6 @@ public class MentalModel {
 	
 			
 	public static void appraiseGoalAsSubgoal(Agent agent, SingleGoal goal) {
-
 		if(EmotionConfig.getInstance().getGoals().containsKey(goal.getGoal().getSignature())) {	
 		 Engine engine = Engine.getInstance();
 		 EmotionConfig config = EmotionConfig.getInstance();

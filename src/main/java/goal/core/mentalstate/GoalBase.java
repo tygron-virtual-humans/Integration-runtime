@@ -322,18 +322,21 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	private void addGamygdalaGoal(SingleGoal goal) {
 		
 		Engine engine = Engine.getInstance();
-		Agent gamAgent = 
-					engine.getAgentByName(this.agentName.getName());
+
+		Agent gamAgent = engine.getAgentByName(this.agentName.getName());
 		EmotionConfig conf = EmotionConfig.getInstance();
 		GamGoal gamGoal = conf.getGoal(goal.getGoal().getSignature(), this.agentName.getName());
+
 
 		if(gamGoal.isIndividualGoal()) {
 		 engine.createGoalForAgent(gamAgent,goal.getGoal().getAddList().get(0).toString() + this.agentName.getName(),gamGoal.getValue(),false);
 		 engine.getGamygdala().getSubgoalMap().addIndividualGoal(goal.getGoal().getSignature(), this.agentName.getName(), goal.getGoal().getAddList().get(0).toString());
 		} else {
+
 		 engine.createGoalForAgent(gamAgent,goal.getGoal().getAddList().get(0).toString(),gamGoal.getValue(),false);
 		 engine.getGamygdala().getSubgoalMap().addCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
 		}						
+
 	}
 
 	// *********** deletion methods ****************/
@@ -423,6 +426,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		Engine engine = Engine.getInstance();
 		EmotionConfig config = EmotionConfig.getInstance();
 
+
 		Goal gamGoal;
 		boolean isIndividual = config.getGoal(goal.getGoal().getSignature(), agent.name).isIndividualGoal();
 		if(isIndividual) {
@@ -431,6 +435,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		else {
 		 gamGoal = engine.getGoalByName(goal.getGoal().getAddList().get(0).toString());
 		}
+
 
 		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 		affectedGoals.add(gamGoal);
