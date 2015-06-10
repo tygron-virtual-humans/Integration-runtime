@@ -19,6 +19,7 @@
 package goal.core.mentalstate;
 
 import eis.iilang.Percept;
+import emotion_p.Emotion2;
 import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.debugger.SteppingDebugger;
@@ -421,7 +422,7 @@ public class BeliefBase {
 		}
 	}
 	
-	public void updateEmotions(Set<Percept> addList, Set<Percept> deleteList,
+	public void updateEmotions(Set<Emotion2> addList, Set<Emotion2> deleteList,
 			Debugger debugger) {
 		if (!addList.isEmpty() || !deleteList.isEmpty()) {
 			debugger.breakpoint(Channel.EMOTIONS, null, null,
