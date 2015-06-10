@@ -146,7 +146,7 @@ public class RunState<D extends Debugger> {
 	 */
 	private Set<Percept> previousPercepts = new LinkedHashSet<>();
 	private Set<Message> previousMessages = new LinkedHashSet<>();
-	private Set<Percept> previousEmotions = new LinkedHashSet<>();
+	private Set<Emotion2> previousEmotions = new LinkedHashSet<>();
 	/**
 	 * The goal that is focused on is stored temporarily in the run state for
 	 * later reference when a {@link ModuleCallAction} is executed. The goal
@@ -400,8 +400,8 @@ public class RunState<D extends Debugger> {
 	 * @param previousPercepts
 	 *            The percepts processed last round.
 	 */
-	public void processEmotions(Set<Percept> newEmotions,
-			Set<Percept> previousEmotions) {
+	public void processEmotions(Set<Emotion> newEmotions,
+			Set<Emotion> previousEmotions) {
 		// Compute which percepts need to be deleted and which percepts need to
 		// be added
 		// to the percept base using the list of percepts from the previous
@@ -409,9 +409,9 @@ public class RunState<D extends Debugger> {
 		// set of percepts to be deleted/added are called lists for historical
 		// reasons.
 		
-		Set<Percept> deleteList = new HashSet<>(previousEmotions);
+		Set<Emotion> deleteList = new HashSet<>(previousEmotions);
 		deleteList.removeAll(newEmotions);
-		Set<Percept> addList = new HashSet<>(newEmotions);
+		Set<Emotion> addList = new HashSet<>(newEmotions);
 		addList.removeAll(previousEmotions);
 		String text = "";
 		text += getMentalState().getOwnBase(BASETYPE.EMOTIONBASE).getTheory();
