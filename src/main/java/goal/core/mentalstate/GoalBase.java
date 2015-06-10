@@ -323,7 +323,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		Agent gamAgent = 
 					engine.getAgentByName(this.agentName.getName());
 		EmotionConfig conf = EmotionConfig.getInstance();
-		GamGoal gamGoal = conf.getGoal(goal.getGoal().getSignature());
+		GamGoal gamGoal = conf.getGoal(goal.getGoal().getSignature(), this.agentName.getName());
 		if(gamGoal.isIndividualGoal()) {
 		 engine.createGoalForAgent(gamAgent,goal.getGoal().getAddList().get(0).toString() + this.agentName.getName(),gamGoal.getValue(),false);
 		 engine.getGamygdala().getSubgoalMap().addIndividualGoal(goal.getGoal().getSignature(), this.agentName.getName(), goal.getGoal().getAddList().get(0).toString());
@@ -432,7 +432,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		Engine gam = Engine.getInstance();
 		EmotionConfig config = EmotionConfig.getInstance();
 		Goal gamGoal;
-		boolean isIndividual = config.getGoal(goal.getGoal().getSignature()).isIndividualGoal();
+		boolean isIndividual = config.getGoal(goal.getGoal().getSignature(), agent.name).isIndividualGoal();
 		if(isIndividual) {
 		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString() + agent.name);
 		}
