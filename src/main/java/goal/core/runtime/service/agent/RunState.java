@@ -24,7 +24,6 @@ import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
 import eis.iilang.Percept;
-import emotion_p.Emotion2;
 import goal.core.agent.Agent;
 import goal.core.agent.Controller;
 import goal.core.agent.EnvironmentCapabilities;
@@ -79,6 +78,7 @@ import languageTools.program.agent.actions.UserSpecAction;
 import languageTools.program.agent.msg.Message;
 import languageTools.program.agent.rules.Rule;
 import mentalState.BASETYPE;
+import mentalState.Emotion2;
 import nl.tudelft.goal.messaging.exceptions.MessagingException;
 import nl.tudelft.goal.messaging.messagebox.MessageBox;
 
@@ -590,7 +590,7 @@ public class RunState<D extends Debugger> {
 		ListIterator<Emotion> emoIterator = emoState.listIterator();
 		while(emoIterator.hasNext()){
 			Emotion emo = emoIterator.next();
-			Emotion2 percept = new Emotion2("gam", new Identifier(emo.name), new Numeral(emo.intensity));
+			Emotion2 percept = new Emotion2("emotion", new Identifier(emo.name), new Numeral(emo.intensity));
 			addList.add(percept);
 		}
 
@@ -626,7 +626,7 @@ public class RunState<D extends Debugger> {
 		Set<Percept> newPercepts = initial;
 		Set<Emotion2> newEmotions = initial_emotions;
 		if (initial.isEmpty()) {
-			newPercepts = getPercepts();
+			newPercepts = getPercepts(); 
 		}
 		if (initial_emotions.isEmpty()){
 			newEmotions = getEmotions();
@@ -642,7 +642,7 @@ public class RunState<D extends Debugger> {
 		boolean sleepConditionsHoldingNow = samePercepts && sameMessages && sameEmotions
 				&& !isActionPerformed;
 
-		/**
+		/** 
 		 * if sleep condition held previously and now, we go to sleep mode. In
 		 * sleep mode we wait till new messages or percepts come in.
 		 */

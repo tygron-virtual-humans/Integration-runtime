@@ -1,7 +1,6 @@
 package goal.core.agent;
 
 import eis.iilang.Percept;
-import emotion_p.Emotion2;
 import goal.core.executors.ActionExecutor;
 import goal.core.executors.ModuleExecutor;
 import goal.core.runtime.service.agent.RunState;
@@ -29,6 +28,7 @@ import languageTools.program.agent.AgentProgram;
 import languageTools.program.agent.actions.Action;
 import languageTools.program.agent.actions.MentalAction;
 import languageTools.program.agent.actions.UserSpecAction;
+import mentalState.Emotion2;
 
 /**
  * Interpreter for {@link AgentProgram}.
