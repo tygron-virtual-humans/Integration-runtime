@@ -19,7 +19,6 @@
 package goal.core.mentalstate;
 
 import eis.iilang.Percept;
-import emotion_p.Emotion2;
 import goal.tools.debugger.Channel;
 import goal.tools.debugger.Debugger;
 import goal.tools.debugger.SteppingDebugger;
@@ -47,6 +46,7 @@ import languageTools.program.agent.AgentId;
 import languageTools.program.agent.AgentProgram;
 import languageTools.program.agent.msg.Message;
 import mentalState.BASETYPE;
+import mentalState.Emotion2;
 
 /**
  * <p>
@@ -444,7 +444,7 @@ public class BeliefBase {
 									+ this.agentName + "'s" + "emotion base", e);
 				}
 			}
-			for (eis.iilang.Percept percept : addList) {
+			for (Emotion2 percept : addList) {
 				try {
 					DatabaseFormula formula = this.state.insert(emotionbase,
 							percept);
