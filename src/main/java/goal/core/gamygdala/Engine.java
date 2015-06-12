@@ -263,16 +263,14 @@ public class Engine {
 			
 			//create agents via their names
 			GamRelation relation = map.get(i);
-			Agent agent1 = Engine.getInstance().createAgent(relation.getAgent1());
-			Agent agent2 = Engine.getInstance().createAgent(relation.getAgent2());
-			
-			Engine.getInstance().createAgent(agent2.name);
-			//System.out.println("-----rel created-------");
-			//System.out.println(relation.toString());
-			//System.out.println(agent1);
-			//System.out.println(agent2);
-			//System.out.println(relation.getValue());
-			//System.out.println("-----rel created-------");
+			Agent agent1 = Engine.getInstance().getAgentByName(relation.getAgent1());
+			if(agent1 == null) {
+			 agent1 = Engine.getInstance().createAgent(relation.getAgent1());
+			}
+			Agent agent2 = Engine.getInstance().getAgentByName(relation.getAgent2());
+			if(agent2 == null) {
+			 agent2 = Engine.getInstance().createAgent(relation.getAgent2());
+			}
 			//add relation to gamygdala instance
  			engine.createRelation(agent1, agent2, relation.getValue());
 		}

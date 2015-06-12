@@ -8,7 +8,7 @@ emotionFile{
 }
 
 launchpolicy{
-	launch agent1 : filename.
-	launch agent2 : filename.
+	when [max=1]@env do launch agent1 : filename.
+	when [max=1]@env do launch agent2 : filename.
 }
 
