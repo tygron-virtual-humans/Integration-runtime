@@ -48,17 +48,12 @@ public enum Channel {
 	 */
 	PERCEPTS("Percepts processed", ChannelState.NONE),
 	
-	EMOTIONS("Emotions processed", ChannelState.NONE),
-
 	/**
 	 * Channel for reporting percepts inserted into percept base, but only if
 	 * PERCEPTS channel has VIEW state.
 	 */
 	PERCEPTS_CONDITIONAL_VIEW("Changes to the percept base",
 			ChannelState.CONDITIONALVIEW),
-			
-	EMOTIONS_CONDITIONAL_VIEW("Changes to the emotion base",
-			ChannelState.EMOTIONALVIEW),
 
 	/**
 	 * Channel for reports on received emotions.
