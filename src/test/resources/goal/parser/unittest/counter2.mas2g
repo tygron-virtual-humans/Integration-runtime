@@ -3,7 +3,7 @@ agentfiles{
 }
 
 emotionFile{
- "src/main/java/goal/demo/EmotionBW4TTest/emotionConfig"
+ "src/test/resources/goal/parser/unittest/emotionConfig"
 }
 
 launchpolicy{

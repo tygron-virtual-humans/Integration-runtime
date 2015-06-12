@@ -1,0 +1,6 @@
+WHITELIST, on
+default goal utility, 0.16
+default achieved congruence, 1
+default dropped congruence, -1
+CGOAL, atBlock/1, 0.1
+SUB, atBlock/1,1, getSequence/1, 0.16, false

@@ -68,7 +68,9 @@ public class Agent<CONTROLLER extends Controller> {
 		this.logging = logger;
 		this.controller = controller;
 		this.controller.initalizeController(this);
-		Engine.getInstance().createAgent(id.getName());
+		if(Engine.getInstance().getAgentByName(id.getName()) == null) {
+			Engine.getInstance().createAgent(id.getName());
+		}
 	}
 
 	/**
