@@ -439,6 +439,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 		else {
 		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString());
 		}
+		if(gamGoal != null) {
 		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 		affectedGoals.add(gamGoal);
 		ArrayList<Double> congruences = new ArrayList<Double>();
@@ -457,6 +458,7 @@ public final class GoalBase implements Iterable<SingleGoal> {
 			gam.getGamygdala().getSubgoalMap().removeIndividualGoal(goal.getGoal().getSignature(), agent.name, goal.getGoal().getAddList().get(0).toString());
 		} else {
 			gam.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
+		}
 		}
 	}
 
