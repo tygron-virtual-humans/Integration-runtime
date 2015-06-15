@@ -602,6 +602,8 @@ public class MentalModel {
 		} else {
 		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString());
 		}
+		
+		if(gamGoal != null) {
 		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 		affectedGoals.add(gamGoal);
 		ArrayList<Double> congruences = new ArrayList<Double>();
@@ -609,22 +611,23 @@ public class MentalModel {
 		try {
 		 Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
 			gam.appraise(bel);
-			agent.removeGoal(gamGoal);
 			//gam.getMap().getGoalMap().removeGoal(gamGoal);
-		if(isIndividual) {
-				gam.getGamygdala().getSubgoalMap().removeIndividualGoal(goal.getGoal().getSignature(), agent.name, goal.getGoal().getAddList().get(0).toString());
-			} else {
-				gam.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
-			}
 		} catch (GoalCongruenceMapException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		agent.removeGoal(gamGoal);
+		gam.getMap().getGoalMap().remove(gamGoal.getName());
+		if(isIndividual) {
+			gam.getGamygdala().getSubgoalMap().removeIndividualGoal(goal.getGoal().getSignature(), agent.name, goal.getGoal().getAddList().get(0).toString());
+		} else {
+			gam.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
+		}
+		}
 	}
 			
 	public static void appraiseGoalAsSubgoal(Agent agent, SingleGoal goal) {
-		if(EmotionConfig.getInstance().getGoals().containsKey(goal.getGoal().getSignature())) {	
+		if(EmotionConfig.getInstance().getSubGoals().containsKey(goal.getGoal().getSignature())) {	
 		 Engine gam = Engine.getInstance();
 		 EmotionConfig config = EmotionConfig.getInstance();
 		 ArrayList<GamSubGoal> gamBel;
@@ -633,16 +636,23 @@ public class MentalModel {
 			for(int i = 0; i<gamBel.size(); i++) {
 			GamSubGoal currBel = gamBel.get(i);
 			HashSet<String> affectedNames = new HashSet<String>();
-			if(config.getGoal(currBel.getAffectedGoalName(), agent.name).isIndividualGoal()) {
-				affectedNames = gam.getGamygdala().getSubgoalMap().getAffectedIndividualGoal(goal.getGoal().getSignature(), agent.name);
+			boolean isIndividual = config.getGoal(currBel.getAffectedGoalName(), agent.name).isIndividualGoal();
+			if(isIndividual) {
+				affectedNames = gam.getGamygdala().getSubgoalMap().getAffectedIndividualGoal(currBel.getAffectedGoalName(), agent.name);			
 			} else {
-				affectedNames = gam.getGamygdala().getSubgoalMap().getAffectedCommonGoals(goal.getGoal().getSignature());
+				affectedNames = gam.getGamygdala().getSubgoalMap().getAffectedCommonGoals(currBel.getAffectedGoalName());
 			}
 			Iterator<String> it = affectedNames.iterator();
 			while(it.hasNext()) {
-			String affectedName = it.next();
+			String affectedName;
+			if(isIndividual) {
+				affectedName = it.next() + agent.name;
+			} else {
+				affectedName = it.next();
+			}
 			 if(gam.getMap().getGoalMap().containsKey(affectedName)) {
 			  Goal affectedGoal = gam.getGoalByName(affectedName);
+
 			  ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
 			  affectedGoals.add(affectedGoal);
 			  ArrayList<Double> congruences = new ArrayList<Double>();

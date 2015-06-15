@@ -1,0 +1,212 @@
+init module {
+	knowledge {
+		% A room is a place with exactly one neighbour, i.e., only way way to get to and from that place.
+		room(PlaceID) :- zone(_,PlaceID,_,_,Neighbours), length(Neighbours,1).
+		
+		% Assignment II.2: insert a definition of the predicate "nextColorInSeq(Color)".
+		nextColorInSeq(Color) :- sequenceIndex(Index), sequence(X), nth0(Index,X,Color).
+		
+	}
+	
+	beliefs{
+		visited([]).
+	}	
+	
+	program {
+		if true then adopt(getSequence).
+		
+		% Store map information, i.e., navigation points in agent's belief base.
+		forall bel( percept(zone(ID, Name, X, Y, Neighbours)) ) do insert( zone(ID, Name, X, Y, Neighbours) ).
+		
+		% Record current state of movement in belief base.
+		forall bel( percept(state(State)) ) do insert( state(State) ).
+		
+		% Assignment II.1a: insert here rules for processing percepts sent only at the beginning of a session.
+		forall bel( percept(sequence(X)) ) do insert( sequence(X) ).
+		
+		forall bel( percept(place(PlaceID)) ) do insert ( (place(PlaceID))).
+		
+		if bel( percept( ownName(PlayerID) ) ) then insert( ownName(PlayerID) ).
+		
+		% Storing the index of the sequence in the believe base.
+		if bel( percept( sequenceIndex(Integer) ) ) then insert( sequenceIndex(Integer) ).
+		
+	}
+		
+	actionspec {	
+		% Actions are only executed if the precondition of that action holds.
+		
+		% The goTo action makes the agent move to a place (location) in the BW4T environment.
+		% As long as the agent has not arrived at the place it is going to, it will be in "traveling" mode.
+		goTo(Location) {
+            pre { not(state(traveling))}
+			post { true }
+		}
+
+		% Assignment II.3a: insert a specification for the goToBlock(Block) action.
+		goToBlock(BlockID){
+			pre { not( state(traveling) ),in(Location), inRoom(Location,_,BlockID) } %The bot can only go to the block if it is not travelling and if he is in the same room as the block
+			post { true }
+		}
+		
+		% Assignment II.3b: insert a specification for the pickUp action.
+		pickUp{
+			pre{ not(holding(_)), atBlock(BlockID)} %The bot can only pickup a block if it's not holding a block and if it's at the location of a block
+			post{ true }
+		}
+
+		% Assignment II.3c: insert a specification for the putDown action.
+		putDown{
+			pre{ holding(_)} %The bot can only put a block down if it's holding a block
+			post{ true }
+		}
+	}
+}
+	
+
+
+main module {
+	
+	program{
+		% Initial code.
+		
+		% if the sequenceIndex is equal to the length of the sequence, then the main goal of the agent has been fulfilled so it can exit the module.
+		if bel( sequence(X), length(X,Length), ( sequenceIndex(Length)) ) 
+			then exit-module.
+		
+		% This keeps track of the visited rooms. This makes sure we don't visit the same room multiple times, unless the is a useful block in that room
+		if bel( in(Room), visited(X), not(member(Room,X))) 
+			then delete( visited(X)) + insert( visited([Room|X])).
+		
+		% If you receive information  from other agents about locations of blocks, then you should drop the goal of going there and add that room to your visited rooms.
+		% This is so that you don't go look in room if you already have the information about blocks in that room. 
+		if bel(inRoom(Room,_,Color), not(nextColorInSeq(Color)), visited(X), not( member(Room,X))), a-goal(in(Room)) 
+			then drop(in(Room)) + delete( visited(X)) + insert( visited([Room|X])).
+		
+		% If you are holding a specific block and you still have info on the location of that block, then you should delete the info and let the other agents know that the block is no longer in that room.
+		if bel( holding(BlockID), inRoom(Room,Color,BlockID))
+			then delete( inRoom(Room,Color,BlockID) ) + allother.send( :not(inRoom(Room,Color,BlockID))).
+		
+		% this is used to adopt goals to visit rooms to determine the location of blocks in the environment.
+		% We also used not(Place = 'DropZone'), because the dropzone doesn't have blocks anyway. 
+		if bel( room(Place) ), bel( visited(X) ,not(member(Place, X)), sequence(Y), length(Y,Length), not(sequenceIndex(Length)), not(Place = 'DropZone'))
+			then adopt( in(Place) ).
+		
+		% If you have the goal to go to a block, but you have no information about that block, then drop the goals.
+		% This is used because sometimes other agents pick up a block before you can get to it.  
+		if a-goal( atBlock(BlockID)), bel( not(inRoom(_,_,BlockID)))
+			then drop( atBlock(BlockID)).
+		
+		% If you are no longer in the room where you have the goal to be at a block, then you should drop the goal.
+		if a-goal( atBlock(BlockID)), bel(inRoom(Room, _, BlockID), not(in(Room))) 
+			then drop( atBlock(BlockID)).
+		
+		% If you are holding a block of the wrong color at that time, then your goal to go the the dropzone should be deleted.
+		if bel( holding(BlockID), color(BlockID,Color), not(nextColorInSeq(Color)), not(state(collided))),a-goal( in('DropZone'))
+			 then drop( in('DropZone')).
+		
+		% If you have to the goal to be in a room, but there is no block of the right color, and you have already visited the room, then you should no longer have the goal to go there.
+		if a-goal(in(Room)), bel(not(inRoom(Room,Color,_)),visited(X),member(Room,X), not( Room = 'DropZone'), nextColorInSeq(Color)) 
+			then drop( in(Room)).
+		
+		% If you are at a block of the right color, then you should pick it up.
+		if bel( atBlock(BlockID), nextColorInSeq(Color), color(BlockID,Color)) 
+			then pickUp.
+			
+		% If you are holding a block of the right color, then you should make a goal to be in the dropZone.	
+		if bel( nextColorInSeq(Color), holding(BlockID), color(BlockID,Color)) 
+			then adopt( in('DropZone')).
+		
+		% If you are holding a block of the wrong color, and you are in a room which is not the dropzone, then put it down.
+		if bel(in(Room), not(in('DropZone')), holding(BlockID), color(BlockID,Color), not(nextColorInSeq(Color) ) ) then putDown.		
+		
+		% If you have to goal of going to the dropzone, then perform the action of going there.
+		% We used a seperate rule for this, because it has priority over visiting other rooms.
+		if a-goal( in('DropZone')) then goTo( 'DropZone' ).
+		
+		% This line will let the bot 'PutDown' the block it is holding if it is at the dropzone and the block is of the right color.
+		% Then it deletes the head of the sequence of blocks that have to be gathered and inserts the new sequence without that head.
+		if bel( holding(BlockID),in('DropZone'), color(BlockID,Color), (nextColorInSeq(Color)))
+			then putDown.
+		
+		
+		
+		
+		% If you have the goal to be at a block, then perform the action of going to that block.
+		if a-goal( atBlock(BlockID))
+			then goToBlock(BlockID).
+		
+		% If you are in a room, which has a block of the right color, and you are not holding any blocks, and you aren't already at that block, then adopt the goal of being at that block.
+		if bel( nextColorInSeq(Color), in(Room), inRoom(Room,Color,BlockID),!,not(atBlock(BlockID)), not(holding(_)))
+			then adopt( atBlock(BlockID)).
+		
+		% If you have the goal of going to a room which has a block of the right color, then perform the action of going there.
+		% We used a seperate rule for this, because it has priority over going to other rooms which don't have blocks of the right color.
+		if a-goal( in(Room) ), bel( inRoom(Room,Color,BlockID), nextColorInSeq(Color))
+			then goTo(Room).
+		
+		% If you believe there is a block of the right color in a room, and you are not holding a block of the right color, then adopt a goal of going to that room.
+		if bel( nextColorInSeq(Color), inRoom(Room,Color,BlockID), not( holding(BlockID2)), (color(BlockID2,Color)))
+			then adopt( in(Room) ).
+		
+		
+		% If you have the goal to go to a place, then do it.
+		if a-goal( in(Place) )
+			then goTo(Place).
+		
+		% If you believe you are in the dropzone, then go to a random place.
+		% because it is the last rule, it is only executed when there is nothing else you can do. This is so that a bot cannot block other agents from entering the dropzone.
+		if bel( in('DropZone'), place(PlaceID) )
+			then goTo(PlaceID).
+		
+		
+
+	}
+}
+
+event module {
+	program{
+		%initial code to check the change of state and delete previous state and insert nthe new one.
+		if bel( state(State), percept(state(NewState)) ) then delete( state(State) ) + insert( state(NewState) ).
+				
+		% Assignment II.1b: insert percept rules for handling percepts other than send once percepts.
+		forall bel( percept( in(Room) ), percept( color(BlockID,Color) ) ) do insert( inRoom(Room , Color, BlockID) ) + insert( color(BlockID,Color)) + allother.sendonce( :inRoom(Room,Color,BlockID) ).
+		
+		if bel( percept( in(Room) )) then insert( in(Room)).
+			
+		if bel( percept( not(in(Room)))) then delete( in(Room) ). 
+				
+		if bel( percept( atBlock(BlockID) ) ) then insert( atBlock(BlockID) ).
+		if bel( percept( not(atBlock(BlockID) ) ) ) then delete( atBlock(BlockID) ).
+		
+		if bel( percept( holding(BlockID) ) ) then insert( holding(BlockID) ).
+		if bel( percept( not(holding(BlockID) ) ) ) then delete( holding(BlockID) ).
+		
+		if bel( percept( at(PlaceID) ), at(Oldplace) ) then delete( at(Oldplace) ) + insert( at(PlaceID) ).
+		if bel( percept( at(PlaceID) ) ) then insert ( at(PlaceID) ).
+		
+		if bel( percept( occupied(RoomID) ) ) then insert( occupied(RoomID)).
+		if bel( percept( not(occupied(RoomID)))) then delete( occupied(RoomID)).
+		
+		if bel( percept( player(PlayerID) ) ) then insert( player(PlayerID)).
+		if bel( percept( not(player(PlayerID)))) then delete( player(PlayerID)).
+		
+		if bel( received(_,inRoom(Room,Color,BlockID))) then insert( inRoom(Room,Color,BlockID)).
+		if bel( received(_,not(inRoom(Room,Color,BlockID)))) then delete( inRoom(Room,Color,BlockID)). 
+		
+		% If a bot delivers a block of the right color, then a percept of the new sequenceIndex is sent. Therefore we should delete the old sequenceIndex and insert the new one in the believe base.
+		if bel( percept(sequenceIndex(Integer)), sequenceIndex(Old)) then delete( sequenceIndex(Old) ) + insert( sequenceIndex(Integer)). 
+		
+		% If you are in a room, and you have some info about a block in that room, but you do not receive a percept of that block, then delete the info and tell the other agents the block isn't there anymore.
+		% This rule is a bit redundant, because normally a agents should send this message when he picks it up.
+		if bel( in(Room), inRoom(Room,Color,BlockID), not(percept(color(BlockID,Color) ) ) ) then delete( inRoom(Room,Color,BlockID)) + allother.send( :not(inRoom(Room,Color,BlockID)) ).	
+		
+	}
+}
+
+
+
+	
+	
+
+

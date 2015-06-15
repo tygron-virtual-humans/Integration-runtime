@@ -4,6 +4,7 @@ import eis.exceptions.EnvironmentInterfaceException;
 import goal.core.agent.Agent;
 import goal.core.agent.AgentFactory;
 import goal.core.agent.GOALInterpreter;
+import goal.core.gamygdala.Engine;
 import goal.core.runtime.MessagingService;
 import goal.core.runtime.RemoteRuntimeService;
 import goal.core.runtime.RuntimeManager;
@@ -88,7 +89,7 @@ public abstract class AbstractRun<D extends Debugger, C extends GOALInterpreter<
 		this.timeout = timeout;
 		if(program.hasEmotionFile()) {
 			EmotionConfig.parse(program.getEmotionFile());
-			goal.core.gamygdala.Engine.insertRelations();
+			Engine.insertRelations();
 		}
 	}
 

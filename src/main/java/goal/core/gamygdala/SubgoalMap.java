@@ -30,7 +30,7 @@ public class SubgoalMap extends HashMap<String, HashSet<String>>{
 		String key = goalName + agentId;
 		if(this.containsKey(key)) {
 			HashSet<String> toEdit = this.get(key);
-			toEdit.add(fullName);
+			toEdit.add(fullName + agentId);
 			this.put(key, toEdit);
 			
 		} else {
@@ -68,8 +68,8 @@ public class SubgoalMap extends HashMap<String, HashSet<String>>{
 		String key = goalName + agentId;
 		if(this.containsKey(key)) {
 			HashSet<String> toEdit = this.get(key);
-			if(toEdit.contains(fullName)) {
-				toEdit.remove(fullName);
+			if(toEdit.contains(fullName + agentId)) {
+				toEdit.remove(fullName + agentId);
 				this.put(key, toEdit);
 			}
 		}
