@@ -18,6 +18,7 @@ import goal.tools.logging.InfoLog;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -88,7 +89,17 @@ public abstract class AbstractRun<D extends Debugger, C extends GOALInterpreter<
 		this.agentPrograms = agents;
 		this.timeout = timeout;
 		if(program.hasEmotionFile()) {
-			EmotionConfig.parse(program.getEmotionFile());
+			String emoString = program.getEmotionFile();
+			File emotionFile;
+			if (new File(emoString).isAbsolute()) {
+				emotionFile = new File(emoString);
+			} else {
+				String emoPath = program.getSourceFile().getParentFile()
+						.getAbsolutePath();
+				emotionFile = new File(emoPath, emoString);
+			}
+			
+			EmotionConfig.parse(emotionFile.getAbsolutePath());
 			Engine.insertRelations();
 		}
 	}

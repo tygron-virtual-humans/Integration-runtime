@@ -3,7 +3,7 @@ agentfiles{
 }
 
 emotionFile{
- "src/test/resources/goal/parser/unittest/emotionConfig"
+	"emotionConfig.emo2g"
 }
 
 launchpolicy{

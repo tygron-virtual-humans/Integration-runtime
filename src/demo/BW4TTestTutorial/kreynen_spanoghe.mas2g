@@ -11,7 +11,7 @@ agentfiles{
 }
 
 emotionFile{
- "src/demo/BW4TTestTutorial/emotionConfig"
+	"emotionConfig.emo2g"
 }
 
 launchpolicy{

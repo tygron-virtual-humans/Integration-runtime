@@ -54,6 +54,7 @@ import languageTools.errors.Message;
 import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.parser.relationParser.EmotionConfig;
 import languageTools.parser.relationParser.GamRelation;
+import languageTools.parser.relationParser.RelationParser;
 import languageTools.program.Program;
 import languageTools.program.agent.AgentProgram;
 import languageTools.program.mas.MASProgram;
@@ -451,8 +452,6 @@ public class PlatformManager {
 			parserLogger.log(new StringsLogRecord(Level.WARNING, warning
 					.toString()));
 		}
-		
-		
 
 		if (hasErrors) {
 			// Output errors to parser tab (via parser logger).
@@ -463,11 +462,7 @@ public class PlatformManager {
 					String.format(Resources.get(WarningStrings.PARSING_ERRORS),
 							masFile.getPath()));
 
-			// parse any found agent files anyway
-			parseGOALFiles(masProgram);
-
-			// no need to further process the program if errors exist.
-			return masProgram;
+			
 		} else {
 			// Build message for final log report.
 			StringBuilder message = new StringBuilder(35);
@@ -480,12 +475,15 @@ public class PlatformManager {
 			// Provide message to logger.
 			parserLogger.log(new StringsLogRecord(Level.INFO, message
 					.toString()));
-
-			// Parse the agent files that are part of the MAS file.
-			parseGOALFiles(masProgram);
-
-			return masProgram;
 		}
+		
+		// parse any found agent files anyway
+		parseGOALFiles(masProgram);
+		
+		// parse emotion config if found
+		parseEmotionConfig(masProgram);
+
+		return masProgram;
 	}
 
 	/**
@@ -579,6 +577,78 @@ public class PlatformManager {
 
 			return program;
 		}
+	}
+	
+	/**
+	 * Parse the emotion config file in the mas program.
+	 *
+	 * @param mas
+	 *            The MAS program to extract the emotionconfig from.
+	 */
+	public void parseEmotionConfig(MASProgram mas) {
+		try {
+			String emoString = mas.getEmotionFile();
+			if (emoString != null) {
+				File emotionFile;
+				if (new File(emoString).isAbsolute()) {
+					emotionFile = new File(emoString);
+				} else {
+					String emoPath = mas.getSourceFile().getParentFile()
+							.getAbsolutePath();
+					emotionFile = new File(emoPath, emoString);
+				}
+				
+				parseEmotionConfig(emotionFile);
+			}
+			
+		} catch (Exception e) { // top level safety catch
+			throw new GOALBug("Unexpected failure in parser", e); //$NON-NLS-1$
+		}
+	}
+	
+	/**
+	 * Returns a EmotionConfig that is the result of parsing the file.
+	 *
+	 * @param emotionFile
+	 *            The file to load.
+	 * @return EmotionConfig resulting from parsing the file.
+	 * @throws ParserException
+	 *             if the file does not exist, is a directory rather than a
+	 *             regular file, or for some other reason cannot be opened for
+	 *             reading.
+	 */
+	public EmotionConfig parseEmotionConfig(File emotionFile) throws ParserException {
+		// Logger to report issues found during parsing and validation.
+		GOALLogger parserLogger = Loggers.getParserLogger();
+		parserLogger.log(new StringsLogRecord(Level.INFO, 
+				"Parsing emotion config file "+ emotionFile.getPath())); //$NON-NLS-1$
+
+		EmotionConfig config = null;
+		try {
+			config = RelationParser.parse(emotionFile);
+		} catch (FileNotFoundException e) {
+			throw new ParserException("Invalid emotion config file");
+		} catch (InvalidEmotionConfigFile error) {
+			// Report any errors encountered during parsing.
+			parserLogger.log(new StringsLogRecord(Level.SEVERE, error
+					.getMessage()));
+
+			parserLogger.log(new StringsLogRecord(Level.INFO,
+					"Parsing completed with errors.")); //$NON-NLS-1$
+			
+			// Also print to main console
+			Loggers.getWarningLogger().logln(String.format(Resources.get(
+					WarningStrings.PARSING_ERRORS), emotionFile.getPath()));
+			
+			return config;
+		}
+
+		// Provide message to logger.
+		parserLogger.log(new StringsLogRecord(Level.INFO, String.format(
+				Resources.get(WarningStrings.PARSING_COMPLETED),
+				emotionFile.getPath())));
+
+		return config;
 	}
 
 	/**
