@@ -127,7 +127,10 @@ public class Engine {
     public void decayAll() {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 0ca8486985c2852b651f098358fe73ed50d1282b
         // Engine.debug("\n=====\nDecaying all emotions\n=====\n");
 
 >>>>>>> Changed runtime to (hopefully) work with the emotionbase. Not tested yet.
