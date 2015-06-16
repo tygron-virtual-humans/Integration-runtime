@@ -318,19 +318,12 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	 * Add goal to the gamygdala engine.
 	 */
 	private void addGamygdalaGoal(SingleGoal goal) {
-		
 		Engine engine = Engine.getInstance();
 		Agent gamAgent = 
 					engine.getAgentByName(this.agentName.getName());
 		EmotionConfig conf = EmotionConfig.getInstance();
-		GamGoal gamGoal = conf.getGoal(goal.getGoal().getSignature(), this.agentName.getName());
-		if(gamGoal.isIndividualGoal()) {
-		 engine.createGoalForAgent(gamAgent,goal.getGoal().getAddList().get(0).toString() + this.agentName.getName(),gamGoal.getValue(),false);
-		 engine.getGamygdala().getSubgoalMap().addIndividualGoal(goal.getGoal().getSignature(), this.agentName.getName(), goal.getGoal().getAddList().get(0).toString());
-		} else {
-		 engine.createGoalForAgent(gamAgent,goal.getGoal().getAddList().get(0).toString(),gamGoal.getValue(),false);
-		 engine.getGamygdala().getSubgoalMap().addCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
-		}			
+		engine.createGoalForAgent(goal, gamAgent);
+			
 			
 	}
 
@@ -431,34 +424,22 @@ public final class GoalBase implements Iterable<SingleGoal> {
 	public static void dropGamGoal(Agent agent, SingleGoal goal) {
 		Engine gam = Engine.getInstance();
 		EmotionConfig config = EmotionConfig.getInstance();
-		Goal gamGoal;
-		boolean isIndividual = config.getGoal(goal.getGoal().getSignature(), agent.name).isIndividualGoal();
-		if(isIndividual) {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString() + agent.name);
-		}
-		else {
-		 gamGoal = gam.getGoalByName(goal.getGoal().getAddList().get(0).toString());
-		}
+		Goal gamGoal = gam.getGoal(goal, agent.name);
 		if(gamGoal != null) {
-		ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
-		affectedGoals.add(gamGoal);
-		ArrayList<Double> congruences = new ArrayList<Double>();
-		congruences.add(config.getDefaultNegativeCongruence());
-		Belief bel = null;
-		try {
-			bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
-		} catch (GoalCongruenceMapException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		gam.appraise(bel, agent);
-		agent.removeGoal(gamGoal);
-		gam.getMap().getGoalMap().remove(gamGoal.getName());
-		if(isIndividual) {
-			gam.getGamygdala().getSubgoalMap().removeIndividualGoal(goal.getGoal().getSignature(), agent.name, goal.getGoal().getAddList().get(0).toString());
-		} else {
-			gam.getGamygdala().getSubgoalMap().removeCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
-		}
+			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+			affectedGoals.add(gamGoal);
+			ArrayList<Double> congruences = new ArrayList<Double>();
+			congruences.add(config.getDefaultNegativeCongruence());
+			Belief bel = null;
+			try {
+				bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
+			} catch (GoalCongruenceMapException e) {
+				e.printStackTrace();
+			}
+			gam.appraise(bel, agent);
+			agent.removeGoal(gamGoal);
+			gam.getMap().getGoalMap().remove(gamGoal.getName());
+			gam.getSubgoalMap().removeGoal(goal, agent.name);
 		}
 	}
 

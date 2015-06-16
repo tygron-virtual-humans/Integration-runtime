@@ -263,13 +263,13 @@ public class Gamygdala {
     	return gamygdalaMap;
     }
     
+    /**
+     * Returns the subgoalmap of this gamygdala instance
+     * @return
+     */
     public SubgoalMap getSubgoalMap() {
   		return subgoalMap;
   	}
-
-  	public void setSubgoalMap(SubgoalMap subgoalMap) {
-  		this.subgoalMap = subgoalMap;
-  	}
-
+    
 
 }
