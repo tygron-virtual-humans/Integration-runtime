@@ -1,12 +1,18 @@
 package goal.core.gamygdala;
 
+import goal.core.mentalstate.SingleGoal;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import languageTools.exceptions.relationParser.InvalidGamSubGoalException;
 import languageTools.parser.relationParser.EmotionConfig;
+import languageTools.parser.relationParser.GamGoal;
 import languageTools.parser.relationParser.GamRelation;
+import languageTools.parser.relationParser.GamSubGoal;
 
 /**
  * Gaming Engine adapter for Gamygdala.
@@ -97,6 +103,25 @@ public class Engine {
 
         return goal;
 
+    }
+    
+    /**
+     * When given a SingeGoal and an agent as input then this function will create a
+     *  correct goal for this agent (or a common goal if it is defined as such) in 
+     *  gamygdala based on the values present in the emotionconfig
+     * @param goal goal for which a gamygdala goal needs to be created
+     * @param gamAgent agent for whom it is being created
+     * @return the created goal
+     */
+    public Goal createGoalForAgent(SingleGoal goal, Agent gamAgent) {
+    	GamGoal gamGoal = EmotionConfig.getInstance().getGoal(goal.getGoal().getSignature(), gamAgent.name);
+		if(gamGoal.isIndividualGoal()) {
+		 Engine.getInstance().getSubgoalMap().addIndividualGoal(goal.getGoal().getSignature(), gamAgent.name, goal.getGoal().getAddList().get(0).toString());
+		 return Engine.getInstance().createGoalForAgent(gamAgent,goal.getGoal().getAddList().get(0).toString() + gamAgent.name,gamGoal.getValue(),false);
+		} else {
+		 Engine.getInstance().getSubgoalMap().addCommonGoal(goal.getGoal().getSignature(), goal.getGoal().getAddList().get(0).toString());
+		 return Engine.getInstance().createGoalForAgent(gamAgent,goal.getGoal().getAddList().get(0).toString(),gamGoal.getValue(),false);
+		}	
     }
 
     /**
@@ -237,19 +262,53 @@ public class Engine {
     public void setGamygdala(Gamygdala gamygdala) {
         this.gamygdala = gamygdala;
     }
-
+    
+    /**
+     * Returns an agent wit the input string as a name if it is present in gamygdala
+     * @param name name of the agent to retrieve
+     * @return agent with the input name
+     */
     public Agent getAgentByName(String name){
     	return gamygdala.getMap().getAgentMap().getAgentByName(name);
     }
     
+    /**
+     * Returns a goal with the input as a name if it is present in gamygdala
+     * @param name name of the goal to retrieve
+     * @return goal with the input name
+     */
     public Goal getGoalByName(String name){
     	return gamygdala.getMap().getGoalMap().getGoalByName(name);
     }
     
+    /**
+     * Retrieves the goal corresponding to the equivalent goal of the SingleGoal owned by an agent with the name agentName
+     * (unless it is defined as a common goal in the emotionconfig the the common goal will be returned)
+     * @param goal goal for which the equivalent gamygdala goal should be retrieved
+     * @param agentName the name of the agent to whom this goal should belong
+     * @return the goal
+     */
+    public Goal getGoal(SingleGoal goal, String agentName){
+    	boolean isIndividual = EmotionConfig.getInstance().getGoal(goal.getGoal().getSignature(), agentName).isIndividualGoal();
+		if(isIndividual) {
+		 return  this.getInstance().getGoalByName(goal.getGoal().getAddList().get(0).toString() + agentName);
+		}
+		else {
+		 return this.getInstance().getGoalByName(goal.getGoal().getAddList().get(0).toString());
+		}
+    }
+    
+    /**
+     * Returns the internal map of gamygdala
+     * @return
+     */
     public GamygdalaMap getMap(){
     	return gamygdala.getMap();
     }
     
+    /**
+     * Inserts relations into gamygdala according to how they're defined in the emotionconfiguration
+     */
     public static void insertRelations(){
 		// getting both instances
 		EmotionConfig emo = EmotionConfig.getInstance();
@@ -303,5 +362,78 @@ public class Engine {
             System.out.println(what);
         }
     }
+    
+    /**
+     * @return returns the subgoalmap associated with this gamygdala engine
+     */
+    public SubgoalMap getSubgoalMap() {
+    	return gamygdala.getSubgoalMap();
+    }
+    
+    /**
+	 * appraise a goal SingleGoal in gamygdala according to the configurations in emotionConfig
+	 * @param agent
+	 * @param goal
+	 */
+	public void appraiseGoal(Agent agent, SingleGoal goal) {
+		Engine gam = Engine.getInstance();
+		EmotionConfig config = EmotionConfig.getInstance();
+		Goal gamGoal = gam.getGoal(goal, agent.name);
+		if(gamGoal != null) { //if it is null then the agent did not have this goal
+			ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+			affectedGoals.add(gamGoal); //we're appraising only this goal so the affected goals are the goal itself
+			ArrayList<Double> congruences = new ArrayList<Double>();
+			congruences.add(config.getDefaultPositiveCongruence());
+			try {
+				Belief bel = new Belief(config.getDefaultBelLikelihood(), agent, affectedGoals, congruences, config.isDefaultIsIncremental());
+				gam.appraise(bel);
+			} catch (GoalCongruenceMapException e) {
+				e.printStackTrace();
+			}
+			agent.removeGoal(gamGoal); //remove the goals from gamygdala
+			gam.getMap().getGoalMap().remove(gamGoal.getName());
+			gam.getSubgoalMap().removeGoal(goal, agent.name);
+		}
+	}
+	
+	/**
+	 * apparaises a goals as a subgoal according to the configuration given in the emotionconfig
+	 * @param agent
+	 * @param goal
+	 */
+	public void appraiseGoalAsSubgoal(Agent agent, SingleGoal goal) {
+		if(EmotionConfig.getInstance().getSubGoals().containsKey(goal.getGoal().getSignature())) {	
+		 Engine gam = Engine.getInstance();
+		 EmotionConfig config = EmotionConfig.getInstance();
+		 ArrayList<GamSubGoal> subGoals;
+		 try {
+			 subGoals = config.getSubGoal(goal.getGoal().getSignature());
+			for(int i = 0; i<subGoals.size(); i++) { //we should loop through all subgoals and appraise them
+				GamSubGoal currSub = subGoals.get(i);
+				HashSet<String> affectedNames = new HashSet<String>();
+				affectedNames = gam.getSubgoalMap().getAffectedGoals(currSub, agent.name);
+				Iterator<String> it = affectedNames.iterator();
+				while(it.hasNext()) { //appraise the affected goals one by one
+					String affectedName = it.next();
+					if(gam.getMap().getGoalMap().containsKey(affectedName)) {
+						Goal affectedGoal = gam.getGoalByName(affectedName);
+						ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+						affectedGoals.add(affectedGoal);
+						ArrayList<Double> congruences = new ArrayList<Double>();
+						congruences.add(currSub.getCongruence());
+						Belief bel = new Belief(currSub.getLikelihood(), agent, affectedGoals, congruences, currSub.isIncremental());
+						gam.appraise(bel);
+					}
+				}
+			}
+		} catch (InvalidGamSubGoalException e) {
+		 e.printStackTrace();
+	    } catch (GoalCongruenceMapException e) {
+			e.printStackTrace();
+		}	
+		
+	}
+				
+}
 
 }
