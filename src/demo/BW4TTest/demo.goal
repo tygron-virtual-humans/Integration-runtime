@@ -13,8 +13,6 @@ init module {
 	}	
 	
 	program {
-		if true then adopt(getSequence).
-		
 		% Store map information, i.e., navigation points in agent's belief base.
 		forall bel( percept(zone(ID, Name, X, Y, Neighbours)) ) do insert( zone(ID, Name, X, Y, Neighbours) ).
 		
@@ -201,7 +199,191 @@ event module {
 		% This rule is a bit redundant, because normally a agents should send this message when he picks it up.
 		if bel( in(Room), inRoom(Room,Color,BlockID), not(percept(color(BlockID,Color) ) ) ) then delete( inRoom(Room,Color,BlockID)) + allother.send( :not(inRoom(Room,Color,BlockID)) ).	
 		
+		%inserting the emotions into the belief base
+		if bel(percept(gam(hope, X)) ) then {
+			forall bel(emo(hope, Y)) do delete(emo(hope, Y)).
+			 if true then insert( emo(hope, X) ).
+		}
+		
+		if bel(percept(gam(hope, X)) ) then insert( emo(hope, X) ).
+		
+		if bel( percept(gam(fear, X)) ) then {
+			forall bel(emo(fear, Y)) do delete(emo(fear, Y)).
+			 if true then insert( emo(fear, X) ).
+		}
+		
+		if bel(percept(gam(fear, X)) ) then insert( emo(fear, X) ).
+		
+		if bel( percept(gam(joy, X)) ) then {
+			forall bel(emo(joy, Y)) do delete(emo(joy, Y)).
+			 if true then insert( emo(joy, X) ).
+		}
+		
+		if bel(percept(gam(joy, X)) ) then insert( emo(joy, X) ).
+		
+		if bel( percept(gam(distress, X)) ) then {
+			forall bel(emo(distress, Y)) do delete(emo(distress, Y)).
+			 if true then insert( emo(distress, X) ).
+		}
+		
+		if bel(percept(gam(distress, X)) ) then insert( emo(distress, X) ).
+		
+		if bel( percept(gam(satisfaction, X)) ) then {
+			forall bel(emo(satisfaction, Y)) do delete(emp(satisfaction, Y)).
+			 if true then insert( emo(satisfaction, X) ).
+		}
+		
+		if bel(percept(gam(satisfaction, X)) ) then insert( emo(satisfaction, X) ).
+		
+		if bel( percept(gam(fearsConfirmed, X)) ) then {
+			forall bel(emo(fearsConfirmed, Y)) do delete(emo(fearsConfirmed, Y)).
+			 if true then insert( emo(fearsConfirmed, X) ).
+		}
+		
+		if bel(percept(gam(fearsConfirmed, X)) ) then insert( emo(fearsConfirmed, X) ).
+		
+		if bel( percept(gam(disappointment, X)) ) then {
+			forall bel(emo(disappointment, Y)) do delete(emo(disappointment, Y)).
+			 if true then insert( emo(disappointment, X) ).
+		}
+		
+		if bel(percept(gam(disappointment, X)) ) then insert( emo(disappointment, X) ).
+		
+		if bel( percept(gam(relief, X)) ) then {
+			forall bel(emo(relief, Y)) do delete(emo(relief, Y)).
+			 if true then insert( emo(relief, X) ).
+		}
+		
+		if bel(percept(gam(relief, X)) ) then insert( emo(relief, X) ).
+		
+		if bel( percept(gam(anger, X)) ) then {
+			forall bel(emo(anger, Y)) do delete(emo(anger, Y)).
+			 if true then insert( emo(anger, X) ).
+		}
+		
+		if bel(percept(gam(anger, X)) ) then insert( emo(anger, X) ).
+		
+		if bel( percept(gam(anger, X, Person)) ) then {
+			forall bel(emo(anger, Y, Person)) do delete(emo(anger, Y, Person)).
+			 if true then insert( emo(anger, X, Person) ).
+		}
+		
+		if bel( percept(gam(anger, X, Person)) )  then insert( emo(anger, X, Person) ).
+		
+		
+		if bel( percept(gam(guilt, X)) ) then {
+			forall bel(emo(guilt, Y)) do delete(emo(guilt, Y)).
+			 if true then insert( emo(guilt, X) ).
+		}
+		
+		if bel(percept(gam(guilt, X)) ) then insert( emo(guilt, X) ).
+		
+		if bel( percept(gam(guilt, X, Person)) ) then {
+			forall bel(emo(guilt, Y, Person)) do delete(emo(guilt, Y, Person)).
+			 if true then insert( emo(guilt, X, Person) ).
+		}
+		
+		if bel( percept(gam(guilt, X, Person)) )  then insert( emo(guilt, X, Person) ).
+		
+		if bel( percept(gam(gratitude, X)) ) then {
+			forall bel(emo(gratitude, Y)) do delete(emo(gratitude, Y)).
+			 if true then insert( emo(gratitude, X) ).
+		}
+		
+		if bel(percept(gam(gratitude, X)) ) then insert( emo(gratitude, X) ).
+		
+		if bel( percept(gam(gratitude, X, Person)) ) then {
+			forall bel(emo(gratitude, Y, Person)) do delete(emo(gratitude, Y, Person)).
+			 if true then insert( emo(gratitude, X, Person) ).
+		}
+		
+		if bel( percept(gam(gratitude, X, Person)) )  then insert( emo(gratitude, X, Person) ).
+		
+		if bel( percept(gam(gratification, X)) ) then {
+			forall bel(emo(gratification, Y)) do delete(emo(gratification, Y)).
+			 if true then insert( emo(gratification, X) ).
+		}
+		
+		if bel(percept(gam(gratification, X)) ) then insert( emo(gratification, X) ).
+		
+		if bel( percept(gam(gratification, X, Person)) ) then {
+			forall bel(emo(gratification, Y, Person)) do delete(emo(gratification, Y, Person)).
+			 if true then insert( emo(gratification, X, Person) ).
+		}
+		
+		if bel( percept(gam(gratification, X, Person)) )  then insert( emo(gratification, X, Person) ).
+		
+		if bel( percept(gam(happyFor, X)) ) then {
+			forall bel(emo(happyFor, Y)) do delete(emo(happyFor, Y)).
+			 if true then insert( emo(happyFor, X) ).
+		}
+		
+		if bel(percept(gam(happyFor, X)) ) then insert( emo(happyFor, X) ).
+		
+		if bel( percept(gam(happyFor, X, Person)) ) then {
+			forall bel(emo(happyFor, Y, Person)) do delete(emo(happyFor, Y, Person)).
+			 if true then insert( emo(happyFor, X, Person) ).
+		}
+		
+		if bel( percept(gam(happyFor, X, Person)) )  then insert( emo(happyFor, X, Person) ).
+		
+		if bel( percept(gam(pity, X)) ) then {
+			forall bel(emo(pity, Y)) do delete(emo(pity, Y)).
+			 if true then insert( emo(pity, X) ).
+		}
+		
+		if bel(percept(gam(pity, X)) ) then insert( emo(pity, X) ).
+		
+		if bel( percept(gam(pity, X, Person)) ) then {
+			forall bel(emo(pity, Y, Person)) do delete(emo(pity, Y, Person)).
+			 if true then insert( emo(pity, X, Person) ).
+		}
+		
+		if bel( percept(gam(pity, X, Person)) )  then insert( emo(pity, X, Person) ).
+		
+		if bel( percept(gam(gloating, X)) ) then {
+			forall bel(emo(gloating, Y)) do delete(emo(gloating, Y)).
+			 if true then insert( emo(gloating, X) ).
+		}
+		
+		if bel(percept(gam(gloating, X)) ) then insert( emo(gloating, X) ).
+		
+		if bel( percept(gam(gloating, X, Person)) ) then {
+			forall bel(emo(gloating, Y, Person)) do delete(emo(gloating, Y, Person)).
+			 if true then insert( emo(gloating, X, Person) ).
+		}
+		
+		if bel( percept(gam(gloating, X, Person)) )  then insert( emo(gloating, X, Person) ).
+		
+		if bel( percept(gam(resentment, X)) ) then {
+			forall bel(emo(resentment, Y)) do delete(emo(resentment, Y)).
+			 if true then insert( emo(resentment, X) ).
+		}
+		
+		if bel(percept(gam(resentment, X)) ) then insert( emo(resentment, X) ).
+		
+		if bel( percept(gam(resentment, X, Person)) ) then {
+			forall bel(emo(resentment, Y, Person)) do delete(emo(resentment, Y, Person)).
+			 if true then insert( emo(resentment, X, Person) ).
+		}
+		
+		if bel( percept(gam(resentment, X, Person)) )  then insert( emo(resentment, X, Person) ).
+		
+		if bel( percept(gam(like, X)) ) then {
+			forall bel(emo(like, Y)) do delete(emo(like, Y)).
+			 if true then insert( emo(like, X) ).
+		}
+		
+		if bel(percept(gam(like, X)) ) then insert( emo(like, X) ).
+		
+		if bel( percept(gam(like, X, Person)) ) then {
+			forall bel(emo(like, Y, Person)) do delete(emo(like, Y, Person)).
+			 if true then insert( emo(like, X, Person) ).
+		}
+		
+		if bel( percept(gam(like, X, Person)) )  then insert( emo(like, X, Person) ).
 	}
+	
 }
 
 
