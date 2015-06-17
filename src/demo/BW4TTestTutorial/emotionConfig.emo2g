@@ -1,8 +1,0 @@
-WHITELIST, on
-CGOAL, sequenceComplete/0, 1
-CGOAL, atBlock/1, 0.05
-CGOAL, getBlock/1, 0.1
-SUB, getBlock/1, sequenceComplete/0, 0.16, true
-SUB, atBlock/1, getBlock/1, 0.7, false
-REL,robot2,robot1,-1
-REL,robot1,robot2,1
