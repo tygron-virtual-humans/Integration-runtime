@@ -544,15 +544,15 @@ public class RunState<D extends Debugger> {
 				Percept percept = new Percept("gam", new Identifier(emo.name), new Numeral(emo.intensity));
 				addList.add(percept);
 			}
-			AgentRelations test = Engine.getInstance().getAgentByName(agentName.getName()).getCurrentRelations();
-			ListIterator<Relation> test2 = test.listIterator();
-			while(test2.hasNext()){
-				Relation test3 = test2.next();
-				String name = test3.getAgent().name;
-				emoIterator = test3.emotionList.listIterator();
+			AgentRelations agentrelations = Engine.getInstance().getAgentByName(agentName.getName()).getCurrentRelations();
+			ListIterator<Relation> agentrelationsiterator = agentrelations.listIterator();
+			while(agentrelationsiterator.hasNext()){
+				Relation relation = agentrelationsiterator.next();
+				String agentname = relation.getAgent().name;
+				emoIterator = relation.emotionList.listIterator();
 				while(emoIterator.hasNext()){
 					Emotion emo2 = emoIterator.next();
-					Percept percept = new Percept("gam", new Identifier(emo2.name), new Numeral(emo2.intensity), new Identifier(name));
+					Percept percept = new Percept("gam", new Identifier(emo2.name), new Numeral(emo2.intensity), new Identifier(agentname));
 					addList.add(percept);
 				}
 			}
