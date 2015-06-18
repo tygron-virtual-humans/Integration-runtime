@@ -544,7 +544,6 @@ public class RunState<D extends Debugger> {
 				Percept percept = new Percept("gam", new Identifier(emo.name), new Numeral(emo.intensity));
 				addList.add(percept);
 			}
-			/*
 			AgentRelations test = Engine.getInstance().getAgentByName(agentName.getName()).getCurrentRelations();
 			ListIterator<Relation> test2 = test.listIterator();
 			while(test2.hasNext()){
@@ -557,7 +556,7 @@ public class RunState<D extends Debugger> {
 					addList.add(percept);
 				}
 			}
-			*/
+			
 
 			return addList;
 		} catch (MessagingException e) {

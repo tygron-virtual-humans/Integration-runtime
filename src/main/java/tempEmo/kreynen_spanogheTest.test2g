@@ -1,15 +1,13 @@
 masTest{
 	mas = "kreynen_spanoghe.mas2g".
 	
-	robot {
+	emotion {
 		locateBlockTest {
 			
 			evaluate{
 				% This is to check whether the bot locates the blocks correclty.
-				always if bel(nextColorInSeq(Color), inRoom(Room,Color,BlockID)) then a-goal(in(Room)),
+				eventually bel(itworked(1)).
 				
-				% This is to check that the bot doens't have any unnecessary goals.
-				always if bel(inRoom(Room,Color,_), not(nextColorInSeq(Color))) then a-goal(not(in(Room))).  
 			} in do main.
 		}
 	}

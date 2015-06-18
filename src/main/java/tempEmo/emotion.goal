@@ -176,7 +176,8 @@ event module {
 		
 		% Insert emotions
 		forall bel( percept(gam(joy, X)), joy(Y) ) do delete( joy(Y) ) + insert( joy(X) ). 
-		forall bel( percept(gam(gratitude, X)), gratitude(Y) ) do delete( gratitude(Y) ) + insert( gratitude(X) ). 
+	%	forall bel( percept(gam(gratitude, X)), gratitude(Y) ) do delete( gratitude(Y) ) + insert( gratitude(X) ). 
+		forall bel( percept(gam(gratitude, X, _)), gratitude(Y) ) do delete( gratitude(Y) ) + insert( gratitude(X) ).
 	%	forall bel( percept(gam(joy, X)) ) do insert( joy(X) ).
 	%	forall bel( percept(gam(gratitude, X)) ) do insert ( gratitude(X) ).
 				
