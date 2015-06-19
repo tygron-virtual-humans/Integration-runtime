@@ -9,6 +9,7 @@ main module{
 	program[order=random]{
 	%	if bel(emotion(emotion(joy, Z))) then insert( joy(Z)).
 	%	if bel(emotion(emotion(joy, R))) then insert( hello(1)).
+		if bel(emo(emotion(joy, Z)), joy(X)) then delete(joy(X)) + insert( joy(Z)).
 		if bel(counter(X), X>120) then exit-module.
 		if bel(counter(X), Y is X+1, Z is X+2) then print(X) + adopt( counter(Z)) + insert(counter(Y)) + delete(counter(X)).
 	%	if bel( emotion(hope, X) ) then insert( emotion(hope, X) ).
@@ -17,7 +18,7 @@ main module{
 
 event module {	
 	program {
-		if bel( emotion(emotion(joy, X)), joy(Z) ) then delete(joy(Z)) + insert( joy(X) ).
+		forall bel( emo(emotion(joy, X)), joy(Z) ) do delete(joy(Z)) + insert( joy(X) ).
 		% forall bel( emotion(joy, X) ) do insert( emotion(joy, X) ).
 	%	forall bel( percept(gam(joy, X)), joy(Y) ) do delete( joy(Y) ) + insert( joy(X) ).
 	}
