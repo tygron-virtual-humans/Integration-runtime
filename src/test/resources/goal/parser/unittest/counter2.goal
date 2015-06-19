@@ -13,8 +13,8 @@ main module{
 
 event module {	
 	program {
-		if bel( percept(gam(hope, X)) ) then insert( gam(hope, X) ).
-		if bel( percept(gam(joy, X)) ) then insert( gam(joy, X) ).
+		if bel( percept(emotion(hope, X)) ) then insert( emotion(hope, X) ).
+		if bel( percept(emotion(joy, X)) ) then insert( emotion(joy, X) ).
 	}
 }
 
