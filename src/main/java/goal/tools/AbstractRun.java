@@ -88,20 +88,7 @@ public abstract class AbstractRun<D extends Debugger, C extends GOALInterpreter<
 		this.masProgram = program;
 		this.agentPrograms = agents;
 		this.timeout = timeout;
-		if(program.hasEmotionFile()) {
-			String emoString = program.getEmotionFile();
-			File emotionFile;
-			if (new File(emoString).isAbsolute()) {
-				emotionFile = new File(emoString);
-			} else {
-				String emoPath = program.getSourceFile().getParentFile()
-						.getAbsolutePath();
-				emotionFile = new File(emoPath, emoString);
-			}
-			
-			EmotionConfig.parse(emotionFile.getAbsolutePath());
-			Engine.insertRelations();
-		}
+		Engine.setup(program);
 	}
 
 	/**

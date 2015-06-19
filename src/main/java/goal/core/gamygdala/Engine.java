@@ -2,17 +2,21 @@ package goal.core.gamygdala;
 
 import goal.core.mentalstate.SingleGoal;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import languageTools.exceptions.relationParser.InvalidEmotionConfigFile;
 import languageTools.exceptions.relationParser.InvalidGamSubGoalException;
 import languageTools.parser.relationParser.EmotionConfig;
 import languageTools.parser.relationParser.GamGoal;
 import languageTools.parser.relationParser.GamRelation;
 import languageTools.parser.relationParser.GamSubGoal;
+import languageTools.program.mas.MASProgram;
 
 /**
  * Gaming Engine adapter for Gamygdala.
@@ -434,6 +438,38 @@ public class Engine {
 		
 	}
 				
-}
+	}
+	
+	public static void setup(MASProgram program) throws FileNotFoundException, InvalidEmotionConfigFile{
+		// checking for emotionConfig file
+		if(program.hasEmotionFile()) {
+			String emoString = program.getEmotionFile();
+			File emotionFile;
+			if (new File(emoString).isAbsolute()) {
+				emotionFile = new File(emoString);
+			} else {
+				String emoPath = program.getSourceFile().getParentFile()
+						.getAbsolutePath();
+				emotionFile = new File(emoPath, emoString);
+			}
+			
+			// getting info
+			EmotionConfig config = EmotionConfig.getInstance();
+			double decayFactor = config.getDecay();
+			
+			//setting decay
+			if (config.isDecayExponential()) {
+				Engine.getInstance().setDecay(decayFactor, new ExponentialDecay(decayFactor));
+			} else {
+				Engine.getInstance().setDecay(decayFactor, new LinearDecay(decayFactor));
+			}
+			
+			//inserting relations + parsing config file
+			EmotionConfig.parse(emotionFile.getAbsolutePath());
+			Engine.insertRelations();
+		}
+		
+		
+	}
 
 }
