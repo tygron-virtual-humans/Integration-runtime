@@ -1,0 +1,15 @@
+masTest{
+	mas = "kreynen_spanoghe.mas2g".
+	
+	emotion {
+		locateBlockTest {
+			
+			evaluate{
+				% This is to check whether the bot locates the blocks correclty.
+				eventually bel(itworked(1)).
+				
+			} in do main.
+		}
+	}
+
+}

@@ -31,8 +31,10 @@ import goal.core.agent.LoggingCapabilities;
 import goal.core.agent.MessagingCapabilities;
 import goal.core.executors.ModuleExecutor;
 import goal.core.gamygdala.AgentInternalState;
+import goal.core.gamygdala.AgentRelations;
 import goal.core.gamygdala.Emotion;
 import goal.core.gamygdala.Engine;
+import goal.core.gamygdala.Relation;
 import goal.core.mentalstate.MentalState;
 import goal.core.mentalstate.SingleGoal;
 import goal.core.runtime.service.environmentport.EnvironmentPort;
@@ -542,6 +544,19 @@ public class RunState<D extends Debugger> {
 				Percept percept = new Percept("gam", new Identifier(emo.name), new Numeral(emo.intensity));
 				addList.add(percept);
 			}
+			AgentRelations agentrelations = Engine.getInstance().getAgentByName(agentName.getName()).getCurrentRelations();
+			ListIterator<Relation> agentrelationsiterator = agentrelations.listIterator();
+			while(agentrelationsiterator.hasNext()){
+				Relation relation = agentrelationsiterator.next();
+				String agentname = relation.getAgent().name;
+				emoIterator = relation.emotionList.listIterator();
+				while(emoIterator.hasNext()){
+					Emotion emo2 = emoIterator.next();
+					Percept percept = new Percept("gam", new Identifier(emo2.name), new Numeral(emo2.intensity), new Identifier(agentname));
+					addList.add(percept);
+				}
+			}
+			
 
 			return addList;
 		} catch (MessagingException e) {
