@@ -541,7 +541,7 @@ public class RunState<D extends Debugger> {
 			ListIterator<Emotion> emoIterator = emoState.listIterator();
 			while(emoIterator.hasNext()){
 				Emotion emo = emoIterator.next();
-				Percept percept = new Percept("gam", new Identifier(emo.name), new Numeral(emo.intensity));
+				Percept percept = new Percept("emotion", new Identifier(emo.name), new Numeral(emo.intensity));
 				addList.add(percept);
 			}
 			AgentRelations agentrelations = Engine.getInstance().getAgentByName(agentName.getName()).getCurrentRelations();
@@ -552,7 +552,7 @@ public class RunState<D extends Debugger> {
 				emoIterator = relation.emotionList.listIterator();
 				while(emoIterator.hasNext()){
 					Emotion emo2 = emoIterator.next();
-					Percept percept = new Percept("gam", new Identifier(emo2.name), new Numeral(emo2.intensity), new Identifier(agentname));
+					Percept percept = new Percept("emotion", new Identifier(emo2.name), new Numeral(emo2.intensity), new Identifier(agentname));
 					addList.add(percept);
 				}
 			}
