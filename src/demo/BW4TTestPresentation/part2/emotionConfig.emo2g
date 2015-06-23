@@ -1,0 +1,3 @@
+WHITELIST, ON
+IGOAL, getBlock/1, 0.16
+IGOAL, sequenceComplete/0, 1

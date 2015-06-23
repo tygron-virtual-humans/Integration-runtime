@@ -1,0 +1,7 @@
+WHITELIST, ON
+DECAY, exp, 1
+IGOAL, in/1, 0.05
+IGOAL, atBlock/1, 0.1
+CGOAL, getBlock/1, 0.25
+CGOAL, sequenceComplete/0, 1
+SUB, getBlock/1, sequenceComplete/0, 0.16, true

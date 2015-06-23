@@ -1,0 +1,8 @@
+WHITELIST, ON
+DECAY, exp, 1
+IGOAL, in/1, 0.05
+IGOAL, atBlock/1, 0.1
+CGOAL, getBlock/1, 0.25
+CGOAL, sequenceComplete/0, 1
+REL, robot2, robot1, 1
+REL, robot1, robot2, -1
